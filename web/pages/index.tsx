@@ -7,15 +7,27 @@ interface Data {
   displayName?: string
 }
 
-export default function Home({ displayName }: Data) {
+export default function Index({ displayName }: Data) {
   return <div className={"container"}>
-    {!!displayName ? <>
-      <h1>Hello {displayName}!</h1>
-      <button onClick={tryLogout}>Logout</button>
-    </> : <>
-      <Link href="/signin"><a>Login</a></Link>
-    </>}
+    {!!displayName ? <Home displayName={displayName} /> : <Landing /> }
   </div>
+}
+
+function Home({ displayName }: Data) {
+  return (
+    <>
+      <h1>Welcome back {displayName}!</h1>
+      <button onClick={tryLogout}>Logout</button>
+    </> 
+  )
+}
+
+function Landing() {
+  return (
+    <Link href="/signin">
+      <a>Login</a>
+    </Link>
+  )
 }
 
 async function tryLogout() {

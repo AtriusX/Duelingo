@@ -1,0 +1,148 @@
+.backdrop {
+  overflow: hidden;
+}
+
+.img {
+  background: url("../public/backdrop.jpg");
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  filter: brightness(0.2) blur(15px);
+  scale: 1.25;
+  background-size: cover;
+}
+
+.window {
+  position: absolute;
+  left: 75%;
+  transform: translate3d(-50%, -50%, 0);
+  width: fit-content;
+  top: 50%;
+}
+
+.container {
+  min-width: 20em;
+  padding: 1.2em;
+  background: var(--back);
+  border-radius: 1em;
+  box-shadow: 0 2px 10px #111;
+}
+
+.container h1 {
+  color: white;
+}
+
+.container form {
+  width: 100%;
+  margin: 0;
+}
+
+.container form input {
+  position: relative;
+  margin: 0.5em 0;
+  padding: 1em;
+  font-size: 12pt;
+}
+
+.container form label {
+  display: block;
+  width: 5em;
+  margin: 0.75em 0.75em 0.75em 0;
+  color: white;
+  font-weight: bold;
+  font-size: 12pt;
+}
+
+.container div {
+  display: inline;
+  position: relative;
+  width: 100%;
+}
+
+.container input {
+  border-radius: 0.5em;
+  border: none;
+  width: 100%;
+}
+
+.back {
+  position: absolute;
+  left: 1em;
+  top: 1em;
+  margin: 0 !important;
+  width: 8em !important;
+}
+
+.back,
+.toggle button,
+.container button {
+  width: 50%;
+  padding: 1em 0;
+  background: #22e684;
+  border: none !important;
+  margin: 0.75em 0;
+  font-weight: bold;
+  border-radius: 0.5em;
+  font-size: 11pt;
+  color: white;
+  transition: all 0.25s;
+  outline: none;
+}
+
+.login {
+  border-radius: 0.5em 0 0 0.5em !important;
+}
+
+.register {
+  border-radius: 0 0.5em 0.5em 0 !important;
+}
+
+.container button:hover, .back:hover {
+  background: #43ec98;
+}
+
+.container input:focus {
+  outline: none;
+}
+
+.container form button {
+  width: 100%;
+  padding: 1em;
+}
+
+.error {
+  color: white;
+  background: #f84747;
+  text-align: center;
+  padding: 0.8em;
+  margin-top: 0.75em;
+  box-shadow: 0 2px 5px #111;
+  border-radius: 0.75em;
+  transition: all 0.25s;
+}
+
+.error:hover {
+  background: #e65252;
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  20% {
+    transform: translateX(5%);
+  }
+  40% {
+    transform: translateX(-5%);
+  }
+  60% {
+    transform: translateX(5%);
+  }
+  80% {
+    transform: translateX(-5%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}

@@ -1,7 +1,7 @@
-import styles from '../styles/Login.module.css'
+import styles from '../styles/Signin.module.css'
 import router from 'next/router'
-import { getData } from '../utils'
-import { login, register } from '../api/auth'
+import { animate, getData } from '../utils'
+import { homeRedirect, login, noResult, register } from '../api/auth'
 import { FormEvent, useState } from 'react'
 import { NextPageContext } from 'next'
 import { self } from '../api/user'
@@ -22,61 +22,53 @@ interface RegistrationInfo extends LoginInfo {
     confirm: string
 }
 
-interface Data {
-    authenticated: boolean
-}
-
 // Redirects to the home page if the id is present or if forced
-const redirect = (res: any, fail: ErrorCallback = () => {}) =>
+const redirect = (res: any, fail: ErrorCallback = () => { }) =>
     res === true || !!res?.id ? router.push("/") : fail(res)
 
-export default function Signup({ authenticated }: Data) {
-    if (authenticated)
-        redirect(true)
+export default function Signup() {
     const [login, isLogin] = useState(true)
     const [error, setError] = useState<string | null>()
-    function notify(err: Error) {
+    const notify = (err: Error) => {
         setError(err.message)
+        animate("#error", styles.shake)
+    }
+    const swap = (login: boolean) => {
+        isLogin(login)
+        setError(null)
     }
     return (
-        <div>
+        <div className={styles.backdrop}>
+            <div className={styles.img} />
+            <button className={styles.back} onClick={() => redirect(true)}>Back</button>
             <div className={styles.window}>
                 <div className={styles.container}>
-                    <button className={styles.login} onClick={() => {
-                        isLogin(true)
-                        setError(null)
-                    }}>Login</button>
-                    <button className={styles.register} onClick={() => {
-                        isLogin(false)
-                        setError(null)
-
-                    }}>Register</button>
+                    <div className={styles.toggle}>
+                        <button className={styles.login} onClick={() => swap(true)}>Login</button>
+                        <button className={styles.register} onClick={() => swap(false)}>Register</button>
+                    </div>
                     <form hidden={!login} method="post" onSubmit={e => tryLogin(e, notify)}>
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="johnsmith@email.com" />
+                        <h1>Log In</h1>
+                        <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="Email" />
                         <br />
-                        <label htmlFor="password">Password:</label>
                         <input type="password" id="password" placeholder="Password" />
                         <br />
-                        <button type="submit">Log In</button>
+                        <button type="submit">Login</button>
                     </form>
                     <form hidden={login} method="post" onSubmit={e => tryRegister(e, notify)}>
-                        <label htmlFor="username">Name:</label>
-                        <input type="text" id="username" minLength={3} placeholder="John Smith" />
+                        <h1>Register</h1>
+                        <input type="text" id="username" minLength={3} placeholder="Name" />
                         <br />
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="johnsmith@email.com" />
+                        <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="Email" />
                         <br />
-                        <label htmlFor="password">Password:</label>
                         <input type="password" id="password" min={8} placeholder="Password" />
                         <br />
-                        <label htmlFor="confirm">Confirm:</label>
                         <input type="password" id="confirm" min={8} placeholder="Confirm Password" />
                         <br />
                         <button type="submit">Register</button>
                     </form>
                 </div>
-                <div className={styles.error} hidden={!error} onClick={() => setError(null)}>
+                <div id="error" className={styles.error} hidden={!error} onClick={() => setError(null)}>
                     {error}
                 </div>
             </div>
@@ -95,15 +87,11 @@ async function tryRegister(event: SubmitEvent, fail: ErrorCallback) {
     event.preventDefault()
     let { username, email, password, confirm } = getData<RegistrationInfo>(event.target)
     if (password !== confirm)
-        return fail({ message: "Password is not the same!" })
+        return fail({ message: "Confirmation password is not the same!" })
     let user = await register(email, username, password)
     redirect(user, fail)
 }
 
-export async function getServerSideProps(ctx: NextPageContext) {
-    return {
-        props: {
-            authenticated: !!(await self(ctx.req?.headers.cookie))
-        }
-    }
+export async function getServerSideProps({ req }: NextPageContext) {
+    return !!(await self(req?.headers.cookie)) ? homeRedirect : noResult
 }

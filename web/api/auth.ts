@@ -1,13 +1,34 @@
 import client from "./config";
 
-export async function register(email: string, username: string, password: string) {
-    return client.post("/register", { email, username, password })
+type NextApiResult = {
+  props?: object,
+  redirect?: {
+    permanent: boolean;
+    destination: string;
+  };
+};
+
+export const homeRedirect: NextApiResult = {
+  redirect: {
+    permanent: false,
+    destination: "/",
+  },
+};
+
+export const noResult: NextApiResult = { props: {} };
+
+export async function register(
+  email: string,
+  username: string,
+  password: string
+) {
+  return client.post("/register", { email, username, password });
 }
 
 export async function login(email: string, password: string) {
-    return client.post("/login", { email, password })
+  return client.post("/login", { email, password });
 }
 
 export async function logout() {
-    return client.post("/logout")
+  return client.post("/logout");
 }

@@ -32,3 +32,12 @@ export async function request(
         return res.json()
     }).catch(e => console.log(e))
 }
+
+
+export function animate(selector: string, animationClass: string) {
+    let e = document.querySelector(selector) as HTMLElement
+    if (e) {
+        e.classList.add(animationClass)
+        e.onanimationend = () => e?.classList.remove(animationClass)
+    }
+}
