@@ -1,8 +1,6 @@
 import { NextPageContext } from 'next'
 import Link from 'next/link'
-import { request } from '../utils'
 import router from 'next/router'
-import client from '../api/config'
 import { logout } from '../api/auth'
 import { self } from '../api/user'
 interface Data {

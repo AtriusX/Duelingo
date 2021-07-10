@@ -1,3 +1,7 @@
+:root {
+  --back: #373c3d;
+}
+
 html,
 body {
   padding: 0;

@@ -14,11 +14,18 @@ export default async function register(
     info: UserInfo
 ): Promise<User | Error> {
     const { username, email, password } = info
-    if (!username || !email || !password) {
+    if (!username)
         return {
-            message: "Empty values are not permitted!"
+            message: "Username is empty!"
         }
-    }
+    if (!email)
+        return {
+            message: "Email is empty!"
+        }
+    if (!password)
+        return {
+            message: "Password is empty!"
+        }
     const code = await hash(password)
     const user = new User(username, email, code)    
     try {
