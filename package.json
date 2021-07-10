@@ -1,0 +1,11 @@
+{
+  "name": "capstone-project",
+  "version": "1.0.0",
+  "private": true,  
+  "scripts": {
+    "setup": "yarn web && yarn server && yarn setupdb",
+    "web": "cd web && yarn install",
+    "server": "cd server && yarn install",
+    "setupdb": "cd server && yarn migratedb"
+  }
+}

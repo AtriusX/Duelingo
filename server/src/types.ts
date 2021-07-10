@@ -1,0 +1,1 @@
+type Language = "en" | "es" | "fr" | "cn"

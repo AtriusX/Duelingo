@@ -1,0 +1,23 @@
+.container form {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    padding: 1em;
+}
+
+.container form input {
+    position: relative;
+    margin: 0.75em;
+    padding: 1em;
+}
+
+.container form label {
+    display: inline-block;
+    width: 5em;
+}
+
+.container form button {
+    width: 100%;
+    padding: 1em;
+}
