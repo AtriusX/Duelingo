@@ -1,40 +1,52 @@
-import router, { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import { search } from "../api/user"
+import router from "next/router"
+import { Dispatch, FormEvent, SetStateAction, useState } from "react"
+import { search, SearchQuery } from '../api/user'
+import Searchbar from "../components/searchbar"
 import { getData } from "../utils"
-import { SearchQuery } from "../api/user"
-import { Error } from '../api/'
+import styles from '../styles/Search.module.css'
+import { NextPageContext } from "next"
 
-export default function Search() {
-    const { query } = useRouter()
-    const [users, setUsers] = useState<any[] | null>(null)
-    // Wow this is ugly
-    useEffect(() => {
-        const block = async () => {
-            if (!users && query.query)
-                setUsers(await search(query as SearchQuery))
-        }
-        block()
-    })
+interface SearchData {
+    query: string
+    queryRes: any[] | null
+}
+
+export default function Search({ query, queryRes }: SearchData) {
+    const [users, setUsers] = useState<any[] | null>(queryRes)
     return <div>
-        <form autoComplete={"off"} onSubmit={async e => {
-            e.preventDefault()
-            const data = getData<SearchQuery>(e.target)
-            if (!data.query.length) return;
-            setUsers(await search(data as SearchQuery))
-            router.push({
-                query: data
-            })
-        }}>
-            <input type="text" name="query" id="query" placeholder="Search" defaultValue={query.query} />
-            <button type="submit">Search</button>
-            <div>{getResults(users)}</div>
-        </form>
+        <Searchbar name="query" value={query} className={styles.search}
+            onSubmit={async e => await performSearch(e, setUsers)} />
+        <div>{getResults(users)}</div>
     </div>
 }
 
+async function performSearch(
+    e: FormEvent<HTMLFormElement>,
+    setUsers: Dispatch<SetStateAction<any[] | null>>
+) {
+    e.preventDefault()
+    let data = getData<SearchQuery>(e.target)
+    if (data.query.length) {
+        setUsers(await search(data))
+        router.push({
+            query: data
+        }, undefined, { shallow: true })
+    }
+}
+
 function getResults(users: any[] | null) {
-    if (users === null) 
+    if (users === null)
         return ""
-    return !users?.length ? "No results found." : users?.map((u, i) => <p key={i}>{JSON.stringify(u)}</p>)
+    return !users?.length ? <h1>No results found.</h1> : users?.map((u, i) => <p key={i}>{JSON.stringify(u)}</p>)
+}
+
+export async function getServerSideProps({ query }: NextPageContext) {
+    const data = query as SearchQuery
+    const users = await search(data)
+    return {
+        props: {
+            query: data.query ?? null,
+            queryRes: data.query?.length || users?.length ? users : null
+        }
+    }
 }

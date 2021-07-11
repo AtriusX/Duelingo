@@ -12,9 +12,14 @@ export async function self(sessionToken: string | undefined) {
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Cookie': sessionToken ?? ""
+            'Cookie': sessionToken ?? "",
+            'Secure': "true"
         }
     }).then(async u => await u.json())
+}
+
+export async function getUser(id?: string | string[]): Promise<object | Error> {
+    return client.get(`/user/${id}`)
 }
 
 export async function search(query: SearchQuery): Promise<any[]> {

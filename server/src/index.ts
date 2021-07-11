@@ -18,7 +18,7 @@ async function main() {
       // This is to ensure each endpoint on our back-end is covered by the allow access policy
       origin: (origin, callback) => callback(null, origin),
       // Allows the session cookie to be saved on the front end client automatically
-      credentials: true,
+      credentials: true
     }),
     json(),
     session({
@@ -26,7 +26,7 @@ async function main() {
       cookie: {
         maxAge: 1000000000000,
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "lax",
         secure: !DEV,
       },
       saveUninitialized: false,

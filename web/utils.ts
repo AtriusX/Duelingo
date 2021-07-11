@@ -28,9 +28,7 @@ export async function request(
             'Content-Type': 'application/json',
         },
         body: typeof body === "string" ? body : JSON.stringify(body)
-    }).then(res => {
-        return res.json()
-    }).catch(e => console.log(e))
+    }).then(res => res.json()).catch(e => console.log(e))
 }
 
 

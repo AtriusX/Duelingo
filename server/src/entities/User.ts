@@ -19,7 +19,7 @@ export class User {
     @Property({ type: "text", unique: true })
     email!: string
 
-    @Property({ type: "text" })
+    @Property({ type: "text", hidden: true })
     password!: string
 
     @Property({ type: "date" })

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import router from 'next/router'
 import { logout } from '../api/auth'
 import { SearchQuery, self } from '../api/user'
+import Searchbar from '../components/searchbar'
 import { getData } from '../utils'
 interface Data {
   displayName?: string
@@ -17,14 +18,11 @@ export default function Index({ displayName }: Data) {
 function Home({ displayName }: Data) {
   return (
     <>
-      <form autoComplete={"off"} action="/search" onSubmit={async e => {
+      <Searchbar name="query" redirect="/search" onSubmit={async e => {
         const data = getData<SearchQuery>(e.target)
         if (!data.query.length)
           e.preventDefault();
-      }}>
-        <input type="text" name="query" id="query" placeholder="Search" />
-        <button type="submit">Search</button>
-      </form>
+      }} />
       <h1>Welcome back {displayName}!</h1>
       <button onClick={tryLogout}>Logout</button>
     </>
@@ -45,10 +43,10 @@ async function tryLogout() {
 }
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  const user = await self(ctx.req?.headers.cookie)
+  const { displayName } = await self(ctx.req?.headers.cookie) ?? {}
   return {
-    props: {
-      displayName: user?.displayName ?? null
+    props: { 
+      displayName: displayName ?? null 
     }
   }
 }
