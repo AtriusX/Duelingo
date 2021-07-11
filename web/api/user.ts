@@ -2,6 +2,7 @@ import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 export interface SearchQuery extends ParsedUrlQueryInput {
     query: string
+    page?: number
 }
 
 // All of this is VERY rought right now, this will probably need to be changed later

@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "start": "tsc && nodemon dist/index.js",
-    "clearmigrations": "rm -rf dist/migrations/ src/migrations/",
+    "clearmigrations": "rimraf -rf dist/migrations/ src/migrations/",
     "migratedb": "yarn clearmigrations && npx mikro-orm migration:create"
   },
   "devDependencies": {
@@ -16,6 +16,7 @@
     "@types/express-session": "^1.17.4",
     "@types/node": "^16.0.1",
     "nodemon": "^2.0.9",
+    "rimraf": "^3.0.2",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.5"
   },

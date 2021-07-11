@@ -1,14 +1,14 @@
 import { User } from '../entities/User';
 import { MikroORM } from "@mikro-orm/core"
 import path from "path"
-import { DBTYPE, DBUSER, DBPASS, DEV } from "../global"
+import { DBTYPE, DBUSER, DBPASS, DEV, DBNAME } from "../global"
 
 const entities = [User]
 
 type Config = Parameters<typeof MikroORM.init>[0]
 
 const DatabaseConfig = {
-    dbName: "capstone",
+    dbName: DBNAME,
     debug: DEV,
     type: DBTYPE,
     user: DBUSER,
