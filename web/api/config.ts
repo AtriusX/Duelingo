@@ -8,12 +8,12 @@ class Client {
 
     BASE_API_URL!: string
 
-    private async request(path: string, method: RequestType, data: object) {
+    private async request(path: string, method: RequestType, data?: object) {        
         return request(`${this.BASE_API_URL}${path}`, method, data)
     }
 
-    async get(path: string, data: object = {}) {
-        return this.request(path, "GET", data)
+    async get(path: string) {
+        return this.request(path, "GET", undefined)
     }
 
     async post(path: string, data: object = {}) {

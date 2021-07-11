@@ -1,7 +1,7 @@
 import { User } from '../entities/User';
 import { EntityManager } from "@mikro-orm/core";
 import { verify, hash } from 'argon2';
-import Error from '.';
+import { Error } from '.';
 
 export interface UserInfo {
     email: string

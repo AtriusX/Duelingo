@@ -12,7 +12,7 @@ async function main() {
   const db = await MikroORM.init(DatabaseConfig);
   await db.getMigrator().up();
   const app = express();
-
+	// Need to migrate these around later to an isolated spot
   app.use(
     cors({
       // This is to ensure each endpoint on our back-end is covered by the allow access policy
@@ -39,4 +39,4 @@ async function main() {
   app.listen(3000, () => console.log("Listening on port 3000!"));
 }
 
-main().catch((err) => console.error(err));
+main().catch(console.error);

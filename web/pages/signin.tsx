@@ -51,7 +51,7 @@ export default function Signup() {
                         <h1>Log In</h1>
                         <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="Email" />
                         <br />
-                        <input type="password" id="password" placeholder="Password" />
+                        <input type="password" id="password" minLength={8} placeholder="Password" />
                         <br />
                         <button type="submit">Login</button>
                     </form>
@@ -61,9 +61,9 @@ export default function Signup() {
                         <br />
                         <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="Email" />
                         <br />
-                        <input type="password" id="password" min={8} placeholder="Password" />
+                        <input type="password" id="password" minLength={8} placeholder="Password" />
                         <br />
-                        <input type="password" id="confirm" min={8} placeholder="Confirm Password" />
+                        <input type="password" id="confirm" minLength={8} placeholder="Confirm Password" />
                         <br />
                         <button type="submit">Register</button>
                     </form>
