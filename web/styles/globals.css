@@ -18,14 +18,6 @@ a {
   text-decoration: none;
 }
 
-.container {
-  position: relative;
-  width: fit-content;
-  top: 10em;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 .container a {
   padding: 1em;
   margin: 0.5em;

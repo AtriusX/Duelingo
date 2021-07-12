@@ -1,3 +1,4 @@
+import router from "next/router";
 import client from "./config";
 
 type NextApiResult = {
@@ -31,4 +32,9 @@ export async function login(email: string, password: string) {
 
 export async function logout() {
   return client.post("/logout");
+}
+
+export async function tryLogout() {
+  await logout()
+  router.push("/")
 }

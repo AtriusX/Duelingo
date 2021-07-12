@@ -1,0 +1,73 @@
+.navbar {
+    display: inline-block;
+    background: var(--back);
+    width: 100%;
+    left: 50%;
+}
+
+.avatar {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    vertical-align: middle;
+}
+
+.open p {
+    display: inline-block;
+    font-size: 10pt;
+    margin-left: 0.75em;
+    color: white;
+}
+
+.open {
+    height: 100%;
+    display: block;
+    float: right;
+    padding: 0.75em;
+    transition: all 0.2s;
+}
+
+.open:hover, #options li:hover {
+    background: #5c5c5c;
+}
+
+.search {
+    position: relative;
+    display: inline-block;
+    padding: 0.5em 0;
+    left: 50%;
+    transform: translateX(-50%);
+    vertical-align: middle;
+    align-items: center;
+}
+
+#options {
+    display: none;
+    position: relative;
+    margin: 0;
+    float: right;
+    color: white;
+    list-style: none;
+    text-align: center;
+    background: var(--back);
+    padding: 0;
+    z-index: 100000;
+    /* transform: translateY(-100%); */
+}
+
+#options a {
+    position: relative;
+    width: 100%;
+    padding: 0.75em 2em;
+}
+
+#options li {
+    padding: 0.75em 0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+@keyframes open {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(0%); }
+}

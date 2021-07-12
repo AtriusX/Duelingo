@@ -49,7 +49,7 @@ export default function Signup() {
                     </div>
                     <form hidden={!login} method="post" onSubmit={e => tryLogin(e, notify)}>
                         <h1>Log In</h1>
-                        <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="Email" />
+                        <input type="email" id="email" placeholder="Email" />
                         <br />
                         <input type="password" id="password" minLength={8} placeholder="Password" />
                         <br />
@@ -59,7 +59,7 @@ export default function Signup() {
                         <h1>Register</h1>
                         <input type="text" id="username" minLength={3} placeholder="Name" />
                         <br />
-                        <input type="email" pattern="[\w\d]+@[\w\d]+.[\w\d]+" id="email" placeholder="Email" />
+                        <input type="email"id="email" placeholder="Email" />
                         <br />
                         <input type="password" id="password" minLength={8} placeholder="Password" />
                         <br />

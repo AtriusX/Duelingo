@@ -1,52 +1,48 @@
 import { NextPageContext } from 'next'
 import Link from 'next/link'
-import router from 'next/router'
-import { logout } from '../api/auth'
-import { SearchQuery, self } from '../api/user'
-import Searchbar from '../components/searchbar'
-import { getData } from '../utils'
+import { tryLogout } from '../api/auth'
+import { self } from '../api/user'
+import Navbar from '../components/Navbar'
+import styles from '../styles/Index.module.css'
+
 interface Data {
-  displayName?: string
+  user?: { id: number, displayName: string }
 }
 
-export default function Index({ displayName }: Data) {
-  return <div className={"container"}>
-    {!!displayName ? <Home displayName={displayName} /> : <Landing />}
+export default function Index({ user }: Data) {
+  return <div className={styles.container}>
+    {!!user ? <Home user={user} /> : <Landing />}
   </div>
 }
 
-function Home({ displayName }: Data) {
+function Home({ user }: Data) {
   return (
     <>
-      <Searchbar name="query" redirect="/search" onSubmit={async e => {
-        const data = getData<SearchQuery>(e.target)
-        if (!data.query.length)
-          e.preventDefault();
-      }} />
-      <h1>Welcome back {displayName}!</h1>
-      <button onClick={tryLogout}>Logout</button>
+      <Navbar redirect="/search" user={user}>
+        <Link href={`/profile/${user?.id}`}>My Profile</Link>
+        <Link href={"/settings"}>Settings</Link>
+        <a onClick={tryLogout}>Logout</a>
+      </Navbar>
+      <div className={styles.body}>
+        <h1>Welcome back {user?.displayName}!</h1>
+      </div>
     </>
   )
 }
 
 function Landing() {
   return (
-    <Link href="/signin">
-      <a>Login</a>
-    </Link>
+    <div className={styles.body}>
+      <Link href="/signin">
+        <a>Login</a>
+      </Link>
+    </div>
   )
 }
 
-async function tryLogout() {
-  await logout()
-  router.reload()
-}
-
-export async function getServerSideProps(ctx: NextPageContext) {
-  const { displayName } = await self(ctx.req?.headers.cookie) ?? {}
+export async function getServerSideProps({ req }: NextPageContext) {
+  const user = await self(req?.headers.cookie)
   return {
-    props: { 
-      displayName: displayName ?? null 
-    }
+    props: { user: user ?? null }
   }
 }

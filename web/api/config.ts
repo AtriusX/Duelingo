@@ -1,4 +1,5 @@
 import { request, RequestType } from "../utils"
+import { address } from '../../env'
 
 class Client {
     
@@ -29,6 +30,6 @@ class Client {
     }
 }
 
-const client: Client = new Client("http://localhost", 3000)
+const client: Client = new Client(`http://${address}`, 3000)
 
 export default client

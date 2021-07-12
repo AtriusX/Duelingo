@@ -1,10 +1,12 @@
 import router from "next/router"
 import { Dispatch, FormEvent, SetStateAction, useState } from "react"
 import { search, SearchQuery } from '../api/user'
-import Searchbar from "../components/searchbar"
+import Searchbar from "../components/Searchbar"
 import { getData } from "../utils"
 import styles from '../styles/Search.module.css'
 import { NextPageContext } from "next"
+import SearchItem from "../components/SearchItem"
+import Navbar from "../components/Navbar"
 
 interface SearchData {
     query: string
@@ -13,11 +15,13 @@ interface SearchData {
 
 export default function Search({ query, queryRes }: SearchData) {
     const [users, setUsers] = useState<any[] | null>(queryRes)
-    return <div>
-        <Searchbar name="query" value={query} className={styles.search}
-            onSubmit={async e => await performSearch(e, setUsers)} />
-        <div>{getResults(users)}</div>
-    </div>
+    return (
+        <div>
+            <Navbar name="query" value={query}
+                onSubmit={async e => await performSearch(e, setUsers)} />
+            <div className={styles.results}>{getResults(users)}</div>
+        </div>
+    )
 }
 
 async function performSearch(
@@ -34,10 +38,10 @@ async function performSearch(
     }
 }
 
-function getResults(users: any[] | null) {
-    if (users === null)
-        return ""
-    return !users?.length ? <h1>No results found.</h1> : users?.map((u, i) => <p key={i}>{JSON.stringify(u)}</p>)
+function getResults(users: any[] | null, fail: JSX.Element = <h1>No results found.</h1>) {
+    if (!users) return null
+    if (!users.length) return fail
+    return users.map((u, i) => <SearchItem key={i} id={u.id} displayName={u.displayName} joined={u.joined} />)
 }
 
 export async function getServerSideProps({ query }: NextPageContext) {

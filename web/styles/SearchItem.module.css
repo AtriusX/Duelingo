@@ -1,0 +1,31 @@
+.searchitem {
+    display: block;
+    padding: 1em;
+    background: lightgray;
+    border-radius: 1em;
+    margin: 0.5em 0;
+    transition: all 0.2s;
+}
+
+.searchitem h3 {
+    font-weight: normal;
+}
+
+.searchitem p {
+    color: gray;
+    font-size: small;
+}
+
+.searchitem:hover {
+    background: #DDD;
+}
+
+.searchitem:active {
+    animation: clicked 0.15s;
+}
+
+@keyframes clicked {
+    0% { background: #DDD; }
+    50% { background: #E5E5E5; }
+    100% { background: #DDD; }
+}

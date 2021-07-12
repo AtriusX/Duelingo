@@ -1,0 +1,9 @@
+.container {
+    border-radius: 100%;
+}
+
+.container div {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
