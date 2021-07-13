@@ -26,8 +26,12 @@ interface RegistrationInfo extends LoginInfo {
 const redirect = (res: any, fail: ErrorCallback = () => { }) =>
     res === true || !!res?.id ? router.push("/") : fail(res)
 
-export default function Signup() {
-    const [login, isLogin] = useState(!router.query.register)
+interface SignupProps {
+    toRegister?: boolean
+}
+
+export default function Signup({ toRegister }: SignupProps) {
+    const [login, isLogin] = useState(!toRegister)
     const [error, setError] = useState<string | null>()
     const notify = (err: Error) => {
         setError(err.message)
@@ -92,6 +96,10 @@ async function tryRegister(event: SubmitEvent, fail: ErrorCallback) {
     redirect(user, fail)
 }
 
-export async function getServerSideProps({ req }: NextPageContext) {
-    return !!(await self(req?.headers.cookie)) ? homeRedirect : noResult
+export async function getServerSideProps({ req, query }: NextPageContext) {
+    return !!(await self(req?.headers.cookie)) ? homeRedirect : {
+        props: {
+            toRegister: query.register === "true" 
+        }
+    }
 }
