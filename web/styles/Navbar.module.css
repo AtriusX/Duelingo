@@ -1,15 +1,23 @@
+.container {
+    position: relative;
+    display: block;
+}
+
 .navbar {
-    display: inline-block;
+    display: flex;
+    grid-template-columns: repeat(2, 1fr);
+    flex-direction: row;
     background: var(--back);
     width: 100%;
-    left: 50%;
+    align-items: center;
 }
 
 .avatar {
+    position: relative;
     display: inline-block;
     width: 2em;
     height: 2em;
-    vertical-align: middle;
+    grid-row: 1;
 }
 
 .open p {
@@ -20,11 +28,14 @@
 }
 
 .open {
-    height: 100%;
-    display: block;
-    float: right;
-    padding: 0.75em;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: 1em;
     transition: all 0.2s;
+    padding: 0 2.5em;
+    border-radius: 2em;
+    cursor: pointer;
 }
 
 .open:hover, #options li:hover {
@@ -35,9 +46,8 @@
     position: relative;
     display: inline-block;
     padding: 0.5em 0;
-    left: 50%;
+    left: calc(50% - 0.5em);
     transform: translateX(-50%);
-    vertical-align: middle;
     align-items: center;
 }
 
@@ -49,7 +59,7 @@
     color: white;
     list-style: none;
     text-align: center;
-    background: var(--back);
+    background: #222;
     padding: 0;
     right: 0;
     z-index: 1000;
@@ -58,10 +68,11 @@
 #options a {
     position: relative;
     width: 100%;
-    padding: 0.75em 2em;
+    padding: 0.75em 4em;
 }
 
 #options li {
+    width: 100%;
     padding: 0.75em 0;
     cursor: pointer;
     transition: all 0.2s;

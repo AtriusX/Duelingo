@@ -14,7 +14,7 @@ export default function Navbar({ user, children, ...others }: NavbarProps) {
         <div className={styles.container}>
             <div className={styles.navbar}>
                 <Searchbar {...others} className={styles.search} />
-                {!!user ? <div className={styles.open} onClick={openOptions}>
+                {user ? <div className={styles.open} onClick={openOptions}>
                     <Avatar user={user} className={styles.avatar} />
                     <p>{user?.username}</p>
                 </div> : undefined}
