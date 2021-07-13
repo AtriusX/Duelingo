@@ -98,7 +98,7 @@
 }
 
 .container button:hover, .back:hover {
-  background: #43ec98;
+  background: var(--primary-hover);
 }
 
 .container input:focus {

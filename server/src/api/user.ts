@@ -8,7 +8,7 @@ export async function search(em: EntityManager, query: string): Promise<User[]> 
     if (query.length === 0)
         return [] 
     return em.find(User, {
-        displayName: { $ilike: `%${query}%` }
+        username: { $ilike: `%${query}%` }
     })
 }
 
@@ -16,15 +16,17 @@ export async function updateUser(em: EntityManager, up: User, session: { userId:
     const self = await em.findOne(User, { id: session.userId })
     if (!self) 
         return false
-    const { displayName, email, password, language } = up
-    if (displayName)
-        self.displayName = displayName
+    const { username, email, password, language, description } = up
+    if (username)
+        self.username = username
     if (email && email.match(emailRegex))
         self.email = email
     if (password)
         self.password = await hash(password)
     if (language)
         self.language = language
+    if (description)
+        self.description = description
     em.flush()
     return true
 }

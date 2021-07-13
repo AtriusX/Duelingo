@@ -2,9 +2,10 @@ import Searchbar, { SearchbarProps } from "./Searchbar";
 import styles from '../styles/Navbar.module.css'
 import Avatar from "./Avatar";
 import { HTMLProps, ReactElement } from "react";
+import { User } from "../api/user";
 
 interface NavbarProps extends SearchbarProps {
-    user?: { avatar?: string, displayName: string }
+    user?: User
     children?: ReactElement<HTMLProps<any>>[]
 }
 
@@ -13,9 +14,9 @@ export default function Navbar({ user, children, ...others }: NavbarProps) {
         <div className={styles.container}>
             <div className={styles.navbar}>
                 <Searchbar {...others} className={styles.search} />
-                {user ? <div className={styles.open} onClick={openOptions}>
+                {!!user ? <div className={styles.open} onClick={openOptions}>
                     <Avatar user={user} className={styles.avatar} />
-                    <p>{user.displayName}</p>
+                    <p>{user?.username}</p>
                 </div> : undefined}
             </div>
             {user ?

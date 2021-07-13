@@ -1,21 +1,22 @@
 import styles from '../styles/Avatar.module.css'
 import Image from 'next/image'
+import { User } from '../api/user'
 
 type AvatarProps = {
-    user: { avatar?: string, displayName: string },
+    user?: User
     className?: string
 }
 
-export default function Avatar({ user: { avatar, displayName }, className }: AvatarProps) {
+export default function Avatar({ user, className }: AvatarProps) {
     return (
         <div className={`${className ?? ""} ${styles.container} `}>
-            <div className={styles.avatar} style={{ background: colorHash(displayName) }}>
-                {avatar ? <Image
+            <div className={styles.avatar} style={{ background: colorHash(user?.username ?? "") }}>
+                {user && user.avatar ? <Image
                 className={styles.avatar}
                 width="100%"
                 height="100%"
-                src={avatar}
-                alt={displayName}
+                src={user.avatar}
+                alt=""
                 /> : undefined}
             </div>
         </div>

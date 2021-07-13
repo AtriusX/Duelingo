@@ -1,6 +1,18 @@
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 import { address } from "../../env"
+
+export type User = {
+    id: number
+    username: string
+    email: string
+    joined: string
+    language: string
+    rank: string
+    avatar?: string
+    description?: string
+}
+
 export interface SearchQuery extends ParsedUrlQueryInput {
     query: string
     page?: number
@@ -27,8 +39,14 @@ export async function search(query: SearchQuery): Promise<any[]> {
     return client.get(`/search?query=${query.query}`) as unknown as any[]
 }
 
-export async function update(username?: string, email?: string, password?: string) {
-    return client.post("/update", {
-        displayName: username, email, password: password?.length === 0 ? undefined : password
-    })
+export interface UpdateInfo {
+    username?: string
+    email?: string
+    password?: string
+    confirm?: string
+    description?: string
+}
+
+export async function update(user: UpdateInfo) {
+    return client.post("/update", user)
 }

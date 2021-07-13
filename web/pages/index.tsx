@@ -1,12 +1,11 @@
 import { NextPageContext } from 'next'
 import Link from 'next/link'
-import { tryLogout } from '../api/auth'
-import { self } from '../api/user'
-import Navbar from '../components/Navbar'
+import { self, User } from '../api/user'
 import styles from '../styles/Index.module.css'
+import Home from "../components/Home"
 
 interface Data {
-  user?: { id: number, displayName: string }
+  user?: User
 }
 
 export default function Index({ user }: Data) {
@@ -15,27 +14,21 @@ export default function Index({ user }: Data) {
   </div>
 }
 
-function Home({ user }: Data) {
-  return (
-    <>
-      <Navbar redirect="/search" user={user}>
-        <Link href={`/profile/${user?.id}`}>My Profile</Link>
-        <Link href={"/settings"}>Settings</Link>
-        <a onClick={tryLogout}>Logout</a>
-      </Navbar>
-      <div className={styles.body}>
-        <h1>Welcome back {user?.displayName}!</h1>
-      </div>
-    </>
-  )
-}
-
 function Landing() {
   return (
     <div className={styles.body}>
-      <Link href="/signin">
-        <a>Login</a>
-      </Link>
+      <div className={styles.landingback} />
+      <div className={styles.landing}>
+        <div>
+          <h1>Welcome to Complanguage!</h1>
+          <hr />
+          <h4>Take your language learning to the next level by competing against your friends and rivals!</h4>
+          <div className={styles.buttonbox}>
+            <Link href={"/signin"}>Login</Link>
+            <Link href={"/signin?register=true"}>Register</Link>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

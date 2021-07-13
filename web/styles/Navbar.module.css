@@ -43,7 +43,7 @@
 
 #options {
     display: none;
-    position: relative;
+    position: absolute;
     margin: 0;
     float: right;
     color: white;
@@ -51,8 +51,8 @@
     text-align: center;
     background: var(--back);
     padding: 0;
-    z-index: 100000;
-    /* transform: translateY(-100%); */
+    right: 0;
+    z-index: 1000;
 }
 
 #options a {

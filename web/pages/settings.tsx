@@ -1,19 +1,18 @@
 import { NextPageContext } from "next";
 import { homeRedirect } from "../api/auth";
-import { self, update } from "../api/user"
+import { self, update, UpdateInfo, User } from "../api/user"
 import Navbar from '../components/Navbar'
 import { tryLogout } from '../api/auth'
 import Link from "next/link"
-import styles from "../styles/Signin.module.css"
+import styles from "../styles/Settings.module.css"
 import { animate, getData } from "../utils";
 import { FormEvent, useState } from "react";
 import router from "next/router";
 
 interface SettingsProps {
-    user: { avatar?: string, id: number, displayName: string, email: string }
+    user: User
 }
 
-// TODO: Work on this later
 export default function Settings({ user }: SettingsProps) {
     const [error, setError] = useState<string | null>()
     const notify = (err: Error) => {
@@ -27,24 +26,35 @@ export default function Settings({ user }: SettingsProps) {
                 <Link href={"/settings"}>Settings</Link>
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
-            <div style={{ width: "50%", left: "50%", position: "relative", transform: "translateX(-50%)", padding: "1em 0", fontSize: 13 }}>
+            <div className={styles.body}>
+                    <h1>Account Settings</h1>
                 <div className={styles.container}>
-                    <form autoComplete="off" method="POST" onSubmit={e => tryUpdate(e, notify)}>
-                        <h1>Update</h1>
-                        <label htmlFor="username">Username:</label>
-                        <input type="text" id="username" minLength={3} placeholder={user.displayName} />
-                        <br />
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" id="email" placeholder={user.email} />
-                        <br />
-                        <label htmlFor="password">New Password:</label>
-                        <input type="password" id="password" minLength={8} placeholder="New Password" />
-                        <br />
-                        <label htmlFor="password">Confirm Password:</label>
-                        <input type="password" id="confirm" minLength={8} placeholder="Confirm Password" />
-                        <br />
-                        <button type="submit">Update</button>
-                    </form>
+                    <div className={styles.panels}>
+                        <div>
+                        <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify, true)}>
+                            <label htmlFor="description">Description:</label>
+                            <textarea name="description" id="description" cols={30} rows={5} placeholder="Description..." />
+                            <button type="submit">Update Profile</button>
+                            </form>
+                        </div>
+                        <div>
+                            <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
+                                <label htmlFor="username">Username:</label>
+                                <input type="text" id="username" minLength={3} placeholder={user.username} />
+                                <br />
+                                <label htmlFor="email">Email:</label>
+                                <input type="email" id="email" placeholder={user.email} />
+                                <br />
+                                <label htmlFor="password">New Password:</label>
+                                <input type="password" id="password" minLength={8} placeholder="New Password" />
+                                <br />
+                                <label htmlFor="password">Confirm Password:</label>
+                                <input type="password" id="confirm" minLength={8} placeholder="Confirm Password" />
+                                <br />
+                                <button type="submit">Update Account</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div id="error" className={styles.error} hidden={!error} onClick={() => setError(null)}>
                     {error}
@@ -62,22 +72,15 @@ interface Error {
     message: string
 }
 
-interface UpdateInfo {
-    username?: string
-    email?: string
-    password?: string
-    confirm?: string
-}
-
 // const redirect = (res: any, fail: ErrorCallback = () => { }) =>
 //     res === true || !!res?.id ? router.reload() : fail(res)
 
-async function tryUpdate(event: SubmitEvent, fail: ErrorCallback) {
+async function updateAccount(event: SubmitEvent, fail: ErrorCallback, skipPassword?: boolean) {
     event.preventDefault()
-    let { username, email, password, confirm } = getData<UpdateInfo>(event.target)
-    if (password !== confirm)
+    let { username, email, password, confirm, description } = getData<UpdateInfo>(event.target)
+    if (!skipPassword && password !== confirm)
         return fail({ message: "Confirmation password is not the same!" })
-    await update(username, email, password)
+    await update({ username: username, email, password, description })
     router.reload()
 }
 

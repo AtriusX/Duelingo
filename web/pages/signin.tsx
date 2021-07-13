@@ -27,7 +27,7 @@ const redirect = (res: any, fail: ErrorCallback = () => { }) =>
     res === true || !!res?.id ? router.push("/") : fail(res)
 
 export default function Signup() {
-    const [login, isLogin] = useState(true)
+    const [login, isLogin] = useState(!router.query.register)
     const [error, setError] = useState<string | null>()
     const notify = (err: Error) => {
         setError(err.message)
@@ -85,7 +85,7 @@ async function tryLogin(event: SubmitEvent, fail: ErrorCallback) {
 
 async function tryRegister(event: SubmitEvent, fail: ErrorCallback) {
     event.preventDefault()
-    let { username, email, password, confirm } = getData<RegistrationInfo>(event.target)
+    let { username, email, password, confirm } = getData<RegistrationInfo>()
     if (password !== confirm)
         return fail({ message: "Confirmation password is not the same!" })
     let user = await register(email, username, password)

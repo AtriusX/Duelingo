@@ -1,18 +1,22 @@
 import styles from '../styles/SearchItem.module.css'
 import Link from 'next/link'
+import { User } from '../api/user'
+import Avatar from './Avatar'
 
 interface SearchItemData {
-    id: number
-    displayName: string
-    joined: string
+    user: User
 }
 
-export default function SearchItem({ id, displayName, joined }: SearchItemData) {
+export default function SearchItem({ user }: SearchItemData) {
+    const { id, username, joined } = user
     return (
         <Link href={`/profile/${id}`}>
             <a draggable={false} className={styles.searchitem}>
-                <h3>{displayName}</h3>
-                <p>Joined on {new Date(joined).toLocaleDateString()}</p>
+                <Avatar className={styles.avatar} user={user} />
+                <div className={styles.info}>
+                    <h3>{username}</h3>
+                    <p>Joined on {new Date(joined).toLocaleDateString()}</p>
+                </div>
             </a>
         </Link>
     )

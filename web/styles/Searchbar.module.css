@@ -26,12 +26,13 @@
 .searchbar button {
     border: none;
     border-radius: 0 1em 1em 0;
-    background: #DDD;
+    background: var(--primary);
+    color: white;
     transition: all 0.2s;
 }
 
 .searchbar button:hover {
-    background: #EEE;
+    background: var(--primary-hover);
 }
 
 .searchbar *:focus {

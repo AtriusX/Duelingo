@@ -14,6 +14,7 @@ export async function login(
 ): Promise<User | Error> {
     const { email, password } = info
     const user = await em.findOne(User, { email })
+    
     if (!user)
         return {
             message: "Email is incorrect!"

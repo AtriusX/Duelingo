@@ -1,37 +1,46 @@
 import { NextPageContext } from "next";
-import { getUser, self } from "../../api/user";
+import { getUser, self, User } from "../../api/user";
 import Avatar from "../../components/Avatar";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
 import { tryLogout } from "../../api/auth";
-type User = {
-    id: number
-    displayName: string
-    joined: string
-    language: string
-    rank: string
-}
+import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 interface ProfileData {
     user: User
-    me?: User 
+    me?: User
 }
 
 export default function Profile({ user, me }: ProfileData) {
-    const { displayName, joined, language, rank } = user
+    const { username, joined, rank, description } = user
     return (
         <>
             <Navbar redirect="/search" user={me}>
-                <Link href={`/profile/${user?.id}`}>My Profile</Link>
+                <Link href={`/profile/${me?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
             <div className={styles.body}>
-                <div className={styles.profile}>
-                    <h1>({rank}) {displayName}</h1>
-                    <Avatar user={user} className={styles.avatar} />
-                    <h2>{language}</h2>
-                    <h3>Joined on {new Date(joined).toDateString()}</h3>
+                <div>
+                    <div className={styles.profile}>
+                        <h1><b>({rank})</b> {username}</h1>
+                        <hr />
+                        <div className={styles.avatarcontainer}>
+                            <Avatar user={user} className={styles.avatar} />
+                        </div>
+                        <div>
+                            <h2>{getUnicodeFlagIcon("US")}</h2>
+                            <h3>Joined on {new Date(joined).toLocaleDateString()}</h3>
+                            <hr />
+                            <p>{description ? description : "No description provided."}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.games}>
+                    <h3>No past games!</h3>
+                </div>
+                <div className={styles.rivals}>
+                    <h3>No rivals!</h3>
                 </div>
             </div>
         </>
@@ -40,6 +49,7 @@ export default function Profile({ user, me }: ProfileData) {
 
 export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await getUser(query.id)
+
     const me = await self(req?.headers.cookie)
     return {
         props: { user, me }

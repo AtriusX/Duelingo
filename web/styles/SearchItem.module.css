@@ -1,19 +1,27 @@
 .searchitem {
-    display: block;
+    display: flex;
     padding: 1em;
     background: lightgray;
     border-radius: 1em;
     margin: 0.5em 0;
     transition: all 0.2s;
+    align-items: center;
 }
 
-.searchitem h3 {
+.info {
+    display: inline-block;
+    margin-left: 1em;
+}
+
+.info h3 {
     font-weight: normal;
+    display: inline;
 }
 
-.searchitem p {
+.info p {
     color: gray;
     font-size: small;
+    margin-bottom: 0;
 }
 
 .searchitem:hover {
@@ -22,6 +30,12 @@
 
 .searchitem:active {
     animation: clicked 0.15s;
+}
+
+.avatar {
+    display: inline-block;
+    height: 5em;
+    width: 5em;
 }
 
 @keyframes clicked {
