@@ -19,14 +19,30 @@ interface SearchData {
 export default function Search({ user, query, queryRes }: SearchData) {
     const [users, setUsers] = useState<any[] | null>(queryRes)
     return (
-        <div>
+        <div className={styles.body}>
             <Navbar name="query" value={query} user={user}
                 onSubmit={async e => await performSearch(e, setUsers)}>
                 <Link href={`/profile/${user?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
-            <div className={styles.results}>{getResults(users)}</div>
+            <div className={styles.grid}>
+                <div className={styles.options}>
+                    <h2>Search Tools</h2>
+                    <div className={styles.tools}>
+                        <label htmlFor="rank">Rank:</label>
+                        <input type="checkbox" name="rank" id="rank"/>
+                        <br />
+                        <label htmlFor="order">Ascending:</label>
+                        <input type="radio" name="order" id="asc" value="Ascending" defaultChecked/>
+                        <label htmlFor="order">Descending:</label>
+                        <input type="radio" name="order" id="desc" />
+                    </div>
+                </div>
+                <div className={styles.results}>
+                    {getResults(users)}
+                </div>
+            </div>
         </div>
     )
 }

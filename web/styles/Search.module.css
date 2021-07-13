@@ -1,11 +1,31 @@
-.results {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 33%;
+.grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
 }
 
-/* .results p {
-    padding: 0.5em 0;
-    text-align: center;
-} */
+.results {
+    position: fixed;
+    right: 0;
+    padding: 0 1em;
+    width: 70%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.options {
+    position: fixed;
+    width: 30%;
+    height: 100%;
+    padding: 1em;
+    background: #EEE;
+}
+
+.tools {
+    position: relative;
+}
+
+.tools label {
+    position: relative;
+    padding-bottom: 1em;
+}
