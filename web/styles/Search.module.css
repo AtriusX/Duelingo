@@ -1,31 +1,40 @@
 .grid {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .results {
-    position: fixed;
-    right: 0;
-    padding: 0 1em;
-    width: 70%;
-    height: 100%;
-    overflow-y: scroll;
+  position: fixed;
+  right: 0;
+  padding: 0 1em;
+  width: 70%;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .options {
-    position: fixed;
-    width: 30%;
-    height: 100%;
-    padding: 1em;
-    background: #EEE;
+  position: fixed;
+  width: 30%;
+  height: 100%;
+  padding: 1em;
+  background: #eee;
 }
 
 .tools {
-    position: relative;
+  position: relative;
 }
 
 .tools label {
-    position: relative;
-    padding-bottom: 1em;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 1em;
+}
+
+.rank {
+  display: inline-block;
+  margin: 1em 2em;
+  border: 1px solid gray;
+  border-radius: 1em;
+  padding: 1em;
 }

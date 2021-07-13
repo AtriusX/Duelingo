@@ -1,84 +1,88 @@
 .container {
-    position: relative;
-    display: block;
+  position: relative;
+  display: block;
 }
 
 .navbar {
-    display: flex;
-    grid-template-columns: repeat(2, 1fr);
-    flex-direction: row;
-    background: var(--back);
-    width: 100%;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  background: var(--back);
+  width: 100%;
+  align-items: center;
 }
 
 .avatar {
-    position: relative;
-    display: inline-block;
-    width: 2em;
-    height: 2em;
-    grid-row: 1;
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  grid-row: 1;
 }
 
 .open p {
-    display: inline-block;
-    font-size: 10pt;
-    margin-left: 0.75em;
-    color: white;
+  display: inline-block;
+  font-size: 10pt;
+  margin-left: 0.75em;
+  color: white;
 }
 
 .open {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    right: 1em;
-    transition: all 0.2s;
-    padding: 0 2.5em;
-    border-radius: 2em;
-    cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 1em;
+  transition: all 0.2s;
+  padding: 0 2.5em;
+  border-radius: 2em;
+  cursor: pointer;
 }
 
-.open:hover, #options li:hover {
-    background: #5c5c5c;
+.open:hover,
+#options li:hover {
+  background: #5c5c5c;
 }
 
 .search {
-    position: relative;
-    display: inline-block;
-    padding: 0.5em 0;
-    left: calc(50% - 0.5em);
-    transform: translateX(-50%);
-    align-items: center;
+  position: relative;
+  display: inline-block;
+  padding: 0.5em 0;
+  left: calc(50% - 0.5em);
+  transform: translateX(-50%);
+  align-items: center;
 }
 
 #options {
-    display: none;
-    position: absolute;
-    margin: 0;
-    float: right;
-    color: white;
-    list-style: none;
-    text-align: center;
-    background: #222;
-    padding: 0;
-    right: 0;
-    z-index: 1000;
+  display: none;
+  position: absolute;
+  margin: 0;
+  float: right;
+  color: white;
+  list-style: none;
+  text-align: center;
+  background: #222;
+  padding: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 #options a {
-    position: relative;
-    width: 100%;
-    padding: 0.75em 4em;
+  position: relative;
+  width: 100%;
+  padding: 0.75em 4em;
 }
 
 #options li {
-    width: 100%;
-    padding: 0.75em 0;
-    cursor: pointer;
-    transition: all 0.2s;
+  width: 100%;
+  padding: 0.75em 0;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 @keyframes open {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(0%); }
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
 }

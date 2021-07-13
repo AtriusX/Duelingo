@@ -7,8 +7,12 @@ export function getData<T>(form?: HTMLElement | EventTarget): T {
   let children = !!form ? (form as HTMLElement).children : document.querySelectorAll("input, textarea");
   for (let i = 0; i < children.length; i++) {
     let item = children.item(i);
-    if (item instanceof HTMLInputElement || item instanceof HTMLTextAreaElement)
-      out[item.id] = item.value;
+    if (item instanceof HTMLInputElement || 
+        item instanceof HTMLTextAreaElement || 
+        item instanceof HTMLSelectElement
+    ) {      
+      out[item.id] = item.type !== "checkbox" ? item.value : (item as any).checked;
+    }
   }
   return out as T;
 }
