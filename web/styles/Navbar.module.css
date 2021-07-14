@@ -9,6 +9,22 @@
   background: var(--back);
   width: 100%;
   align-items: center;
+  justify-content: space-between;
+  padding: 0 1em;
+}
+
+.navbar a {
+  padding: 0 1em;
+  color: white;
+  border-radius: 2em;
+  padding: 0.75em 2.5em;
+  height: 100%;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.navbar a:hover {
+  background: #5c5c5c;
 }
 
 .avatar {
@@ -27,7 +43,6 @@
 }
 
 .open {
-  position: absolute;
   display: flex;
   align-items: center;
   right: 1em;
@@ -35,6 +50,7 @@
   padding: 0 2.5em;
   border-radius: 2em;
   cursor: pointer;
+  margin-right: auto;
 }
 
 .open:hover,
@@ -42,13 +58,17 @@
   background: #5c5c5c;
 }
 
+.box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .search {
-  position: relative;
   display: inline-block;
-  padding: 0.5em 0;
-  left: calc(50% - 0.5em);
-  transform: translateX(-50%);
+  padding: 0.5em 1em;
   align-items: center;
+  width: 50%;
 }
 
 #options {

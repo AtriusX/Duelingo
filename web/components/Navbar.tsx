@@ -3,6 +3,7 @@ import styles from '../styles/Navbar.module.css'
 import Avatar from "./Avatar";
 import { HTMLProps, ReactElement } from "react";
 import { User } from "../api/user";
+import Link from "next/link";
 
 interface NavbarProps extends SearchbarProps {
     user?: User
@@ -13,7 +14,12 @@ export default function Navbar({ user, children, ...others }: NavbarProps) {
     return (
         <div className={styles.container}>
             <div className={styles.navbar}>
-                <Searchbar {...others} className={styles.search} />
+                <Link href="/">
+                    <a>Home</a>
+                </Link>
+                <div className={styles.box}>
+                    <Searchbar {...others} className={styles.search} />
+                </div>
                 {user ? <div className={styles.open} onClick={openOptions}>
                     <Avatar user={user} className={styles.avatar} />
                     <p>{user?.username}</p>
