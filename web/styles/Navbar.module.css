@@ -4,11 +4,9 @@
 
 .navbar {
   display: flex;
-  flex-direction: row;
   background: var(--back);
   width: 100%;
   align-items: center;
-  justify-content: space-between;
   padding: 0 1em;
 }
 
@@ -46,7 +44,7 @@
   align-items: center;
   right: 1em;
   transition: all 0.2s;
-  padding: 0 2.5em;
+  padding: 0.1em 2.5em;
   border-radius: 2em;
   cursor: pointer;
   margin-right: auto;

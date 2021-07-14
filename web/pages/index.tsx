@@ -17,6 +17,6 @@ export default function Index({ user }: Data) {
 export async function getServerSideProps({ req }: NextPageContext) {
   const user = await self(req?.headers.cookie)
   return {
-    props: { user: user ?? null }
+    props: { user }
   }
 }

@@ -1,6 +1,7 @@
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 import { address } from "../../env"
+import { cast } from "../utils"
 
 export type User = {
     id: number
@@ -19,7 +20,7 @@ export interface SearchQuery extends ParsedUrlQueryInput {
 }
 
 // All of this is VERY rought right now, this will probably need to be changed later
-export async function self(sessionToken: string | undefined) {
+export async function self(sessionToken: string | undefined): Promise<User | null> {
     return fetch(`http://${address}:3000/user/me`, {
         method: "GET",
         credentials: 'include',
@@ -28,18 +29,18 @@ export async function self(sessionToken: string | undefined) {
             'Cookie': sessionToken ?? "",
             'Secure': "true"
         }
-    }).then(async u => await u.json())
+    }).then(async u => !u ? u : await u.json())
 }
 
-export async function getUser(id?: string | string[]): Promise<object | Error> {
-    return client.get(`/user/${id}`)
+export async function getUser(id?: string | string[]): Promise<User | Error> {
+    return cast<User>(client.get(`/user/${id}`))
 }
 
 export async function search(data: any) {
-    return client.get(`/search${toQuery(data)}`) as unknown as User[] | (number | User[])[]
+    return cast<User[] | (number | User[])[]>(client.get(`/search${toQueryString(data)}`))
 }
 
-function toQuery(data: object) {
+function toQueryString(data: object) {
     return `?${Object.entries(data).map(([k, v]) => `${k}=${v}`).join("&")}`
 }
 

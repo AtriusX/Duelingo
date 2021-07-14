@@ -122,7 +122,7 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
 
     return {
         props: {
-            user: user ?? null,
+            user: user,
             query: data ?? null,
             queryRes: users ?? null
         }

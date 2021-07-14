@@ -52,6 +52,10 @@ export function animate(selector: string, animationClass: string) {
   }
 }
 
+// Converts the rank id number to its letter representation or returns 'X' if the value is unsupported
 export function getRank(value: number): string {
   return "DCBAS".charAt(value - 1) || "X"
 }
+
+// Helper function for force casting an object without needing to use "as unknown as Type"
+export const cast = <T>(value: unknown) => value as T

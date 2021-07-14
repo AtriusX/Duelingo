@@ -95,6 +95,6 @@ async function updateAccount(event: SubmitEvent, fail: ErrorCallback, skipPasswo
 export async function getServerSideProps({ req }: NextPageContext) {
     const user = await self(req?.headers.cookie)
     return user ? {
-        props: { user: user }
+        props: { user }
     } : homeRedirect
 }
