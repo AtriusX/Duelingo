@@ -1,6 +1,6 @@
 import { hash } from 'argon2';
 import { User } from '../entities/User';
-import { EntityManager, QueryFlag, QueryOrder } from '@mikro-orm/core';
+import { EntityManager, QueryOrder } from '@mikro-orm/core';
 
 const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
