@@ -21,8 +21,7 @@ export default function setupUser(app: Express, db: MikroORM) {
     })
     
     app.get("/search", async (req: Request, res: Response) => {
-        const query = req.query.query
-        const users = await search(db.em, query as string)
+        const users = await search(db.em, req.query)
         res.status(200).json(users)
     })
 

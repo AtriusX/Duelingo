@@ -35,8 +35,9 @@ export async function getUser(id?: string | string[]): Promise<object | Error> {
     return client.get(`/user/${id}`)
 }
 
-export async function search(query: SearchQuery): Promise<any[]> {
-    return client.get(`/search?query=${query.query}`) as unknown as any[]
+export async function search(data: any) {
+    const { query, rank, order } = data
+    return client.get(`/search?query=${query}&rank=${rank}&order=${order}`)
 }
 
 export interface UpdateInfo {
