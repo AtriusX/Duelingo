@@ -36,8 +36,12 @@ export async function getUser(id?: string | string[]): Promise<object | Error> {
 }
 
 export async function search(data: any) {
-    const { query, rank, order } = data
-    return client.get(`/search?query=${query}&rank=${rank}&order=${order}`)
+
+    return client.get(`/search${toQuery(data)}`)
+}
+
+function toQuery(data: object) {
+    return `?${Object.entries(data).map(([k, v]) => `${k}=${v}`).join("&")}`
 }
 
 export interface UpdateInfo {
