@@ -1,3 +1,4 @@
+// import { User } from './entities/User';
 import { DEV } from "./global";
 import { MikroORM } from "@mikro-orm/core";
 import DatabaseConfig from "./config/db";
@@ -11,6 +12,13 @@ import setupUser from "./components/user";
 async function main() {
   const db = await MikroORM.init(DatabaseConfig);
   await db.getMigrator().up();
+  // for (let i = 0; i < 1000; i++) {
+  //   console.log(i);
+    
+  //   db.em.persist(new User("werew", (Math.random() * 123 ).toString(), "gergwerthrthr"))
+  // }
+  // db.em.flush();
+
   const app = express();
 	// Need to migrate these around later to an isolated spot
   app.use(

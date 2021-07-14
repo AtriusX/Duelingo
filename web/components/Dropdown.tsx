@@ -5,16 +5,18 @@ type PText = HTMLParagraphElement & { props: any }
 type DropdownProps = HTMLProps<HTMLSelectElement> & {
     name: string
     pos?: number,
-    trail?: string
+    trail?: string,
+    useIndex?: boolean
+    reverseIndex?: boolean
 }
 
-export default function Dropdown({ children, name, pos, trail, ...props }: DropdownProps) {
+export default function Dropdown({ children, name, pos, trail, useIndex, reverseIndex, ...props }: DropdownProps) {
     const values = (children as PText[])
         .map(e => e.props.children)
     return (
         <select {...props} onChange={e => change(e, name)}>
             {(values).map((e, i) =>
-                <option key={i} value={e}>
+                <option key={i} value={useIndex ? (reverseIndex ? values.length - i : i + 1) : e}>
                     {e} {i !== 0 ? trail : undefined}
                 </option>
             )}

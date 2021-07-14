@@ -10,48 +10,61 @@ import { self } from '../api/user'
 import Link from "next/link"
 import { tryLogout } from "../api/auth"
 import Dropdown from "../components/Dropdown"
+import Paginator from "../components/Paginator"
 
+type QueryRes = User[] | (number | User[])[]
 interface SearchData {
     user: User
     query: any
-    queryRes: any[] | null
+    queryRes: QueryRes | null
 }
 
 export default function Search({ user, query, queryRes }: SearchData) {
-    const [users, setUsers] = useState<any[] | null>(queryRes)
+    const [users, setUsers] = useState<QueryRes | null>(queryRes)
     return (
         <div className={styles.body}>
-            <Navbar name="query" value={query.query} user={user}
+            <Navbar name="query" value={query.query} user={user} className={styles.navbar}
                 onSubmit={async e => await performSearch(e, setUsers)}>
                 <Link href={`/profile/${user?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
-            <div className={styles.grid}>
-                <div className={styles.options}>
-                    <h2>Search Tools</h2>
-                    <div id="filters" className={styles.tools}>
-                        <label htmlFor="rank">Rank:</label>
-                        <Dropdown className={styles.rank} id="rank" name="rank" defaultValue={query.rank ?? "D"} trail="or above">
-                            <p>S</p>
-                            <p>A</p>
-                            <p>B</p>
-                            <p>C</p>
-                            <p>D</p>
-                        </Dropdown>
-                        <br />
-                        <label htmlFor="order">Order:</label>
-                        <Dropdown className={styles.rank} id="order" name="order" defaultValue={query.order ?? "Descending"}>
-                            <p>Ascending</p>
-                            <p>Descending</p>
-                        </Dropdown>
-                    </div>
-                </div>
-                <div className={styles.results}>
-                    {getResults(users)}
+            <div className={styles.container}>
+                <div className={styles.grid}>
+                    <aside className={styles.options}>
+                        <Filters query={query} />
+                    </aside>
+                    <main className={styles.results}>
+                        {users ? getResults(users, query.page ?? 1) : null}
+                    </main>
                 </div>
             </div>
         </div>
+    )
+}
+
+function Filters({ query }: any) {
+    return (
+        <>
+            <h1>Search Tools</h1>
+            <hr />
+            <div id="filters" className={styles.tools}>
+                <label htmlFor="rank">Rank:</label>
+                <Dropdown useIndex reverseIndex className={styles.filter} id="rank"
+                    name="rank" defaultValue={1} trail="or above">
+                    <p>S</p>
+                    <p>A</p>
+                    <p>B</p>
+                    <p>C</p>
+                    <p>D</p>
+                </Dropdown>
+                <label htmlFor="order">Order:</label>
+                <Dropdown className={styles.filter} id="order" name="order" defaultValue={query.order ?? "Descending"}>
+                    <p>Ascending</p>
+                    <p>Descending</p>
+                </Dropdown>
+            </div>
+        </>
     )
 }
 
@@ -64,17 +77,42 @@ async function performSearch(
     let query = getData<SearchData>(e.target)
     if (query.query.length) {
         data.query = query.query
-        setUsers(await search(data) as unknown as any[])
+        delete data.page // Reset the page
+        setUsers(await search(data))
         router.push({
             query: data
         })
     }
 }
 
-function getResults(users: User[] | null, fail: JSX.Element = <NoResults />) {
+function getResults(users: QueryRes | null, page: number, fail: JSX.Element = <NoResults />) {
     if (!users) return null
-    if (!users.length) return fail
-    return users.map((u, i) => <SearchItem key={i} user={u} />)
+    const [res, count] = users as [User[], number]
+    if (!count) return fail
+    const pageCount = Math.ceil(count / 50) || 1
+    return (
+        <>
+            <div className={styles.pageinfo}>
+                <p>{count} result(s) found.</p>
+                <Paginator page={page} pageCount={pageCount} buttonCount={7} click={toPage} />
+                {page > pageCount && page != 1 ? <p>Out of bounds!</p>
+                    : <p>Page {Math.max(1, page)} of {pageCount}</p>}
+            </div>
+            {res.map((u, i) => <SearchItem key={i} user={u} />)}
+            {res.length == 50 ?
+                <Paginator className={styles.bottompager} page={page} pageCount={pageCount} buttonCount={7} click={toPage} />
+                : null}
+        </>
+    )
+}
+
+async function toPage(page: number) {
+    const query = router.query as any
+    query.page = page
+    await router.push({
+        query
+    })
+    router.reload()
 }
 
 export async function getServerSideProps({ req, query }: NextPageContext) {
@@ -86,13 +124,18 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
         props: {
             user: user ?? null,
             query: data ?? null,
-            queryRes: data.query?.length || users?.length ? users : null
+            queryRes: users ?? null
         }
     }
 }
 
 function NoResults() {
     return (
-        <h1>No results found.</h1>
+        <div className={styles.empty}>
+            <div className={styles.emptyemblem}>
+                <h2>Sorry... we found no results!</h2>
+                <p>😢</p>
+            </div>
+        </div>
     )
 }

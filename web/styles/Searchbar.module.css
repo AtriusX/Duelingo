@@ -1,38 +1,41 @@
 .searchbar {
-    width: fit-content;
-    min-width: 33%;
-    padding: 0;
+  width: fit-content;
+  min-width: 33%;
+  padding: 0;
 }
 
 .searchbar form {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 
-.searchbar input, .searchbar button {
-    font-weight: 475;
-    outline: none;
-    height: 100%;
-    padding: 1.2em;
+.searchbar input,
+.searchbar button {
+  font-weight: 475;
+  outline: none;
+  height: 100%;
+  padding: 1.2em;
 }
 
 .searchbar input {
-    width: 100%;
-    border: none;
-    background: #EEE;
-    border-radius: 1em 0 0 1em;
+  width: 100%;
+  border: none;
+  background: #eee;
+  border-radius: 1em 0 0 1em;
 }
 
 .searchbar button {
-    border: none;
-    border-radius: 0 1em 1em 0;
-    background: var(--primary);
-    color: white;
-    transition: all 0.2s;
+  border: none;
+  border-radius: 0 1em 1em 0;
+  text-shadow: 0 0 2px dimgray;
+  background: var(--primary);
+  color: white;
+  transition: all 0.2s;
+  text-shadow: 0 0 2px dimgray;
 }
 
 .searchbar button:hover {
-    background: var(--primary-hover);
+  background: var(--primary-hover);
 }
 
 .searchbar *:focus {

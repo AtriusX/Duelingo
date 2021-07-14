@@ -51,3 +51,7 @@ export function animate(selector: string, animationClass: string) {
     e.onanimationend = () => e?.classList.remove(animationClass);
   }
 }
+
+export function getRank(value: number): string {
+  return "DCBAS".charAt(value - 1) || "X"
+}

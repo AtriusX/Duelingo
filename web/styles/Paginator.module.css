@@ -1,0 +1,40 @@
+.paginator {
+  display: flex;
+  margin: 1em 0;
+}
+
+.paginator div {
+  margin: 0;
+  border: 1px solid #ddd;
+  border-radius: 1em;
+  width: fit-content;
+  overflow: hidden;
+}
+
+.paginator button:first-child,
+.paginator button:last-child {
+  background-color: #ddd;
+}
+
+.paginator button:nth-child(n + 2):nth-child(-n + 8) {
+  border-left: 1px solid #ddd;
+}
+
+.paginator button {
+  border: none;
+  outline: none;
+  padding: 1em;
+  width: 5em;
+  transition: all 0.2s, color 0.05s;
+}
+
+.active {
+  background: var(--primary);
+  text-shadow: 0 0 2px dimgray;
+  color: white;
+  font-weight: bold;
+}
+
+.paginator button:hover {
+  filter: brightness(1.05);
+}

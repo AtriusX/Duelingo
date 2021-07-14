@@ -1,57 +1,61 @@
 .body {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 33%);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 33%);
 }
 
 .profile {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    padding: 0.5em 1em;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.profile h1 {
-    margin-bottom: 1em;
-}
-
-.profile hr {
-    border: 2px solid #222;
-    width: 100%;
-}
-
-.avatarcontainer {
-    width: 15em;
-    height: 15em;
-    align-self: center;
-    margin-top: 1em;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0.5em 1em;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .profile h2 {
-    position: relative;
-    float: right;
+  margin-bottom: 1em;
+  font-size: 1.6em;
+}
+
+.profile hr {
+  border: 2px solid #222;
+  width: 100%;
+}
+
+.avatarcontainer {
+  width: 15em;
+  height: 15em;
+  align-self: center;
+  margin-top: 1em;
+}
+
+.profile h2 {
+  position: relative;
+  float: right;
 }
 
 .avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid #ddd;
 }
 
-.rivals, .games {
-    padding: 1em;
-    width: fit-content;
-    border-left: 1.5px solid #DDD;
-    width: 100%;
-    height: 100%;
-    text-align: center;
+.rivals,
+.games {
+  padding: 1em;
+  width: fit-content;
+  border-left: 1.5px solid #ddd;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 
-.rivals h3, .games h3 {
-    margin: 0;
+.rivals h3,
+.games h3 {
+  margin: 0;
 }

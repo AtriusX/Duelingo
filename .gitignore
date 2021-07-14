@@ -35,4 +35,3 @@ yarn-error.log*
 # vercel
 .vercel
 server/src/migrations
-web/styles/Home.module.css

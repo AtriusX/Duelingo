@@ -63,7 +63,7 @@ export default function Signup({ toRegister }: SignupProps) {
                         <h1>Register</h1>
                         <input type="text" id="username" minLength={3} placeholder="Name" />
                         <br />
-                        <input type="email"id="email" placeholder="Email" />
+                        <input type="email" id="email" placeholder="Email" />
                         <br />
                         <input type="password" id="password" minLength={8} placeholder="Password" />
                         <br />
@@ -99,7 +99,7 @@ async function tryRegister(event: SubmitEvent, fail: ErrorCallback) {
 export async function getServerSideProps({ req, query }: NextPageContext) {
     return !!(await self(req?.headers.cookie)) ? homeRedirect : {
         props: {
-            toRegister: query.register === "true" 
+            toRegister: query.register === "true"
         }
     }
 }

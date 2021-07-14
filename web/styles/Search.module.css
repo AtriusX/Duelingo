@@ -1,40 +1,88 @@
+.body {
+  position: absolute;
+  display: block;
+  height: 100% !important;
+  width: 100%;
+}
+
 .grid {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 30% 70%;
+  height: 100%;
+  width: 100%;
+}
+
+.container {
+  flex-flow: column;
+  width: 100%;
+  height: 100%;
+}
+
+.pageinfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.pageinfo div {
+  display: flex;
+  margin: 1em;
+  justify-content: space-between;
+}
+
+.bottompager {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .results {
-  position: fixed;
+  flex-direction: column;
   right: 0;
   padding: 0 1em;
-  width: 70%;
-  height: 100%;
-  overflow-y: scroll;
+  width: 100%;
 }
 
 .options {
-  position: fixed;
-  width: 30%;
-  height: 100%;
+  display: inline;
+  column-width: 30%;
   padding: 1em;
   background: #eee;
 }
 
 .tools {
   position: relative;
+  display: grid;
+  grid-template-columns: 25% auto;
+  align-items: center;
 }
 
 .tools label {
   position: relative;
   display: inline-block;
-  padding-bottom: 1em;
 }
 
-.rank {
-  display: inline-block;
-  margin: 1em 2em;
+.filter {
+  margin: 1em 0;
   border: 1px solid gray;
   border-radius: 1em;
   padding: 1em;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 100pt;
 }

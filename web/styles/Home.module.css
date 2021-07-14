@@ -1,0 +1,98 @@
+.body {
+  position: fixed;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 100%;
+  overflow: hidden;
+}
+
+.body:nth-child(n + 1):nth-child(n + 2) > div {
+  border-right: 2px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.body > div {
+  padding: 1em;
+}
+
+.avatar {
+  width: 15em;
+  height: 15em;
+  margin: 1em;
+}
+
+.user {
+  overflow: hidden;
+}
+
+.user h1 {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0.25em;
+}
+
+.user hr {
+  border: 2px solid black;
+  width: 100%;
+  margin: 1em;
+}
+
+.updates {
+  width: 50vw;
+  overflow-y: scroll;
+}
+
+.updates h2 {
+  color: gray;
+}
+
+.game {
+  justify-content: center;
+}
+
+.game h1 {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.play {
+  color: white;
+  width: 90%;
+  padding: 2em;
+  background: var(--back);
+  border-radius: 1em;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1em;
+  overflow: hidden;
+}
+
+.buttons a {
+  padding: 2em 1em;
+  width: 10em;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: 12pt;
+  text-shadow: 0 0 2px dimgray;
+  transition: all 0.1s;
+  text-align: center;
+}
+
+.buttons a:hover {
+  filter: brightness(1.1);
+}
+
+.buttons a:first-child {
+  background: var(--primary);
+}
+
+.buttons a:last-child {
+  background: var(--urgent);
+}

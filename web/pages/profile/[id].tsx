@@ -6,6 +6,7 @@ import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
 import { tryLogout } from "../../api/auth";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
+import { getRank } from "../../utils";
 interface ProfileData {
     user: User
     me?: User
@@ -23,7 +24,7 @@ export default function Profile({ user, me }: ProfileData) {
             <div className={styles.body}>
                 <div>
                     <div className={styles.profile}>
-                        <h1><b>({rank})</b> {username}</h1>
+                        <h2><b>({getRank(rank)})</b> {username}</h2>
                         <hr />
                         <div className={styles.avatarcontainer}>
                             <Avatar user={user} className={styles.avatar} />

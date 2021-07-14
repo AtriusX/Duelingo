@@ -32,7 +32,10 @@ export default function Home({ user }: HomeProps) {
                 <div className={styles.game}>
                     <div className={styles.play}>
                         <h1>Ready to play?</h1>
-                        <button>Join Game</button>
+                        <div className={styles.buttons}>
+                            <Link href="/game/casual">Casual</Link>
+                            <Link href="/game/competitive">Competitive</Link>
+                        </div>
                     </div>
                 </div>
             </div>

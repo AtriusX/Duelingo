@@ -8,7 +8,7 @@ export type User = {
     email: string
     joined: string
     language: string
-    rank: string
+    rank: number
     avatar?: string
     description?: string
 }
@@ -36,8 +36,7 @@ export async function getUser(id?: string | string[]): Promise<object | Error> {
 }
 
 export async function search(data: any) {
-
-    return client.get(`/search${toQuery(data)}`)
+    return client.get(`/search${toQuery(data)}`) as unknown as User[] | (number | User[])[]
 }
 
 function toQuery(data: object) {

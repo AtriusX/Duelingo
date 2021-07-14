@@ -1,0 +1,90 @@
+.body {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.landingback {
+  position: absolute;
+  background: url("../public/backdrop.jpg");
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  filter: brightness(0.2) blur(15px);
+  scale: 1.75;
+  background-size: cover;
+  z-index: -100;
+}
+
+.landing {
+  float: right;
+  width: 33%;
+  height: 100%;
+  background: var(--back);
+  color: white;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing * {
+  align-self: center;
+  margin: 0;
+  width: 80%;
+}
+
+.landing h1 {
+  padding: 0.5em 0;
+}
+
+.landing hr {
+  width: 100%;
+  border: 2px solid white;
+  margin: 1em 0;
+}
+
+.landing h4 {
+  margin-bottom: 1em;
+  width: 100%;
+  font-size: 14pt;
+  text-align: justify;
+}
+
+.buttonbox a {
+  position: relative;
+  width: 90%;
+  bottom: 0;
+  padding: 1em 0;
+  display: block;
+  text-align: center;
+  background: var(--primary);
+  border: none !important;
+  margin: 1em 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  border-radius: 0.5em;
+  font-size: 14pt;
+  text-shadow: 0 0 2px dimgray;
+  color: white;
+  transition: all 0.25s;
+  outline: none;
+  align-self: center;
+}
+
+.buttonbox a:hover {
+  background: var(--primary-hover);
+}
+
+.buttonbox {
+  bottom: 1em !important;
+  width: 100%;
+  padding: 1em;
+  margin: 2em 0;
+  background: gray;
+  border-radius: 1em;
+  height: fit-content !important;
+}
