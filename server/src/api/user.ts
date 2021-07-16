@@ -1,10 +1,11 @@
+import { testRequirements, emailFieldTest, basicFieldTest } from '.';
 import { hash } from 'argon2';
 import { User } from '../entities/User';
 import { EntityManager, QueryOrder } from '@mikro-orm/core';
 
-const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+export type QueryRes = User[] | (number | User[])[]
 
-export async function search(em: EntityManager, query: any): Promise<User[] | (number | User[])[]> {
+export async function search(em: EntityManager, query: any): Promise<QueryRes> {
     if (query.query?.length === 0)
         return [] 
     return await em.findAndCount(User, {
@@ -22,11 +23,11 @@ export async function updateUser(em: EntityManager, up: User, session: { userId:
     if (!self) 
         return false
     const { username, email, password, language, description } = up
-    if (username)
+    if (testRequirements(username))
         self.username = username
-    if (email && email.match(emailRegex))
+    if (testRequirements(email, emailFieldTest))
         self.email = email
-    if (password)
+    if (testRequirements(password, basicFieldTest(8)))
         self.password = await hash(password)
     if (language)
         self.language = language

@@ -73,16 +73,3 @@
   border-radius: 1em;
   padding: 1em;
 }
-
-.empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 100%;
-}
-
-.empty p {
-  margin: 0;
-  font-size: 100pt;
-}

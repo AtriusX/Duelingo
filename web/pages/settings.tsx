@@ -56,16 +56,16 @@ export default function Settings({ user }: SettingsProps) {
                     <div>
                         <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
                             <label htmlFor="username">Username</label>
-                            <input type="text" id="username" name="username" minLength={3} placeholder={user.username} />
+                            <input type="text" id="username" name="username" minLength={3} maxLength={20} placeholder={user.username} />
                             <br />
                             <label htmlFor="email">Email</label>
                             <input type="email" id="email" name="email" placeholder={user.email} />
                             <br />
                             <label htmlFor="password">New Password</label>
-                            <input type="password" id="password" name="password" minLength={8} placeholder="New Password" />
+                            <input type="password" id="password" name="password" minLength={8} maxLength={20} placeholder="New Password" />
                             <br />
                             <label htmlFor="password">Confirm Password</label>
-                            <input type="password" id="confirm" name="confirm" minLength={8} placeholder="Confirm Password" />
+                            <input type="password" id="confirm" name="confirm" minLength={8} maxLength={20} placeholder="Confirm Password" />
                             <br />
                             <button type="submit">Update Account</button>
                         </form>

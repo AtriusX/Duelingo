@@ -4,16 +4,24 @@ import Avatar from "../../components/Avatar";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
-import { tryLogout } from "../../api/auth";
+import { homeRedirect, tryLogout } from "../../api/auth";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
-import { getRank } from "../../utils";
+import { cast, getRank } from "../../utils";
+import NoResult from "../../components/NoResult";
+import router from "next/router";
 interface ProfileData {
-    user: User
+    user?: User | Error
     me?: User
 }
 
 export default function Profile({ user, me }: ProfileData) {
-    const { username, joined, rank, description } = user
+    if (!user)
+        return (
+            <NoResult message="It seems a bit empty in here..." emoji="🌌" className={styles.emptycenter}>
+                <button onClick={() => router.push("/")}>Go Home</button>
+            </NoResult>
+        )
+    const { username, joined, rank, description } = user as User
     return (
         <>
             <Navbar redirect="/search" user={me}>
@@ -50,9 +58,8 @@ export default function Profile({ user, me }: ProfileData) {
 
 export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await getUser(query.id)
-
     const me = await self(req?.headers.cookie)
     return {
-        props: { user, me }
+        props: { user: !!(user as any)?.error ? null : user, me }
     }
 }

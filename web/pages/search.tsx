@@ -1,6 +1,6 @@
 import router from "next/router"
 import { Dispatch, FormEvent, SetStateAction, useState } from "react"
-import { search, SearchQuery, User } from '../api/user'
+import { QueryRes, search, SearchQuery, User } from '../api/user'
 import { getData } from "../utils"
 import styles from '../styles/Search.module.css'
 import { NextPageContext } from "next"
@@ -11,8 +11,8 @@ import Link from "next/link"
 import { tryLogout } from "../api/auth"
 import Dropdown from "../components/Dropdown"
 import Paginator from "../components/Paginator"
+import NoResult from "../components/NoResult"
 
-type QueryRes = User[] | (number | User[])[]
 interface SearchData {
     user: User
     query: any
@@ -69,18 +69,11 @@ function Filters({ query }: any) {
     )
 }
 
-function NoResults() {
-    return (
-        <div className={styles.empty}>
-            <div className={styles.emptyemblem}>
-                <h2>Sorry... we found no results!</h2>
-                <p>😢</p>
-            </div>
-        </div>
-    )
-}
-
-function getResults(users: QueryRes | null, page: number, fail: JSX.Element = <NoResults />) {
+function getResults(
+    users: QueryRes | null,
+    page: number,
+    fail: JSX.Element = <NoResult message="Sorry... we found no results!" emoji={"😢"} />
+) {
     if (!users) return null
     const [res, count] = users as [User[], number]
     if (!count) return fail

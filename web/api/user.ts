@@ -1,4 +1,3 @@
-import { User } from './user';
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 import { address } from "../../env"
@@ -21,6 +20,8 @@ export interface SearchQuery extends ParsedUrlQueryInput {
     page?: number
 }
 
+export type QueryRes = User[] | (number | User[])[]
+
 // All of this is VERY rought right now, this will probably need to be changed later
 export async function self(sessionToken?: string): Promise<User | null> {
     return fetch(`http://${address}:3000/user/me`, {
@@ -39,7 +40,7 @@ export async function getUser(id?: string | string[]): Promise<User | Error> {
 }
 
 export async function search(data: any) {
-    return cast<User[] | (number | User[])[]>(client.get(`/search${toQueryString(data)}`))
+    return cast<QueryRes>(client.get(`/search${toQueryString(data)}`))
 }
 
 function toQueryString(data: object) {

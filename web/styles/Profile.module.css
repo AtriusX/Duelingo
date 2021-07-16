@@ -16,6 +16,39 @@
   overflow: hidden;
 }
 
+.emptycenter {
+  top: 50%;
+  width: 100%;
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.emptycenter p {
+  font-size: 150pt !important;
+  animation: spin 120s infinite linear !important;
+  padding: 2rem 0;
+  margin: 5rem 0 !important;
+}
+
+.emptycenter button {
+  width: 60%;
+  padding: 1em;
+  background: var(--primary);
+  text-shadow: 0 0 2px dimgray;
+  border: none !important;
+  font-weight: bold;
+  border-radius: 0.5em;
+  font-size: 11pt;
+  color: white;
+  transition: all 0.25s;
+  outline: none;
+}
+
+@keyframes spin {
+  0% { transform: rotateZ(0); }
+  100% { transform: rotateZ(360deg); }
+}
+
 .profile h2 {
   margin-bottom: 1em;
   font-size: 1.6em;

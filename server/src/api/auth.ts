@@ -1,3 +1,4 @@
+import { testRequirements, emailFieldTest, basicFieldTest } from '.';
 import { User } from '../entities/User';
 import { EntityManager } from "@mikro-orm/core";
 import { verify, hash } from 'argon2';
@@ -35,17 +36,17 @@ export async function register(
     info: RegistrationInfo
 ): Promise<User | Error> {
     const { username, email, password } = info
-    if (!username)
+    if (!testRequirements(username))
         return {
-            message: "Username is empty!"
+            message: "Username is invalid!"
         }
-    if (!email)
+    if (!testRequirements(email, emailFieldTest))
         return {
-            message: "Email is empty!"
+            message: "Email is invalid!"
         }
-    if (!password)
+    if (!testRequirements(password, basicFieldTest(8)))
         return {
-            message: "Password is empty!"
+            message: "Password is invalid!"
         }
     const code = await hash(password)
     const user = new User(username, email, code)    
@@ -59,14 +60,13 @@ export async function register(
     return user
 }
 
+
 export async function deleteUser(
     em: EntityManager,
     id: number,
     password: string
 ): Promise<Boolean | Error> {
-    
     const user = await em.findOne(User, { id: id })
-    
     if (!user || !await verify(user.password, password)) {
         return { message: "Failed to delete!" }
     }
