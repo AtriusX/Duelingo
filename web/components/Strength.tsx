@@ -11,7 +11,6 @@ export default function Strength({ input, colors, maxScore }: StrengthProps) {
     let chars = (maxScore ?? 12) / colors.length
     let width = 100 / colors.length
     let pos = Math.ceil(expected / chars)
-
     return <div className={styles.strength}>
         <div style={{
             width: `${width * pos}%`,
@@ -29,7 +28,5 @@ function calculateStrength(input: string) {
         score += 2
     if (!!input.match(/[^\w\d]/)) // Matches specials
         score += 3
-    console.log(score);
-
     return input.length + score
 }

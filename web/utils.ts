@@ -5,11 +5,9 @@
 export function getData<T>(form?: HTMLElement | EventTarget): T { // change this
   let values = Array.from(new FormData(form as HTMLFormElement))
   let out = {} as any
-  values.forEach(i => {
-    out[i[0]] = i[1]
-  })
-  console.log(out);
-  
+  values.forEach(([a, b]) => {
+    out[a] = b
+  })  
   return out as T
 }
 

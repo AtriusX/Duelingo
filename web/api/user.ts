@@ -1,8 +1,9 @@
-import { ConfirmationInfo } from './user';
+import { User } from './user';
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 import { address } from "../../env"
 import { cast } from "../utils"
+import { Error } from "../api"
 
 export type User = {
     id: number
@@ -21,7 +22,7 @@ export interface SearchQuery extends ParsedUrlQueryInput {
 }
 
 // All of this is VERY rought right now, this will probably need to be changed later
-export async function self(sessionToken: string | undefined): Promise<User | null> {
+export async function self(sessionToken?: string): Promise<User | null> {
     return fetch(`http://${address}:3000/user/me`, {
         method: "GET",
         credentials: 'include',
