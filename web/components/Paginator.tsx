@@ -19,7 +19,11 @@ export default function Paginator({ page, pageCount, buttonCount, click, ...prop
     for (let i = 1; i <= Math.min(buttonCount, pageCount); i++) {
         let p = start + i
         elements.push(
-            <button key={i} className={p == page ? styles.active : undefined} onClick={() => click(p)}>{p}</button>
+            <button key={i}
+                className={p == page ? styles.active : undefined}
+                onClick={() => click(p)}>
+                {p}
+            </button>
         )
     }
     return (

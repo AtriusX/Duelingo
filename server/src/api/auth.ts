@@ -58,3 +58,18 @@ export async function register(
     }
     return user
 }
+
+export async function deleteUser(
+    em: EntityManager,
+    id: number,
+    password: string
+): Promise<Boolean | Error> {
+    
+    const user = await em.findOne(User, { id: id })
+    
+    if (!user || !await verify(user.password, password)) {
+        return { message: "Failed to delete!" }
+    }
+    em.removeAndFlush(user)
+    return true
+}

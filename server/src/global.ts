@@ -1,11 +1,13 @@
-import { Configuration } from '@mikro-orm/core';
+import { Configuration } from "@mikro-orm/core";
 
-export const DEV = process.env.NODE_ENV !== "production"
+type Platform = keyof typeof Configuration.PLATFORMS;
 
-export const DBNAME = "capstone"
+export const DEV = process.env.NODE_ENV !== "production";
 
-export const DBTYPE: keyof typeof Configuration.PLATFORMS = "postgresql"
+export const DBNAME = "capstone";
 
-export const DBUSER = "postgres"
+export const DBTYPE: Platform = "postgresql";
 
-export const DBPASS = "password"
+export const DBUSER = "postgres";
+
+export const DBPASS = "password";

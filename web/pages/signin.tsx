@@ -5,6 +5,7 @@ import { homeRedirect, login, noResult, register } from '../api/auth'
 import { FormEvent, useState } from 'react'
 import { NextPageContext } from 'next'
 import { self } from '../api/user'
+import Strength from '../components/Strength'
 
 type SubmitEvent = FormEvent<HTMLFormElement>
 type ErrorCallback = (err: Error) => void
@@ -30,6 +31,13 @@ interface SignupProps {
     toRegister?: boolean
 }
 
+const colors = [
+    "#f84747",
+    "#ec8743",
+    "#e9f546",
+    "#22e684"
+]
+
 export default function Signup({ toRegister }: SignupProps) {
     const [login, isLogin] = useState(!toRegister)
     const [error, setError] = useState<string | null>()
@@ -41,6 +49,7 @@ export default function Signup({ toRegister }: SignupProps) {
         isLogin(login)
         setError(null)
     }
+    const [pass, setPass] = useState("")
     return (
         <div className={styles.backdrop}>
             <div className={styles.img} />
@@ -53,22 +62,17 @@ export default function Signup({ toRegister }: SignupProps) {
                     </div>
                     <form hidden={!login} method="post" onSubmit={e => tryLogin(e, notify)}>
                         <h1>Log In</h1>
-                        <input type="email" id="email" placeholder="Email" />
-                        <br />
-                        <input type="password" id="password" minLength={8} placeholder="Password" />
-                        <br />
+                        <input type="email" id="email" name="email" placeholder="Email" />
+                        <input type="password" id="password" name="password" minLength={8} placeholder="Password" />
                         <button type="submit">Login</button>
                     </form>
                     <form hidden={login} method="post" onSubmit={e => tryRegister(e, notify)}>
                         <h1>Register</h1>
-                        <input type="text" id="username" minLength={3} placeholder="Name" />
-                        <br />
-                        <input type="email" id="email" placeholder="Email" />
-                        <br />
-                        <input type="password" id="password" minLength={8} placeholder="Password" />
-                        <br />
-                        <input type="password" id="confirm" minLength={8} placeholder="Confirm Password" />
-                        <br />
+                        <input type="text" id="username" name="username" minLength={3} placeholder="Name" />
+                        <input type="email" id="email" name="email" placeholder="Email" />
+                        <input type="password" id="password" name="password" minLength={8} placeholder="Password" onChange={e => setPass(e.target.value)} />
+                        <input type="password" id="confirm" name="confirm" minLength={8} placeholder="Confirm Password" />
+                        <Strength input={pass} colors={colors} maxScore={20} />
                         <button type="submit">Register</button>
                     </form>
                 </div>
@@ -89,7 +93,7 @@ async function tryLogin(event: SubmitEvent, fail: ErrorCallback) {
 
 async function tryRegister(event: SubmitEvent, fail: ErrorCallback) {
     event.preventDefault()
-    let { username, email, password, confirm } = getData<RegistrationInfo>()
+    let { username, email, password, confirm } = getData<RegistrationInfo>(event.target)
     if (password !== confirm)
         return fail({ message: "Confirmation password is not the same!" })
     let user = await register(email, username, password)

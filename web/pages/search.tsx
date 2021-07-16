@@ -50,8 +50,8 @@ function Filters({ query }: any) {
             <hr />
             <div id="filters" className={styles.tools}>
                 <label htmlFor="rank">Rank:</label>
-                <Dropdown useIndex reverseIndex className={styles.filter} id="rank"
-                    name="rank" defaultValue={1} trail="or above">
+                <Dropdown useIndex reverseIndex className={styles.filter}
+                    id="rank" name="rank" defaultValue={1} trail="or above">
                     <p>S</p>
                     <p>A</p>
                     <p>B</p>
@@ -59,7 +59,8 @@ function Filters({ query }: any) {
                     <p>D</p>
                 </Dropdown>
                 <label htmlFor="order">Order:</label>
-                <Dropdown className={styles.filter} id="order" name="order" defaultValue={query.order ?? "Descending"}>
+                <Dropdown className={styles.filter} id="order"
+                    name="order" defaultValue={query.order ?? "Descending"}>
                     <p>Ascending</p>
                     <p>Descending</p>
                 </Dropdown>
@@ -68,21 +69,15 @@ function Filters({ query }: any) {
     )
 }
 
-async function performSearch(
-    e: FormEvent<HTMLFormElement>,
-    setUsers: Dispatch<SetStateAction<any[] | null>>
-) {
-    e.preventDefault()
-    let data = router.query as any
-    let query = getData<SearchData>(e.target)
-    if (query.query.length) {
-        data.query = query.query
-        delete data.page // Reset the page
-        setUsers(await search(data))
-        router.push({
-            query: data
-        })
-    }
+function NoResults() {
+    return (
+        <div className={styles.empty}>
+            <div className={styles.emptyemblem}>
+                <h2>Sorry... we found no results!</h2>
+                <p>😢</p>
+            </div>
+        </div>
+    )
 }
 
 function getResults(users: QueryRes | null, page: number, fail: JSX.Element = <NoResults />) {
@@ -106,6 +101,23 @@ function getResults(users: QueryRes | null, page: number, fail: JSX.Element = <N
     )
 }
 
+async function performSearch(
+    e: FormEvent<HTMLFormElement>,
+    setUsers: Dispatch<SetStateAction<any[] | null>>
+) {
+    e.preventDefault()
+    let data = router.query as any
+    let query = getData<SearchData>(e.target)
+    if (query.query.length) {
+        data.query = query.query
+        delete data.page // Reset the page
+        setUsers(await search(data))
+        router.push({
+            query: data
+        })
+    }
+}
+
 async function toPage(page: number) {
     const query = router.query as any
     query.page = page
@@ -127,15 +139,4 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
             queryRes: users ?? null
         }
     }
-}
-
-function NoResults() {
-    return (
-        <div className={styles.empty}>
-            <div className={styles.emptyemblem}>
-                <h2>Sorry... we found no results!</h2>
-                <p>😢</p>
-            </div>
-        </div>
-    )
 }

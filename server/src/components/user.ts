@@ -2,6 +2,7 @@ import { Express, Request, Response } from 'express'
 import { MikroORM } from '@mikro-orm/core';
 import { User } from '../entities/User';
 import { search, updateUser } from '../api/user'
+import { deleteUser } from '../api/auth';
 
 export default function setupUser(app: Express, db: MikroORM) {
     
@@ -9,6 +10,15 @@ export default function setupUser(app: Express, db: MikroORM) {
         const sess: any = req.session
         const user = await db.em.findOne(User, { id: sess.userId })        
         res.status(200).json(user)
+    })
+
+    app.delete("/user/me", async (req, res) => {
+        const sess: any = req.session
+        const { password } = req.body
+        const result = await deleteUser(db.em, sess.userId, password)
+        if (result == true)
+            req.session.destroy(() => {})
+        res.status(200).json(result)
     })
 
     app.get("/user/:id", async (req: Request, res: Response) => {

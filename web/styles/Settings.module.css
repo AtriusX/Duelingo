@@ -2,16 +2,6 @@
   overflow: hidden;
 }
 
-.img {
-  background: url("../public/backdrop.jpg");
-  background-repeat: no-repeat;
-  width: 100vw;
-  height: 100vh;
-  filter: brightness(0.2) blur(15px);
-  scale: 1.75;
-  background-size: cover;
-}
-
 .body {
   width: 100%;
   left: 50%;
@@ -20,6 +10,36 @@
   padding: 1em 5em;
   overflow: hidden;
   font-size: 13;
+}
+
+.header {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  padding: 1em 0;
+}
+
+.header * {
+  margin: 0.25em 0;
+}
+
+.header button {
+  align-self: center;
+  padding: 1em 2em;
+  background: var(--urgent);
+  border: none;
+  color: white;
+  font-weight: bold;
+  transition: all 0.2s;
+  text-shadow: 0 0 2px dimgray;
+  box-shadow: 0 2px 5px #aaa;
+  border-radius: 1em;
+  outline: none;
+}
+
+.header button:hover,
+.modal button:hover {
+  background: #e65252;
 }
 
 .container {
@@ -71,7 +91,8 @@
   margin: 0;
 }
 
-.container form input {
+.container form input,
+.modal input {
   position: relative;
   margin: 0.5em 0;
   padding: 1em;
@@ -91,7 +112,8 @@
   width: 100%;
 }
 
-.container input {
+.container input,
+.modal input {
   border-radius: 0.5em;
   border: none;
   width: 100%;
@@ -107,7 +129,8 @@
 
 .back,
 .toggle button,
-.container button {
+.container button,
+.modal button {
   width: 50%;
   padding: 1em 0;
   background: var(--primary);
@@ -145,7 +168,8 @@
   padding: 1em;
 }
 
-.error {
+.error,
+.confirmerror {
   color: white;
   background: #f84747;
   text-align: center;
@@ -154,6 +178,10 @@
   box-shadow: 0 2px 5px #aaa;
   border-radius: 0.75em;
   transition: all 0.25s;
+}
+
+.confirmerror {
+  box-shadow: none !important;
 }
 
 .error:hover {
@@ -188,6 +216,7 @@
   margin: 0 !important;
   color: white;
   background: var(--back);
+  visibility: hidden;
 }
 
 .avatar {
@@ -213,4 +242,44 @@
   100% {
     transform: translateX(0%);
   }
+}
+
+.modal {
+  position: absolute;
+  width: 30%;
+  color: white;
+  padding: 2em;
+  left: 50%;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  background: var(--back);
+  border-radius: 1em;
+  border: 2px solid dimgray;
+}
+
+.modal form {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal input {
+  margin: 0.75em 0;
+  margin: 0;
+  border-radius: 1em 0 0 1em;
+}
+
+.modal h1 {
+  margin: 0;
+}
+
+.modal p {
+  text-align: justify;
+}
+
+.modal button {
+  float: right;
+  border-radius: 0 1em 1em 0;
+  margin: 0;
+  background: var(--urgent);
+  width: 30%;
 }

@@ -2,19 +2,15 @@
  * This function streamlines the process of aggregating form data into a json object.
  * This can be used to handle post requests with ease.
  */
-export function getData<T>(form?: HTMLElement | EventTarget): T {
-  let out = {} as any;
-  let children = !!form ? (form as HTMLElement).children : document.querySelectorAll("input, textarea");
-  for (let i = 0; i < children.length; i++) {
-    let item = children.item(i);
-    if (item instanceof HTMLInputElement || 
-        item instanceof HTMLTextAreaElement || 
-        item instanceof HTMLSelectElement
-    ) {      
-      out[item.id] = item.type !== "checkbox" ? item.value : (item as any).checked;
-    }
-  }
-  return out as T;
+export function getData<T>(form?: HTMLElement | EventTarget): T { // change this
+  let values = Array.from(new FormData(form as HTMLFormElement))
+  let out = {} as any
+  values.forEach(i => {
+    out[i[0]] = i[1]
+  })
+  console.log(out);
+  
+  return out as T
 }
 
 export type RequestType =

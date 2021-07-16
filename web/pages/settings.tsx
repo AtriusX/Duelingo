@@ -1,14 +1,15 @@
 import { NextPageContext } from "next";
 import { homeRedirect } from "../api/auth";
-import { self, update, UpdateInfo, User } from "../api/user"
+import { ConfirmationInfo, deleteAccount, self, update, UpdateInfo, User } from "../api/user"
 import Navbar from '../components/Navbar'
 import { tryLogout } from '../api/auth'
 import Link from "next/link"
 import styles from "../styles/Settings.module.css"
 import { animate, getData } from "../utils";
-import { FormEvent, useState } from "react";
+import { FormEvent, HTMLProps, useState } from "react";
 import router from "next/router";
 import Avatar from "../components/Avatar";
+import ReactModal from "react-modal";
 
 interface SettingsProps {
     user: User
@@ -16,6 +17,7 @@ interface SettingsProps {
 
 export default function Settings({ user }: SettingsProps) {
     const [error, setError] = useState<string | null>()
+    const [modal, setModal] = useState(false)
     const notify = (err: Error) => {
         setError(err.message)
         animate("#error", styles.shake)
@@ -28,7 +30,10 @@ export default function Settings({ user }: SettingsProps) {
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
             <div className={styles.body}>
-                <h1>Account Settings</h1>
+                <div className={styles.header}>
+                    <h1>Account Settings</h1>
+                    <button onClick={e => setModal(true)}>Delete Account</button>
+                </div>
                 <div className={styles.container}>
                     <div className={styles.panels}>
                         <div>
@@ -48,16 +53,16 @@ export default function Settings({ user }: SettingsProps) {
                         <div>
                             <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
                                 <label htmlFor="username">Username</label>
-                                <input type="text" id="username" minLength={3} placeholder={user.username} />
+                                <input type="text" id="username" name="username" minLength={3} placeholder={user.username} />
                                 <br />
                                 <label htmlFor="email">Email</label>
-                                <input type="email" id="email" placeholder={user.email} />
+                                <input type="email" id="email" name="email" placeholder={user.email} />
                                 <br />
                                 <label htmlFor="password">New Password</label>
-                                <input type="password" id="password" minLength={8} placeholder="New Password" />
+                                <input type="password" id="password" name="password" minLength={8} placeholder="New Password" />
                                 <br />
                                 <label htmlFor="password">Confirm Password</label>
-                                <input type="password" id="confirm" minLength={8} placeholder="Confirm Password" />
+                                <input type="password" id="confirm" name="confirm" minLength={8} placeholder="Confirm Password" />
                                 <br />
                                 <button type="submit">Update Account</button>
                             </form>
@@ -67,9 +72,53 @@ export default function Settings({ user }: SettingsProps) {
                 <div id="error" className={styles.error} hidden={!error} onClick={() => setError(null)}>
                     {error}
                 </div>
+                <Modal isOpen={modal} onRequestClose={() => setModal(false)} />
             </div>
         </>
     )
+}
+
+
+
+function Modal({ isOpen, onRequestClose }: ReactModal.Props) {
+    const [error, setError] = useState<string | null>()
+    return (
+        <ReactModal ariaHideApp={false} isOpen={isOpen} shouldCloseOnEsc onRequestClose={onRequestClose} className={styles.modal} style={{
+            overlay: {
+                background: "var(--modalback)"
+            }
+        }}>
+            <h1>Warning</h1>
+            <p>The action you are about to take cannot be undone!
+                If you are absolutely sure you would like to continue,
+                please type in your password and then hit confirm.
+                Otherwise, please click outside or press escape to go back.</p>
+            <form autoComplete="off" method="DELETE" onSubmit={async e => {
+                let res = await tryDelete(e) as Error
+                if (res && res.message)
+                    setError(res.message)
+            }}>
+                <input type="password" id="password" name="password" placeholder="Password" />
+                <button type="submit">Confirm</button>
+            </form>
+            <div className={styles.confirmerror} hidden={!error} onClick={() => setError(null)}>
+                {error}
+            </div>
+        </ReactModal>
+    )
+}
+
+async function tryDelete(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    let data = getData<ConfirmationInfo>(e.target)
+    let res = await deleteAccount(data)
+    let body: any = res
+
+    if (!body.message)
+        router.push("/")
+    else
+        return body
+
 }
 
 type SubmitEvent = FormEvent<HTMLFormElement>

@@ -1,0 +1,16 @@
+.strength {
+  display: block !important;
+  background-color: dimgray;
+  border-radius: 1em;
+  padding: 0.25em;
+  margin-top: 0.25em;
+  overflow: hidden;
+}
+
+.strength div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: all 0.2s ease-in-out;
+}

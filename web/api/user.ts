@@ -1,3 +1,4 @@
+import { ConfirmationInfo } from './user';
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 import { address } from "../../env"
@@ -54,4 +55,12 @@ export interface UpdateInfo {
 
 export async function update(user: UpdateInfo) {
     return client.post("/update", user)
+}
+
+export interface ConfirmationInfo {
+    password: string
+}
+
+export async function deleteAccount(info: ConfirmationInfo) {
+    return client.del("/user/me", info)
 }
