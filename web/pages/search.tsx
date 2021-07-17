@@ -72,12 +72,14 @@ function Filters({ query }: any) {
 
 function getResults(
     users: QueryRes | null,
-    page: number,
-    fail: JSX.Element = <NoResult message="Sorry... we found no results!" emoji={"😢"} />
+    page: number
 ) {
     if (!users) return null
     const [res, count] = users as [User[], number]
-    if (!count) return fail
+    if (!count) 
+        return (
+            <NoResult message="Sorry... we found no results!" emoji="😢" />
+        ) 
     const pageCount = Math.ceil(count / 50) || 1
     return (
         <>
@@ -89,7 +91,8 @@ function getResults(
             </div>
             {res.map((u, i) => <SearchItem key={i} user={u} />)}
             {res.length == 50 ?
-                <Paginator className={styles.bottompager} page={page} pageCount={pageCount} buttonCount={7} click={toPage} />
+                <Paginator className={styles.bottompager} page={page}
+                    pageCount={pageCount} buttonCount={7} click={toPage} />
                 : null}
         </>
     )
