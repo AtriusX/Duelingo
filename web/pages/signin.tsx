@@ -1,7 +1,7 @@
 import styles from '../styles/Signin.module.css'
 import router from 'next/router'
 import { animate, getData } from '../utils'
-import { homeRedirect, login, register } from '../api/auth'
+import { emailRegex, homeRedirect, login, register } from '../api/auth'
 import { FormEvent, useState } from 'react'
 import { NextPageContext } from 'next'
 import { self } from '../api/user'
@@ -80,7 +80,8 @@ export default function Signup({ toRegister }: SignupProps) {
                         <h1>Register</h1>
                         <input type="text" id="username" name="username"
                             minLength={3} maxLength={20} placeholder="Name" />
-                        <input type="email" id="email" name="email" placeholder="Email" />
+                        <input type="email" id="email" name="email" 
+                            placeholder="Email" pattern={emailRegex.source} />
                         <input type="password" id="password" name="password"
                             minLength={8} maxLength={20} placeholder="Password"
                             onChange={e => setPass(e.target.value)} />

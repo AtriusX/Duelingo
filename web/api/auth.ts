@@ -1,6 +1,9 @@
 import router from "next/router";
 import client from "./config";
 
+export const emailRegex = 
+    /[a-zA-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-z0-9](?:[a-zA-z0-9-]*[a-zA-z0-9])?\.)+[a-zA-z0-9](?:[a-zA-z0-9-]*[a-zA-z0-9])?/
+
 type NextApiResult = {
   props?: object,
   redirect?: {

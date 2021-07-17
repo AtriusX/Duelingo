@@ -60,7 +60,7 @@ function Filters({ query }: any) {
                 </Dropdown>
                 <label htmlFor="order">Order:</label>
                 <Dropdown className={styles.filter} id="order"
-                    name="order" defaultValue={query.order ?? "Descending"}>
+                    name="order" defaultValue={query.order ?? "Ascending"}>
                     <p>Ascending</p>
                     <p>Descending</p>
                 </Dropdown>

@@ -14,7 +14,7 @@ export async function login(
     info: UserInfo
 ): Promise<User | Error> {
     const { email, password } = info
-    const user = await em.findOne(User, { email })
+    const user = await em.findOne(User, { email: { $ilike: email } })
     
     if (!user)
         return {
@@ -49,7 +49,7 @@ export async function register(
             message: "Password is invalid!"
         }
     const code = await hash(password)
-    const user = new User(username, email, code)    
+    const user = new User(username, email.toLowerCase(), code)    
     try {
         await em.persistAndFlush(user)
     } catch(_) {

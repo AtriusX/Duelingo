@@ -51,7 +51,7 @@ export interface UpdateInfo {
     username?: string
     email?: string
     password?: string
-    confirm?: string
+    existing?: string
     description?: string
 }
 

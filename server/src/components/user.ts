@@ -1,3 +1,4 @@
+import { verify } from 'argon2';
 import { Express, Request, Response } from 'express'
 import { MikroORM } from '@mikro-orm/core';
 import { User } from '../entities/User';
@@ -37,7 +38,11 @@ export default function setupUser(app: Express, db: MikroORM) {
 
     app.post("/update", async (req: Request, res: Response) => {
         const sess: any = req.session
-        const update = await updateUser(db.em, req.body, sess)
-        res.status(200).json({ success: update })
+        const body: any = req.body
+        const user = await db.em.findOne(User, { id: sess.userId })                
+        if (!!body.password.length && user && !(await verify(user.password, body.existing)))
+                return res.status(200).json({ message: "Existing password does not match current password!" })
+        const update = await updateUser(db.em, body, sess)
+        return res.status(200).json(update)
     })
 }

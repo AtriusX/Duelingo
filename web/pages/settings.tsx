@@ -1,5 +1,5 @@
 import { NextPageContext } from "next";
-import { homeRedirect } from "../api/auth";
+import { emailRegex, homeRedirect } from "../api/auth";
 import { ConfirmationInfo, deleteAccount, self, update, UpdateInfo, User } from "../api/user"
 import Navbar from '../components/Navbar'
 import { tryLogout } from '../api/auth'
@@ -40,7 +40,7 @@ export default function Settings({ user }: SettingsProps) {
             <div className={styles.container}>
                 <div className={styles.panels}>
                     <div>
-                        <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify, true)}>
+                        <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
                             <div className={styles.avatarcontainer}>
                                 <Avatar user={user} className={styles.avatar} />
                                 <div className={styles.details}>
@@ -56,16 +56,20 @@ export default function Settings({ user }: SettingsProps) {
                     <div>
                         <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
                             <label htmlFor="username">Username</label>
-                            <input type="text" id="username" name="username" minLength={3} maxLength={20} placeholder={user.username} />
+                            <input type="text" id="username" name="username"
+                                minLength={3} maxLength={20} placeholder={user.username} />
                             <br />
                             <label htmlFor="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder={user.email} />
+                            <input type="email" id="email" name="email"
+                                placeholder={user.email} pattern={emailRegex.source} />
                             <br />
                             <label htmlFor="password">New Password</label>
-                            <input type="password" id="password" name="password" minLength={8} maxLength={20} placeholder="New Password" />
+                            <input type="password" id="password" name="password"
+                                minLength={8} maxLength={20} placeholder="New Password" />
                             <br />
-                            <label htmlFor="password">Confirm Password</label>
-                            <input type="password" id="confirm" name="confirm" minLength={8} maxLength={20} placeholder="Confirm Password" />
+                            <label htmlFor="password">Existing Password</label>
+                            <input type="password" id="existing" name="existing"
+                                minLength={8} maxLength={20} placeholder="Existing Password" />
                             <br />
                             <button type="submit">Update Account</button>
                         </form>
@@ -136,13 +140,14 @@ async function tryDelete(e: FormEvent<HTMLFormElement>) {
 
 }
 
-async function updateAccount(event: SubmitEvent, fail: ErrorCallback, skipPassword?: boolean) {
+async function updateAccount(event: SubmitEvent, fail: ErrorCallback) {
     event.preventDefault()
-    let { username, email, password, confirm, description } = getData<UpdateInfo>(event.target)
-    if (!skipPassword && password !== confirm)
-        return fail({ message: "Confirmation password is not the same!" })
-    await update({ username: username, email, password, description })
-    router.reload()
+    let data = getData<UpdateInfo>(event.target)
+    let res = await update(data) as any
+    if (!res)
+        router.reload()
+    else
+        return fail(res)
 }
 
 export async function getServerSideProps({ req }: NextPageContext) {
