@@ -20,7 +20,8 @@ interface SearchData {
 }
 
 export default function Search({ user, query, queryRes }: SearchData) {
-    const [users, setUsers] = useState<QueryRes | null>(queryRes)
+    const [users, setUsers] = useState<QueryRes | null>(query.query ? queryRes : null)
+
     return (
         <div className={styles.body}>
             <Navbar name="query" value={query.query} user={user} className={styles.navbar}
