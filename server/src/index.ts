@@ -13,6 +13,7 @@ import { User } from "./entities/User";
 import faker from "faker"
 import { hash } from 'argon2';
 import chalk from "chalk"
+import setupRivals from './components/rival';
 
 async function main() {
   const db = await MikroORM.init(DatabaseConfig);
@@ -34,8 +35,9 @@ async function main() {
   app.use(
     cors(CorsConfig), json(), session(SessionConfig)
   );
-  setupAuth(app, db);
-  setupUser(app, db);
+  setupAuth(app, db)
+  setupUser(app, db)
+  setupRivals(app, db)
   app.listen(3000, () => console.log("Listening on port 3000!"));
 }
 

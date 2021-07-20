@@ -27,14 +27,14 @@ export default function Navbar({ user, children, ...others }: NavbarProps) {
             </div>
             {user ?
                 <ul id={styles.options}>
-                    {children?.map((c, i) => <li key={i}>{c}</li>)}
+                    {children?.map((c, i) => <li key={i} onClick={openOptions}>{c}</li>)}
                 </ul>
                 : undefined}
         </div>
     )
 }
 
-function openOptions(e: any) {
+function openOptions() {
     let options = document.getElementById(styles.options)
     if (!options) return
     if (options?.style.display === "block")

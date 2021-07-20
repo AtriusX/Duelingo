@@ -1,31 +1,24 @@
-import { Entity, PrimaryKey, PrimaryKeyType, Property } from "@mikro-orm/core";
-import { exception } from "console";
-
-type RivalryStatus = "active" | "pending"
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core"
 
 @Entity()
 export class Rivalry {
-    
-    constructor(userA: number, userB: number) {
-        if (userA == userB)
-            throw exception("Cannot create a rivalry between a single person!")
-        this.userA = Math.min(userA, userB)
-        this.userB = Math.max(userA, userB)
-    }
+  constructor(sender: number, receiver: number) {
+    this.sender = sender
+    this.receiver = receiver
+  }
 
-    @PrimaryKey()
-    @Property()
-    userA!: number
-    
-    @PrimaryKey()
-    @Property()
-    userB!: number
+  @PrimaryKey()
+  id!: number
 
-    [PrimaryKeyType]: [number, number]
+  @Property()
+  sender!: number
 
-    @Property({ type: "text" })
-    status: RivalryStatus = "pending"
+  @Property()
+  receiver!: number
 
-    @Property({ type: "date" })
-    createdAt: Date = new Date()
+  @Property()
+  active: boolean = false
+
+  @Property({ type: "date" })
+  createdAt: Date = new Date()
 }

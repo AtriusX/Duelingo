@@ -1,19 +1,7 @@
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
-import { address } from "../../env"
 import { cast } from "../utils"
-import { Error } from "../api"
-
-export type User = {
-    id: number
-    username: string
-    email: string
-    joined: string
-    language: string
-    rank: number
-    avatar?: string
-    description?: string
-}
+import { Error, User } from "../api"
 
 export interface SearchQuery extends ParsedUrlQueryInput {
     query: string
@@ -24,15 +12,7 @@ export type QueryRes = User[] | (number | User[])[]
 
 // All of this is VERY rought right now, this will probably need to be changed later
 export async function self(sessionToken?: string): Promise<User | null> {
-    return fetch(`http://${address}:3000/user/me`, {
-        method: "GET",
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Cookie': sessionToken ?? "",
-            'Secure': "true"
-        }
-    }).then(async u => !u ? u : await u.json())
+    return client.secureGet("/user/me", sessionToken ?? "")
 }
 
 export async function getUser(id?: string | string[]): Promise<User | Error> {

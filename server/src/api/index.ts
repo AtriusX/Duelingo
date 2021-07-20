@@ -1,6 +1,11 @@
 export const emailRegex = 
     /[a-zA-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-z0-9](?:[a-zA-z0-9-]*[a-zA-z0-9])?\.)+[a-zA-z0-9](?:[a-zA-z0-9-]*[a-zA-z0-9])?/
 
+
+type Session = {
+  userId?: number
+}
+
 export interface Error {
   message: string
 }
@@ -16,3 +21,5 @@ export function basicFieldTest(low: number = 3, high: number = 20) {
 
 export const emailFieldTest = (e: String) => 
   !!e && !!e.match(emailRegex)
+
+export const sessionId = (session: Session | any) => session.userId

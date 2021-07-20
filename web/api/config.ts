@@ -13,12 +13,33 @@ class Client {
         return request(`${this.BASE_API_URL}${path}`, method, data)
     }
 
+    private async authRequest(path: string, token: string, method: RequestType, data?: object) {
+        return fetch(`${this.BASE_API_URL}${path}`, {
+            method: method,
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': token ?? "",
+                'Secure': "true"   
+            },
+            body: JSON.stringify(data)
+        }).then(async u => !u ? u : await u.json())
+    }
+
     async get(path: string) {
         return this.request(path, "GET", undefined)
     }
 
+    async secureGet(path: string, token: string) {
+        return this.authRequest(path, token, "GET", undefined)
+    }
+
     async post(path: string, data: object = {}) {
         return this.request(path, "POST", data)
+    }
+
+    async securePost(path: string, token: string, data: object = {}) {
+        return this.authRequest(path, token, "POST", data)
     }
 
     async del(path: string, data: object = {}) {

@@ -1,0 +1,16 @@
+.button {
+    padding: 1em;
+    background: var(--primary);
+    text-shadow: 0 0 2px dimgray;
+    border: none !important;
+    font-weight: bold;
+    border-radius: 0.5em;
+    font-size: 11pt;
+    color: white;
+    transition: all 0.25s;
+    outline: none;
+}
+
+.button:hover {
+    background: var(--primary-hover);
+}

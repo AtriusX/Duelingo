@@ -27,4 +27,4 @@ From here you should now create two more command prompts (one for each system). 
 
 The front end is accessible from the address `http://localhost:4000/` and the back end runs off port `3000`. 
 
-On the first run of the system, the application will also generate a set of 1000 test users. This will only run if the user count dips below 1000 in development mode, and can be used in testing different functions on the system.
+On the first run of the system, the application will also generate a set of 1000 test users. This will only run if the user count dips below 1000 in development mode, and can be used in testing different functions on the system. Any mockups created for each phase will be stored in the corresponding folder under the `/mock` directory.

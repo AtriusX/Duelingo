@@ -1,20 +1,27 @@
 import { NextPageContext } from "next";
-import { getUser, self, User } from "../../api/user";
+import { getUser, self } from "../../api/user";
 import Avatar from "../../components/Avatar";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
-import { homeRedirect, tryLogout } from "../../api/auth";
+import { tryLogout } from "../../api/auth";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 import { cast, getRank } from "../../utils";
 import NoResult from "../../components/NoResult";
 import router from "next/router";
+import RivalButton from "../../components/RivalButton";
+import { active, all, get } from "../../api/rival";
+import { NamedRivalry, Rivalry, User } from "../../api/"
+import RivalItem from "../../components/RivalItem"
+
 interface ProfileData {
     user?: User | Error
     me?: User
+    rival: Rivalry,
+    rivals?: NamedRivalry[]
 }
 
-export default function Profile({ user, me }: ProfileData) {
+export default function Profile({ user, me, rival, rivals }: ProfileData) {
     if (!user)
         return (
             <NoResult message="It seems a bit empty in here..." emoji="🌌" className={styles.emptycenter}>
@@ -32,10 +39,13 @@ export default function Profile({ user, me }: ProfileData) {
             <div className={styles.body}>
                 <div>
                     <div className={styles.profile}>
-                        <h2><b>({getRank(rank)})</b> {username}</h2>
+                        <h2>
+                            <div><b>({getRank(rank)})</b> {username}</div>
+                            <RivalButton self={me} user={cast<User>(user)} state={rival} />
+                        </h2>
                         <hr />
                         <div className={styles.avatarcontainer}>
-                            <Avatar user={user} className={styles.avatar} />
+                            <Avatar user={user as User} className={styles.avatar} />
                         </div>
                         <div>
                             <h2>{getUnicodeFlagIcon("US")}</h2>
@@ -49,7 +59,8 @@ export default function Profile({ user, me }: ProfileData) {
                     <h3>No past games!</h3>
                 </div>
                 <div className={styles.rivals}>
-                    <h3>No rivals!</h3>
+                    <h3>Rivals</h3>
+                    {rivals?.map((r, i) => <RivalItem key={i} me={me} self={cast<User>(user)} rivalry={r} />)}
                 </div>
             </div>
         </>
@@ -58,8 +69,18 @@ export default function Profile({ user, me }: ProfileData) {
 
 export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await getUser(query.id)
-    const me = await self(req?.headers.cookie)
+    const token = req?.headers.cookie
+    const me = await self(token)
+    const same = cast<User>(user)?.id === me?.id
+    const rivals = same ? await all(query?.id) : await active(query?.id) ?? null
+    const rivalry = same ? null : await get(cast<User>(user).id, token!)
+
     return {
-        props: { user: !!(user as any)?.error ? null : user, me }
+        props: {
+            user: !!(user as any)?.error ? null : user,
+            me,
+            rival: rivalry,
+            rivals
+        }
     }
 }
