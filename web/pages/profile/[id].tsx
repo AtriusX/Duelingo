@@ -14,6 +14,7 @@ import { active, all, get } from "../../api/rival";
 import { NamedRivalry, Rivalry, User } from "../../api/"
 import RivalItem from "../../components/RivalItem"
 import Pane from "../../components/Pane";
+import Head from "next/head";
 
 interface ProfileData {
     user?: User | Error
@@ -32,6 +33,9 @@ export default function Profile({ user, me, rival, rivals }: ProfileData) {
     const { username, joined, rank, description } = user as User
     return (
         <div className={styles.body}>
+            <Head>
+                <title>{username}{"'"}s Profile</title>
+            </Head>
             <Navbar redirect="/search" user={me}>
                 <Link href={`/profile/${me?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>

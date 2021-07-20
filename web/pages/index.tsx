@@ -4,6 +4,7 @@ import { User } from "../api/"
 import styles from '../styles/Index.module.css'
 import Home from "../components/Home"
 import Landing from "../components/Landing"
+import Head from "next/head"
 
 interface Data {
   user?: User
@@ -11,6 +12,9 @@ interface Data {
 
 export default function Index({ user }: Data) {
   return <div className={styles.container}>
+    <Head>
+      <title>Home</title>
+    </Head>
     {!!user ? <Home user={user} /> : <Landing />}
   </div>
 }

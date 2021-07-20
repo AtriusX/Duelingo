@@ -1,20 +1,20 @@
 import { NextPageContext } from "next";
-import Head from "next/head";
 import { User } from "../../api";
+import { self } from "../../api/user";
 import { homeRedirect } from "../../api/auth";
-import { self } from "../../api/user"
+import Head from "next/head";
 
-interface CasualProps {
+interface CompetitiveProps {
     self: User
 }
 
-export default function Casual({ }: CasualProps) {
+export default function Competitive({ }: CompetitiveProps) {
     return (
         <div>
             <Head>
-                <title>Casual Matchmaking</title>
+                <title>Competitive Matchmaking</title>
             </Head>
-            Casual Page! Come back later!
+            Competitive Page! Come back later!
         </div>
     )
 }

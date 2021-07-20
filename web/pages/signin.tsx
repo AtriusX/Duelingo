@@ -7,6 +7,7 @@ import { NextPageContext } from 'next'
 import { self } from '../api/user'
 import Strength from '../components/Strength'
 import { Error } from "../api/"
+import Head from 'next/head'
 
 type SubmitEvent = FormEvent<HTMLFormElement>
 type ErrorCallback = (err: Error) => void
@@ -53,6 +54,9 @@ export default function Signup({ toRegister }: SignupProps) {
     const [pass, setPass] = useState("")
     return (
         <div className={styles.backdrop}>
+            <Head>
+                <title>{login ? "Login" : "Register"}</title>
+            </Head>
             {/* Backdrop and back button */}
             <div className={styles.img} />
             <button className={styles.back}
@@ -80,7 +84,7 @@ export default function Signup({ toRegister }: SignupProps) {
                         <h1>Register</h1>
                         <input type="text" id="username" name="username"
                             minLength={3} maxLength={20} placeholder="Name" />
-                        <input type="email" id="email" name="email" 
+                        <input type="email" id="email" name="email"
                             placeholder="Email" pattern={emailRegex.source} />
                         <input type="password" id="password" name="password"
                             minLength={8} maxLength={20} placeholder="Password"

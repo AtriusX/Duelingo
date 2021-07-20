@@ -13,6 +13,7 @@ import Dropdown from "../components/Dropdown"
 import Paginator from "../components/Paginator"
 import Pane from "../components/Pane"
 import { User } from "../api"
+import Head from "next/head"
 
 interface SearchData {
     user: User
@@ -25,6 +26,9 @@ export default function Search({ user, query, queryRes }: SearchData) {
 
     return (
         <div className={styles.body}>
+            <Head>
+                <title>Search</title>
+            </Head>
             <Navbar name="query" value={query.query} user={user} className={styles.navbar}
                 onSubmit={async e => await performSearch(e, setUsers)}>
                 <Link href={`/profile/${user?.id}`}>My Profile</Link>
