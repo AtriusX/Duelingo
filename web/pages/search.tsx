@@ -1,6 +1,6 @@
 import router from "next/router"
 import { Dispatch, FormEvent, SetStateAction, useState } from "react"
-import { QueryRes, search, SearchQuery, User } from '../api/user'
+import { QueryRes, search, SearchQuery } from '../api/user'
 import { getData } from "../utils"
 import styles from '../styles/Search.module.css'
 import { NextPageContext } from "next"
@@ -11,7 +11,8 @@ import Link from "next/link"
 import { tryLogout } from "../api/auth"
 import Dropdown from "../components/Dropdown"
 import Paginator from "../components/Paginator"
-import NoResult from "../components/NoResult"
+import Pane from "../components/Pane"
+import { User } from "../api"
 
 interface SearchData {
     user: User
@@ -30,15 +31,15 @@ export default function Search({ user, query, queryRes }: SearchData) {
                 <Link href={"/settings"}>Settings</Link>
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
-            <div className={styles.container}>
-                <div className={styles.grid}>
-                    <aside className={styles.options}>
-                        <Filters query={query} />
-                    </aside>
-                    <main className={styles.results}>
+            <div className={styles.grid}>
+                <aside className={styles.options}>
+                    <Filters query={query} />
+                </aside>
+                <main>
+                    <div>
                         {users ? getResults(users, query.page ?? 1) : null}
-                    </main>
-                </div>
+                    </div>
+                </main>
             </div>
         </div>
     )
@@ -76,13 +77,9 @@ function getResults(
 ) {
     if (!users) return null
     const [res, count] = users as [User[], number]
-    if (!count) 
-        return (
-            <NoResult message="Sorry... we found no results!" emoji="😢" />
-        ) 
     const pageCount = Math.ceil(count / 50) || 1
     return (
-        <>
+        <Pane className={styles.results} emptyIcon="😢" emptyText="Sorry... we found no results!" items={count}>
             <div className={styles.pageinfo}>
                 <p>{count} result(s) found.</p>
                 <Paginator page={page} pageCount={pageCount} buttonCount={7} click={toPage} />
@@ -94,7 +91,7 @@ function getResults(
                 <Paginator className={styles.bottompager} page={page}
                     pageCount={pageCount} buttonCount={7} click={toPage} />
                 : null}
-        </>
+        </Pane>
     )
 }
 

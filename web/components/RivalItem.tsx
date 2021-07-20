@@ -4,6 +4,7 @@ import styles from "../styles/RivalItem.module.css"
 import RivalButton from "./RivalButton";
 import { cast } from "../utils";
 import Avatar from "./Avatar";
+import router from "next/router";
 
 interface RivalItemProps {
     me?: User
@@ -16,8 +17,10 @@ export default function RivalItem({ me, self, rivalry }: RivalItemProps) {
     return (
         <Link href={`/profile/${rival}`} passHref>
             <div className={styles.box}>
-                <Avatar className={styles.avatar} user={rivalry} />
-                <a className={styles.link}>{rivalry.username}</a>
+                <section className={styles.name}>
+                    <Avatar className={styles.avatar} user={rivalry} />
+                    <a className={styles.link}>{rivalry.username}</a>
+                </section>
                 <div>
                     <RivalButton self={me} user={cast<User>(rivalry)} state={rivalry} />
                 </div>

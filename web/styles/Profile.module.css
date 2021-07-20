@@ -1,9 +1,17 @@
 .body {
   position: fixed;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.container {
   display: grid;
-  grid-template-columns: repeat(3, 33%);
+  grid-template-columns: repeat(3, 1fr);
+  height: 100%;
+  overflow: hidden;
 }
 
 .profile {
@@ -16,10 +24,14 @@
   overflow: hidden;
 }
 
-.profile h2 {
+.profile h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.profile h3 div {
+  padding: 0.75em 0;
 }
 
 .emptycenter {
@@ -82,10 +94,6 @@
   height: 100%;
   object-fit: cover;
   border: 2px solid #ddd;
-}
-
-.rivals {
-  padding-right: 0 !important;
 }
 
 .rivals,

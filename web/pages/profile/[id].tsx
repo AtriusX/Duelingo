@@ -13,6 +13,7 @@ import RivalButton from "../../components/RivalButton";
 import { active, all, get } from "../../api/rival";
 import { NamedRivalry, Rivalry, User } from "../../api/"
 import RivalItem from "../../components/RivalItem"
+import Pane from "../../components/Pane";
 
 interface ProfileData {
     user?: User | Error
@@ -30,40 +31,38 @@ export default function Profile({ user, me, rival, rivals }: ProfileData) {
         )
     const { username, joined, rank, description } = user as User
     return (
-        <>
+        <div className={styles.body}>
             <Navbar redirect="/search" user={me}>
                 <Link href={`/profile/${me?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>
                 <a onClick={tryLogout}>Logout</a>
             </Navbar>
-            <div className={styles.body}>
-                <div>
-                    <div className={styles.profile}>
-                        <h2>
-                            <div><b>({getRank(rank)})</b> {username}</div>
-                            <RivalButton self={me} user={cast<User>(user)} state={rival} />
-                        </h2>
+            <div className={styles.container}>
+                <div className={styles.profile}>
+                    <h3>
+                        <div><b>({getRank(rank)})</b> {username}</div>
+                        <RivalButton self={me} user={cast<User>(user)} state={rival} />
+                    </h3>
+                    <hr />
+                    <div className={styles.avatarcontainer}>
+                        <Avatar user={user as User} className={styles.avatar} />
+                    </div>
+                    <div>
+                        <h2>{getUnicodeFlagIcon("US")}</h2>
+                        <h3>Joined on {new Date(joined).toLocaleDateString()}</h3>
                         <hr />
-                        <div className={styles.avatarcontainer}>
-                            <Avatar user={user as User} className={styles.avatar} />
-                        </div>
-                        <div>
-                            <h2>{getUnicodeFlagIcon("US")}</h2>
-                            <h3>Joined on {new Date(joined).toLocaleDateString()}</h3>
-                            <hr />
-                            <p>{description ? description : "No description provided."}</p>
-                        </div>
+                        <p>{description ? description : "No description provided."}</p>
                     </div>
                 </div>
-                <div className={styles.games}>
-                    <h3>No past games!</h3>
-                </div>
-                <div className={styles.rivals}>
+                <Pane className={styles.games} emptyIcon="🎮" emptyText="No past games!">
+                    <h3>Games</h3>
+                </Pane>
+                <Pane className={styles.rivals} emptyIcon="🌞" emptyText="No Rivals!" items={rivals}>
                     <h3>Rivals</h3>
                     {rivals?.map((r, i) => <RivalItem key={i} me={me} self={cast<User>(user)} rivalry={r} />)}
-                </div>
+                </Pane>
             </div>
-        </>
+        </div>
     )
 }
 

@@ -1,22 +1,28 @@
 .body {
-  position: absolute;
-  display: block;
-  height: 100% !important;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .grid {
-  position: relative;
   display: grid;
   grid-template-columns: 30% 70%;
   height: 100%;
-  width: 100%;
+  overflow: hidden;
 }
 
-.container {
-  flex-flow: column;
+.grid main {
+  position: relative;
+  overflow-y: hidden;
+}
+
+.grid main > div {
   width: 100%;
   height: 100%;
+  display: grid;
 }
 
 .pageinfo {
@@ -42,10 +48,7 @@
 }
 
 .results {
-  flex-direction: column;
-  right: 0;
-  padding: 0 1em;
-  width: 100%;
+  padding: 0 2em;
 }
 
 .options {

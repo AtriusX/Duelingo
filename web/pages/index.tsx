@@ -1,5 +1,6 @@
 import { NextPageContext } from 'next'
-import { self, User } from '../api/user'
+import { self } from '../api/user'
+import { User } from "../api/"
 import styles from '../styles/Index.module.css'
 import Home from "../components/Home"
 import Landing from "../components/Landing"

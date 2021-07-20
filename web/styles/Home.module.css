@@ -1,8 +1,9 @@
 .body {
   position: fixed;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -13,18 +14,28 @@
   align-items: center;
 }
 
-.body > div {
-  padding: 1em;
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 100%;
 }
 
 .avatar {
   width: 15em;
   height: 15em;
-  margin: 1em;
+  border: 2px solid #ddd;
+  box-sizing: content-box;
+  margin: 2em;
 }
 
 .user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 2px solid #ddd;
   overflow: hidden;
+  padding: 0 1em;
 }
 
 .user h1 {
@@ -36,7 +47,7 @@
 .user hr {
   border: 2px solid black;
   width: 100%;
-  margin: 1em;
+  margin: 0 1em 1em 1em;
 }
 
 .updates {
@@ -49,6 +60,8 @@
 }
 
 .game {
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
