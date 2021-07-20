@@ -27,12 +27,14 @@ export default function Home({ user }: HomeProps) {
                             <p>Stats go here later</p>
                         </div>
                     </div>
-                    <Pane className={styles.updates} emptyIcon="📃" emptyText="No recent updates!">
+                    <Pane className={styles.updates}
+                        emptyIcon="📃" emptyText="No recent updates!">
                         {/* TODO: Updates should be put here later */}
                     </Pane>
                     <div className={styles.game}>
+                        <h1>Ready to play?</h1>
                         <div className={styles.play}>
-                            <h1>Ready to play?</h1>
+                            <h2>Select a game mode!</h2>
                             <div className={styles.buttons}>
                                 <Link href="/game/casual">Casual</Link>
                                 <Link href="/game/competitive">Competitive</Link>
