@@ -17,6 +17,7 @@ export type Rivalry = {
   sender?: number
   receiver?: number
   active: boolean
+  createdAt: Date
 }
 
 export type NamedRivalry = Rivalry & { id: number; username: string }

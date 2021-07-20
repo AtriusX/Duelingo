@@ -1,8 +1,10 @@
+import { Rivalry } from './../entities/Rivalry';
 import { testRequirements, emailFieldTest, basicFieldTest } from '.';
 import { hash } from 'argon2';
 import { User } from '../entities/User';
 import { EntityManager, QueryOrder } from '@mikro-orm/core';
 import { Error } from "../api/"
+import { pending } from './rival';
 
 export type QueryRes = User[] | (number | User[])[]
 
@@ -40,4 +42,25 @@ export async function updateUser(em: EntityManager, up: User, session: { userId:
         return { message: "Email is already in use!" }
     }
     return null
+}
+
+type UpdateType = {
+    type: "rivalry" | "result"
+}
+
+export type NamedRivalry = Rivalry & { id: number; username: string }
+
+const cast = <T>(value: unknown) => value as T
+
+export async function getUpdates(em: EntityManager, id: number): Promise<(NamedRivalry & UpdateType)[] | Error> {
+    const rivals = await pending(em, id)
+    if (rivals instanceof Error)
+        return rivals
+    // Get past rivals
+    const rivalTypes = cast<NamedRivalry[]>(rivals)
+        .map(r => { return {...r, type: "rivalry" } as NamedRivalry & UpdateType })
+    // TODO: Get past game results
+    // TODO: Merge all and sort by date
+    return rivalTypes
+        .sort(r => r.createdAt.getMilliseconds())
 }
