@@ -39,7 +39,7 @@ export default function Profile({ user, me, rival, rivals }: ProfileData) {
             <Navbar redirect="/search" user={me}>
                 <Link href={`/profile/${me?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>
-                <a onClick={tryLogout}>Logout</a>
+                <a onClick={() => tryLogout()}>Logout</a>
             </Navbar>
             <div className={styles.container}>
                 <div className={styles.profile}>

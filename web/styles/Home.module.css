@@ -19,6 +19,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   height: 100%;
+  overflow: hidden;
 }
 
 .avatar {
@@ -52,11 +53,14 @@
 
 .updates {
   width: 50vw;
-  overflow-y: scroll;
+  overflow-y: auto !important;
+  border-right: 2px solid #ddd;
+  padding: 1em;
 }
 
 .updates h2 {
   color: gray;
+  text-align: center;
 }
 
 .game {

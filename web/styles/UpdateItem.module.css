@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+    margin-bottom: 0;
+    background: var(--back);
+    color: white;
+    padding: 1em;
+    border-radius: 1em;
+    align-items: center;
+}
+
+.avatar {
+    margin-right: 1em;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+.container div {
+    display: flex;
+    text-align: left;
+    align-items: center;
+}
+
+.container div * {
+    display: inline-block;
+}

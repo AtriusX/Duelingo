@@ -24,7 +24,6 @@ export default function RivalButton({ self, user, state }: RivalProps) {
     // Dont show the button if the user is logged out or the same id
     if (!self || self?.id === user?.id)
         return null
-
     // This is a bit messy, but it's at least a bit more readable than just 
     // trying to handle it 100% dynamically 
     if (!!status) {

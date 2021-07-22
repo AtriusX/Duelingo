@@ -1,6 +1,6 @@
 import styles from '../styles/Avatar.module.css'
 import Image from 'next/image'
-import { User } from '../api/user'
+import { User } from '../api/'
 
 type AvatarProps = {
     user?: User
