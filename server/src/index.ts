@@ -14,6 +14,8 @@ import faker from "faker"
 import { hash } from 'argon2';
 import chalk from "chalk"
 import setupRivals from './components/rival';
+import { createServer } from "http"
+import { setupSockets } from './network/socket';
 
 async function main() {
   const db = await MikroORM.init(DatabaseConfig);
@@ -32,13 +34,18 @@ async function main() {
   }
 
   const app = express();
+  console.log(chalk.blue("Setting up features..."))
+  const sess = session(SessionConfig)
   app.use(
-    cors(CorsConfig), json(), session(SessionConfig)
+    cors(CorsConfig), json(), sess
   );
+  const http = createServer(app)
+
+  setupSockets(http, sess)
   setupAuth(app, db)
   setupUser(app, db)
   setupRivals(app, db)
-  app.listen(3000, () => console.log("Listening on port 3000!"));
+  http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")));
 }
 
 main().catch(console.error);
