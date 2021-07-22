@@ -1,3 +1,4 @@
+import { cast } from './../utils';
 import { request, RequestType } from "../utils"
 import { address } from '../../env'
 
@@ -26,20 +27,20 @@ class Client {
         }).then(async u => !u ? u : await u.json())
     }
 
-    async get(path: string) {
-        return this.request(path, "GET", undefined)
+    async get<T = any>(path: string) {
+        return cast<Promise<T>>(this.request(path, "GET", undefined))
     }
 
-    async secureGet(path: string, token: string) {
-        return this.authRequest(path, token, "GET", undefined)
+    async secureGet<T = any>(path: string, token: string) {
+        return cast<Promise<T>>(this.authRequest(path, token, "GET", undefined))
     }
 
-    async post(path: string, data: object = {}) {
-        return this.request(path, "POST", data)
+    async post<T = any>(path: string, data: object = {}) {
+        return cast<Promise<T>>(this.request(path, "POST", data))
     }
 
-    async securePost(path: string, token: string, data: object = {}) {
-        return this.authRequest(path, token, "POST", data)
+    async securePost<T = any>(path: string, token: string, data: object = {}) {
+        return cast<Promise<T>>(this.authRequest(path, token, "POST", data))
     }
 
     async del(path: string, data: object = {}) {
