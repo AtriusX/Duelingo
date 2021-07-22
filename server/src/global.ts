@@ -1,13 +1,20 @@
-import { Configuration } from "@mikro-orm/core";
+import { Configuration } from "@mikro-orm/core"
 
-type Platform = keyof typeof Configuration.PLATFORMS;
+type Platform = keyof typeof Configuration.PLATFORMS
 
-export const DEV = process.env.NODE_ENV !== "production";
+export const DEV = process.env.NODE_ENV !== "production"
 
-export const DBNAME = "capstone";
+export const DBNAME = "capstone"
 
-export const DBTYPE: Platform = "postgresql";
+export const DBTYPE: Platform = "postgresql"
 
-export const DBUSER = "postgres";
+export const DBUSER = "postgres"
 
-export const DBPASS = "password";
+export const DBPASS = "password"
+
+// This keeps our session data stored
+declare module "express-session" {
+  interface SessionData {
+    userId: number
+  }
+}
