@@ -1,3 +1,6 @@
+import { NextPageContext } from "next"
+import { io, Socket } from "socket.io-client"
+
 /**
  * This function streamlines the process of aggregating form data into a json object.
  * This can be used to handle post requests with ease.
@@ -52,4 +55,18 @@ export function getRank(value: number): string {
 }
 
 // Helper function for force casting an object without needing to use "as unknown as Type"
-export const cast = <T>(value: unknown) => value as T
+export const cast = <T = any>(value: unknown) => value as T
+
+// Server-side function to allow us to call a socket without explicitly specifiying its token in calls
+export function callSocket(
+  req: NextPageContext["req"],
+  exec: (socket: Socket) => void
+) {
+  exec(
+    io("http://localhost:3000", {
+      extraHeaders: {
+        "Cookie": req?.headers.cookie ?? ""
+      }
+    })
+  )
+}

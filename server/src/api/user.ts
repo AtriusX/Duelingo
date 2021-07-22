@@ -54,13 +54,14 @@ const cast = <T>(value: unknown) => value as T
 
 export async function getUpdates(em: EntityManager, id: number): Promise<(NamedRivalry & UpdateType)[] | Error> {
     const rivals = await pending(em, id)
-    if (rivals instanceof Error)
-        return rivals
+    if (!!cast<Error>(rivals)?.message)
+        return rivals as Error
     // Get past rivals
     const rivalTypes = cast<NamedRivalry[]>(rivals)
         .map(r => { return {...r, type: "rivalry" } as NamedRivalry & UpdateType })
     // TODO: Get past game results
     // TODO: Merge all and sort by date
     return rivalTypes
-        .sort(r => r.createdAt.getMilliseconds())
+        .sort(r => -r.createdAt.getTime())
+    
 }

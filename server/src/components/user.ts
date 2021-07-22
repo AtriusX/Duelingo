@@ -9,9 +9,9 @@ import { deleteUser } from '../api/auth';
 export default function setupUser(app: Express, db: MikroORM) {
     
     app.get("/user/me", async (req, res) => {
-        const sess: any = req.session
+        const sess = req.session    
         const user = await db.em.findOne(User, { id: sess.userId })        
-        res.status(200).json(user)
+        res.status(200).json(!!user ? { ...user, token: sess.id } : null)
     })
 
     app.delete("/user/me", async (req, res) => {

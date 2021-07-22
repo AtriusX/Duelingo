@@ -9,8 +9,7 @@ export default function setupAuth(app: Express, db: MikroORM) {
         const { username, email, password } = req.body
         let user = await register(db.em, { username, email, password })
         if (user instanceof User) {
-            const sess: any = req.session
-            sess.userId = user.id
+            req.session.userId = user.id
         } 
         res.status(200).json(user)
     })
@@ -19,8 +18,7 @@ export default function setupAuth(app: Express, db: MikroORM) {
         const { email, password } = req.body
         const user = await login(db.em, { email, password })
         if (user instanceof User) {
-            const sess: any = req.session
-            sess.userId = user.id
+            req.session.userId = user.id
         }        
         res.status(200).json(user)
     })

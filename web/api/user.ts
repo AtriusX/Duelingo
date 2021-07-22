@@ -1,7 +1,7 @@
 import client from "./config"
 import { ParsedUrlQueryInput } from "querystring"
 import { cast } from "../utils"
-import { Error, User } from "../api"
+import { Error, NamedRivalry, User } from "../api"
 
 export interface SearchQuery extends ParsedUrlQueryInput {
     query: string
@@ -9,9 +9,12 @@ export interface SearchQuery extends ParsedUrlQueryInput {
 }
 
 export type QueryRes = User[] | (number | User[])[]
+export type Token = {
+    token: string
+}
 
 // All of this is VERY rought right now, this will probably need to be changed later
-export async function self(sessionToken?: string): Promise<User | null> {
+export async function self(sessionToken?: string): Promise<User & Token | null> {
     return client.secureGet("/user/me", sessionToken ?? "")
 }
 
@@ -46,3 +49,13 @@ export interface ConfirmationInfo {
 export async function deleteAccount(info: ConfirmationInfo) {
     return client.del("/user/me", info)
 }
+
+type GameResult = {}
+
+export type Update = 
+    { type: "rivalry" } & NamedRivalry | 
+    { type: "result" } & GameResult
+
+export async function getUpdates(token?: string): Promise<Update[]> {
+    return client.secureGet<Update[]>("/updates", token ?? "")
+} 

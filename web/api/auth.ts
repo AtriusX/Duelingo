@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io-client';
 import router from "next/router";
 import client from "./config";
 
@@ -37,7 +38,8 @@ export async function logout() {
   return client.post("/logout");
 }
 
-export async function tryLogout() {
+export async function tryLogout(socket?: Socket) {
   await logout()
   router.push("/")
+  socket?.disconnect()
 }
