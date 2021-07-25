@@ -13,6 +13,7 @@ interface RivalProps {
 
 export default function RivalButton({ self, user, state }: RivalProps) {
     const [status, setStatus] = useState<Option<Rivalry>>(state ?? null)
+
     // We do this to force update the value when the page changes
     useEffect(() => {
         setStatus(state ?? null)

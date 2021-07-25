@@ -6,6 +6,8 @@ type Func<A, B, C = void> = (a: A, b: B) => C
 
 type Callback = (err: any, session: SessionData) => void
 
+export type Option<T> = T | undefined
+
 export type Handshake = {
   session: SessionData
   sessionStore: {

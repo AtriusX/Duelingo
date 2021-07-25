@@ -2,7 +2,7 @@ import { sessionId } from '../api/index';
 import { MikroORM } from "@mikro-orm/core"
 import { Express, Request } from "express"
 import { Response } from "express-serve-static-core"
-import { active, allRivals, create,  pending,  remove, status } from '../api/rival';
+import { active, allRivals, availableRivals, create,  pending,  remove, status } from '../api/rival';
 
 export default function setupRivals(app: Express, { em }: MikroORM) {
 
@@ -56,8 +56,8 @@ export default function setupRivals(app: Express, { em }: MikroORM) {
         res.status(200).json(data)
     })
 
-    // We may not need this for the time being
-    // app.get("/rival/search", (req: Request, res: Response) => {
-    //     const sender = sessionId(req.session)
-    // })
+    app.post("/rivals/available/:id", async (req: Request, res: Response) => {        
+        const data = await availableRivals(em, parseInt(req.params["id"]) || 0)
+        res.status(200).json(data)
+    })
 }

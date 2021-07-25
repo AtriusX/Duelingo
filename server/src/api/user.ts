@@ -21,9 +21,9 @@ export async function search(em: EntityManager, query: any): Promise<QueryRes> {
     })
 }
 
-export async function updateUser(em: EntityManager, up: User, session: { userId: number }): Promise<Error | null> {
+export async function updateUser(em: EntityManager, up: User, userId: number): Promise<Error | null> {
     try {
-        const self = await em.findOne(User, { id: session.userId })
+        const self = await em.findOne(User, { id: userId })
         if (!self) 
             return { message: "No session found!" }
         const { username, email, password, language, description } = up
@@ -63,5 +63,4 @@ export async function getUpdates(em: EntityManager, id: number): Promise<(NamedR
     // TODO: Merge all and sort by date
     return rivalTypes
         .sort(r => -r.createdAt.getTime())
-    
 }

@@ -1,5 +1,10 @@
 .container {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+.noresult {
+    padding: 1em;
+    height: 100%;
 }

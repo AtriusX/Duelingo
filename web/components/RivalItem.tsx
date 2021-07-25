@@ -21,7 +21,7 @@ export default function RivalItem({ me, self, rivalry }: RivalItemProps) {
                     <a className={styles.link}>{rivalry.username}</a>
                 </section>
                 <div>
-                    <RivalButton self={me} user={cast<User>(rivalry)} state={rivalry} />
+                    {me?.id === self?.id ? <RivalButton self={me} user={cast<User>(rivalry)} state={rivalry} /> : null}
                 </div>
             </div>
         </Link>

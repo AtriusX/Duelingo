@@ -33,7 +33,7 @@ export default function Search({ user, query, queryRes }: SearchData) {
                 onSubmit={async e => await performSearch(e, setUsers)}>
                 <Link href={`/profile/${user?.id}`}>My Profile</Link>
                 <Link href={"/settings"}>Settings</Link>
-                <a onClick={tryLogout}>Logout</a>
+                <a onClick={() => tryLogout()}>Logout</a>
             </Navbar>
             <div className={styles.grid}>
                 <aside className={styles.options}>

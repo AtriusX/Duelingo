@@ -1,20 +1,25 @@
 import { NextPageContext } from "next";
-import Head from "next/head";
 import { User } from "../../api";
 import { homeRedirect } from "../../api/auth";
-import { self } from "../../api/user"
+import { self, Token } from "../../api/user"
+import Title from "../../components/Title";
+import FindRival from "../../components/FindRival"
+import styles from "../../styles/Casual.module.css"
+import router from "next/router";
 
 interface CasualProps {
-    self: User
+    user: User & Token
 }
 
-export default function Casual({ }: CasualProps) {
+export default function Casual({ user }: CasualProps) {
     return (
         <div>
-            <Head>
-                <title>Casual Matchmaking</title>
-            </Head>
-            Casual Page! Come back later!
+            <button className={styles.back}
+                onClick={() => router.push("/")}>Back</button>
+            <div className={styles.box}>
+                <Title title={"Casual Matchmaking"} />
+                <FindRival className={styles.selector} user={user} />
+            </div>
         </div>
     )
 }

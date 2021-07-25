@@ -1,0 +1,45 @@
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.selector {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    width: 50%;
+    overflow: hidden;
+    border: 1px solid dimgray;
+    border-radius: 1em;
+}
+
+.selector input {
+    border: none;
+    width: 100% !important;
+    border-bottom: 1px solid dimgray;
+    outline: none;
+    width: 30%;
+    padding: 1em;
+}
+
+.back {
+  position: absolute;
+  width: 10em;
+  padding: 1em 0;
+  background: #22e684;
+  border: none !important;
+  margin: 1em;
+  font-weight: bold;
+  border-radius: 0.5em;
+  font-size: 11pt;
+  color: white;
+  transition: all 0.25s;
+  outline: none;
+}
+
+.back:hover {
+    background: var(--primary-hover);
+}

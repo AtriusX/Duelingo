@@ -4,7 +4,7 @@ import NoResult from "./NoResult";
 import styles from "../styles/Pane.module.css"
 
 interface PaneProps extends HTMLProps<HTMLDivElement> {
-    emptyIcon: string
+    emptyIcon?: string
     emptyText: string
     items?: any[] | number
 }
@@ -16,7 +16,7 @@ export default function Pane({ emptyIcon, emptyText, items, children, className,
             {(typeof items === "number" && !!items)
                 || (!!cast<any>(items)?.length ?? 0)
                 ? children
-                : <NoResult message={emptyText} emoji={emptyIcon} />}
+                : <NoResult className={styles.noresult} message={emptyText} emoji={emptyIcon} />}
         </div>
     )
 }

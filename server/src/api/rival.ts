@@ -1,7 +1,9 @@
 import { User } from '../entities/User';
 import { Rivalry } from '../entities/Rivalry';
 import { Error } from "."
+import { cast } from "../types"
 import { EntityManager } from "@mikro-orm/core"
+import ConnectionRepository from '../network/ConnectionRepository';
 
 type Join<A, B> = A & B
 
@@ -81,9 +83,7 @@ async function getRivals(
 ): Promise<NamedRivalry[] | Error> {
     if (!sender)
         return { message: "No session provided!" }
-    const status = active !== undefined ? { active: active } : {}
-    let rivals = (await em.find(Rivalry, { sender: sender, ...status }))
-        .concat(await em.find(Rivalry, { receiver: sender, ...status }))
+    let rivals = await em.find(Rivalry, { $and: [{ active }, { $or: [{ sender: sender, active }, { receiver: sender}] }] })
     let ids = rivals.map(r => r.sender === sender ? r.receiver : r.sender)
     let users = await em.find(User, ids)
     let out = []
@@ -109,6 +109,22 @@ export async function status(
     if (!entity)
         return null
     return entity
+}
+
+export async function availableRivals(
+    em: EntityManager,
+    id: number
+): Promise<NamedRivalry[]> {
+    let rivals = await active(em, id)
+    if (!!cast<Error>(rivals).message)
+        return []
+    let out: NamedRivalry[] = []
+    for (let rival of cast<NamedRivalry[]>(rivals)) {
+        let socket = await ConnectionRepository.get().recall(rival.id)  
+        if (!!socket && socket.status === "available")
+            out.push(rival)
+    } 
+    return out
 }
 
 const rivalry = async (

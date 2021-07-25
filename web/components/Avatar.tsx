@@ -23,7 +23,7 @@ export default function Avatar({ user, className }: AvatarProps) {
     )
 }
 
-function colorHash(seed: string) {
+export function colorHash(seed: string) {
     const num = parseInt(seed.replace(/[^\w\d]/g, ""), 36) % 0xFFFFFF
     return `#${num.toString(16).padStart(6, "0")}`
 }

@@ -1,0 +1,12 @@
+.item {
+    position: relative;
+    padding: 1.5em;
+    height: max-content;
+    background: var(--back); 
+    color: white;
+    transition: all 0.1s;
+}
+
+.item:hover {
+    background: var(--back-hover);
+}

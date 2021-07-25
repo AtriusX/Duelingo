@@ -15,7 +15,6 @@ interface HomeProps {
     updates?: Update[]
 }
 
-
 export default function Home({ user, updates }: HomeProps) {
     // This might need to change later on
     const socket = io("http://localhost:3000")

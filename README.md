@@ -7,11 +7,27 @@ To get the project running, you will need to have a few things prepared before i
 ## Requirements
 
 - [Yarn](https://classic.yarnpkg.com/en/docs/install/)
+- [Redis](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04)
+  - Linux allows you to install Redis directly without extra dependencies.
+  - If you are on Windows you will need to install WSL 2 first. I recommend using [Ubuntu 20.04](https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71) for this system.
+  - Mac is unfortunately unsupported in this installation guide, though you should be able to install this through [Homebrew](https://phoenixnap.com/kb/install-redis-on-mac).
 - [PostgreSQL](https://www.postgresql.org/)
 
 ## Installation
 
+### Yarn:
+
 Yarn is the package manager that this project is built with, so it will be necessary to have it available in order to download and install all the necessary dependencies.
+
+### Redis: 
+
+Redis is the system we use for session storage, and later potentially for game system management. Redis is an in-memory datastore, meaning we can save and recall data much more quickly than we could by using a conventional database (though with the added trade-off of saved data being volatile). This system was chosen for sessions primarily because of its read/write throughput, since we assume session states will change much more frequently, and as a way to keep session state off the main server process. Installing the software will require the use of an open terminal for most of the process.
+
+Redis is only natively supported on Linux, so if you use Windows or Mac you will need to first install WSL or Homebrew respectively before you can continue. Once you have the prerequesites installed, you can now move forward with the installation. For the rest of this installation, we will assume you are using WSL since this is what the system was developed on. If you are running on Linux or Mac, please consult installation guides for those platforms.
+
+You want to begin by opening a WSL terminal in the command prompt by running the `wsl` command. This should run your default linux subsystem and allow you to run commands through it. From here, start by running `sudo apt update` and entering your password if prompted (this should likely be your system user password). Once the command has finished executing, you will want to install Redis using the command `sudo apt install redis-server`. This should install any necessary components for interactions with Redis to take place. From here, you should now run `sudo service redis-server restart` to ensure that Redis has started successfully, and then you can check if you can connect by running `redis-cli`. If you see the prompt change to an IP address, you have successfully installed the application.
+
+### Postgres:
 
 Postgres is the database we rely on for our back end system. The installation for this may be a bit more involved, but it shouldn't be too crazy overall. You'll want to download the Postgres installer and run it, from there it will prompt you for various database settings. You will want to set the default password for `postgres` to `password` (this is what we currently use in the application; may change later on). You will also be prompted for the post number, but you should leave this on the default value of `5432`.
 

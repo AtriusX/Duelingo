@@ -41,7 +41,7 @@ async function main() {
   );
   const http = createServer(app)
 
-  setupSockets(http, sess)
+  setupSockets(db, http, sess)
   setupAuth(app, db)
   setupUser(app, db)
   setupRivals(app, db)

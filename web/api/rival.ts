@@ -19,3 +19,7 @@ export async function all(receiver?: string | string[]) {
 export async function active(receiver?: string | string[]) {
     return client.get(`/rivals/active/${receiver}`)
 }
+
+export async function available(id: number) {
+    return client.post(`/rivals/available/${id}`)
+}

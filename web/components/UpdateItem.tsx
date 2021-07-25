@@ -4,6 +4,7 @@ import { cast } from "../utils";
 import RivalButton from "./RivalButton";
 import styles from "../styles/UpdateItem.module.css"
 import Avatar from "./Avatar";
+import ReactTimeago from "react-timeago";
 
 interface UpdateProps {
     user?: User
@@ -11,15 +12,20 @@ interface UpdateProps {
 }
 
 export default function UpdateItem({ user, update }: UpdateProps) {
-    if (update?.type === "rivalry")
+    if (update?.type === "rivalry") {
         return (
             <div className={styles.container}>
                 <div>
                     <Avatar className={styles.avatar} user={cast<User>(update)} />
-                    <p>Requested a rivalry from {update.username} on {new Date(update.createdAt).toLocaleDateString()}</p>
+                    <p>{!!update && update?.receiver === user?.id
+                        ? `${update.username} requested a rivalry from you `
+                        : `Requested a rivalry from ${update.username} `}
+                        <ReactTimeago date={update.createdAt} />
+                    </p>
                 </div>
                 <RivalButton self={user} user={cast<User>(update)} state={update} />
             </div>
         )
+    }
     return null
 }

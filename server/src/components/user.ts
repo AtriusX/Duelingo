@@ -1,3 +1,4 @@
+// import ConnectionRepository from '../network/ConnectionRepository';
 import { sessionId } from './../api/index';
 import { verify } from 'argon2';
 import { Express, Request, Response } from 'express'
@@ -50,5 +51,13 @@ export default function setupUser(app: Express, db: MikroORM) {
     app.get("/updates", async (req: Request, res: Response) => {
         const userId = sessionId(req.session)
         res.status(200).json(await getUpdates(db.em, userId))
+    })
+
+    app.post("/forget", async (req: Request, _: Response) => {
+        const id = req.session?.userId
+        console.log("FORGET", id);
+        // if (!!id)
+        //     ConnectionRepository.get().drop(id)    
+        // return res.status(200)
     })
 }

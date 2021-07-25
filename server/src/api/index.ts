@@ -5,7 +5,6 @@ export const emailRegex =
 type Session = {
   userId?: number
 }
-
 export interface Error {
   message: string
 }
