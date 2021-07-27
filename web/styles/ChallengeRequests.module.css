@@ -1,0 +1,45 @@
+.container {
+    position: absolute;
+    bottom: 1em;
+    left: 50vw;
+    width: 33%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    background: var(--urgent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    padding: 1em;
+    border-radius: 1em;
+    width: 100%;
+    margin-top: 0.5em;
+    pointer-events: all !important;
+}
+
+.item p {
+    margin: 0 !important;
+}
+
+.item div {
+    display: flex;
+}
+
+.item button {
+    color: white;
+    background: none;
+    border: none;
+    padding: 1em 2em;
+    border-radius: 2em;
+    transition: all 0.1s;
+}
+
+.item button:hover {
+    background-color: #fff2;
+}

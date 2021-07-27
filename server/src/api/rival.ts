@@ -84,7 +84,7 @@ async function getRivals(
 ): Promise<NamedRivalry[] | Error> {
     if (!sender)
         return { message: "No session provided!" }
-    let rivals = await em.find(Rivalry, active ? 
+    let rivals = await em.find(Rivalry, active !== undefined ? 
         { $or: [{ sender: sender, active }, { receiver: sender, active}] } :
         { $or: [{ sender: sender }, { receiver: sender}] })
     let ids = rivals.map(r => r.sender === sender ? r.receiver : r.sender)
@@ -119,8 +119,6 @@ export async function availableRivals(
     id: number
 ): Promise<NamedRivalry[]> {
     let rivals = await active(em, id)
-    console.log(rivals);
-    
     if (!!cast<Error>(rivals).message)
         return []
     let out: NamedRivalry[] = []
@@ -129,8 +127,6 @@ export async function availableRivals(
         if (!!socket && !ChallengeManager.get().isBusy(rival.id))
             out.push(rival)
     } 
-    console.log(out);
-    
     return out
 }
 

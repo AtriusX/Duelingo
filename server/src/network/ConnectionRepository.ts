@@ -1,11 +1,13 @@
 import { Option } from './../types';
 import { Socket, Server } from "socket.io"
 import RedisMemory from "./RedisMemory"
+import ChallengeManager from './ChallengeManager';
 
-// type Availability = "available" | "busy"
+type Position = "open" | "game"
 
 type Status<T = string> = {
     socket: T
+    position?: Position
     lastPinged: number
 } 
 export default class ConnectionRepository {
@@ -21,8 +23,10 @@ export default class ConnectionRepository {
         let sec = seconds * 1000
         this.interval = setInterval(() => {
             this.active.forEach(async id => this.recall(id).then(async v => {
-                if (!!v && v.lastPinged + sec * 2 < Date.now())
+                if (!!v && v.lastPinged + sec * 2 < Date.now()) {
+                    ChallengeManager.get().clear(id)
                     return this.drop(id)
+                }
                 else
                     v?.socket?.emit("ping")
             }))
@@ -40,15 +44,15 @@ export default class ConnectionRepository {
         return this.inst
     }
 
-    public insert(id: number, socket: Socket) {
+    public insert(id: number, socket: Socket, position?: Position) {
         if (!id) return
         this.active.add(id)
-        this.repo.store(id, { socket: socket.id, lastPinged: Date.now() })
+        this.repo.store(id, { socket: socket.id, position, lastPinged: Date.now() })
     }
 
     public async has(id: number): Promise<boolean> {
         let val = await this.repo.recall(id)
-        return  !!val
+        return !!val
     }
 
     public async recall(id: number): Promise<Status<Option<Socket>> | undefined> {
@@ -56,6 +60,7 @@ export default class ConnectionRepository {
         if (!data) return undefined
         return {
             socket: this.io.sockets.sockets.get(data.socket),
+            position: data.position,
             lastPinged: data.lastPinged
         }
     }

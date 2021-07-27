@@ -11,7 +11,7 @@ import styles from "../styles/FindRival.module.css"
 interface FindRivalProps extends HTMLProps<HTMLDivElement> {
     user: User & Token,
     socket: Socket,
-    load: (socket: Socket, token?: string) => void
+    load?: (socket: Socket, token?: string) => void
     select: (user: NamedRivalry) => void
 }
 

@@ -1,3 +1,4 @@
+import { createSocket } from './components/SocketProvider';
 import { NextPageContext } from "next"
 import { io, Socket } from "socket.io-client"
 
@@ -69,4 +70,20 @@ export function callSocket(
       }
     })
   )
+}
+
+type Position = "open" | "game"
+
+export function defaultSocket(
+  load: (socket: Socket, token?: string) => void, 
+  position: Position = "open", 
+  token?: string
+) {
+  let socket = createSocket()
+  socket.on("connect", () => {
+    socket.emit("handshake", token, position) 
+  })
+  socket.on("ping", () => socket.emit("handshake", token, position))
+  load(socket, token)
+  return socket
 }

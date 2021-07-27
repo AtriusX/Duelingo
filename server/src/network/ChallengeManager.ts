@@ -1,4 +1,5 @@
 import { Error } from "../api"
+import ConnectionRepository from "./ConnectionRepository"
 
 type Challenge = Map<number, { busy: true } | { busy: false, challenges: [number, number][] }>
 
@@ -6,7 +7,19 @@ export default class ChallengeManager {
     private challenges: Challenge = new Map()
     private static inst: ChallengeManager
 
-    private constructor() {}
+    private constructor() {
+        // Automatically clear out expired challenges
+        setInterval(() => {
+            this.challenges.forEach((v, k) => {
+                if (!v.busy)
+                    v.challenges.forEach(async ([rivalId, time]) => {
+                        if (time < Date.now()) {
+                            this.cancel(rivalId, k)
+                        }
+                    })
+            })
+        }, 1000)
+    }
 
     public static get(): ChallengeManager {
         if (this.inst == undefined)
@@ -14,7 +27,11 @@ export default class ChallengeManager {
         return this.inst
     }
 
-    public challenge(id: number, rival: number, onChallenge?: (id: number, rival: number) => void): true | Error {
+    public async challenge(
+        id: number, 
+        rival: number, 
+        onChallenge?: (id: number, rival: number) => void | Promise<void>
+    ): Promise<true | Error> {
         let chal = this.challenges.get(rival) ?? { busy: false, challenges: [] }
         if (chal.busy)
             return { message: "Rival is busy!" }
@@ -26,7 +43,7 @@ export default class ChallengeManager {
         this.challenges.set(rival, chal)
         
         if (onChallenge)
-            onChallenge(id, rival)
+            await onChallenge(id, rival)
         return true
     }
 
@@ -36,8 +53,8 @@ export default class ChallengeManager {
             return { message: "You are already busy!" }
         if (!challenges.challenges.some(([r, time]) => r === rival && time > Date.now()))
             return { message: "That rival has not challenged you!" }
-        this.setBusy(id)
-        this.setBusy(rival)
+        this.setBusy(id, rival)
+        this.setBusy(rival, id)
         
         if (onAccept)
             onAccept(id, rival)
@@ -54,6 +71,18 @@ export default class ChallengeManager {
                 onReject(id, rival)
             return keep
         })
+        return true
+    }
+
+    public cancel(id: number, rival: number): true | Error {
+        let challenges = this.challenges.get(rival) ?? { busy: false, challenges: [] }
+        if (challenges.busy)
+            return { message: "User is busy!" }
+        challenges.challenges = challenges.challenges.filter(([otherId]) => id !== otherId)
+        ConnectionRepository.get().recall(rival).then(c => 
+            c?.socket?.emit("get-challenges", challenges.busy ? undefined : challenges.challenges)
+        )
+        this.challenges.set(rival, challenges)
         return true
     }
 
@@ -77,7 +106,7 @@ export default class ChallengeManager {
         return this.challenges.get(id)?.busy === true
     }
 
-    private clear(id: number) {
+    public clear(id: number) {
         this.challenges.delete(id)
         this.challenges.forEach(v => {
             if (!v.busy)
@@ -85,8 +114,14 @@ export default class ChallengeManager {
         })
     }
 
-    private setBusy(id: number) {
+    private setBusy(id: number, rival: number) {
         this.clear(id)
+        let chal = this.challenges.get(id)
+        if (!chal?.busy)
+            chal?.challenges.forEach(([rivalId]) => {
+                if (rivalId !== rival)
+                    this.reject(id, rivalId)
+            })
         this.challenges.set(id, { busy: true })
     }
 }

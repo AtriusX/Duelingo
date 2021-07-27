@@ -1,5 +1,5 @@
 import { DEV } from './global';
-import { MikroORM } from "@mikro-orm/core";
+import { EntityManager, MikroORM } from "@mikro-orm/core";
 import DatabaseConfig from "./config/db";
 import cors from "cors";
 import { json } from "body-parser";
@@ -18,8 +18,11 @@ import { createServer } from "http"
 import { setupSockets } from './network/socket';
 import setupGame from './components/game';
 
+export let em: EntityManager
+
 async function main() {
   const db = await MikroORM.init(DatabaseConfig);
+  em = db.em
   await db.getMigrator().up();
   // This will run a setup query to provide us with fake data in development
   let count = await db.em.count(User, {})

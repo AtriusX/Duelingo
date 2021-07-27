@@ -63,12 +63,14 @@ export async function getUpdates(em: EntityManager, id: number): Promise<Update[
     // Get past rivals
     const rivalTypes = cast<NamedRivalry[]>(rivals)
         .map(r => { return {...r, type: "rivalry" } as NamedRivalry & Update })
-    const challenges = ChallengeManager.get().getChallengers(id)
-    const users = cast<Update[]>((await em.find(User, challenges
-        ?.map(([id]) => id) ?? []))
-        .map(({ password: _, ...user }) => { return { type: "challenge", ...user } })
-    )
+    const users = cast<Update[]>((await getChallenges(em, id))
+        .map(({ password: _, ...user }) => { return { type: "challenge", ...user } }))
     // TODO: Get past game results
     // TODO: Merge all and sort by date
     return [...users, ...rivalTypes.sort(r => -r.createdAt.getTime())]
+}
+
+export async function getChallenges(em: EntityManager, id: number) {
+    return (await em.find(User, ChallengeManager.get().getChallengers(id)
+        ?.map(([id]) => id) ?? []))
 }

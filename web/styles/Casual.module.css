@@ -44,3 +44,8 @@
 .back:hover {
     background: var(--primary-hover);
 }
+
+.counter {
+    position: absolute;
+    top: 1em;
+}
