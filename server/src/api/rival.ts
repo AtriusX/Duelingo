@@ -1,3 +1,4 @@
+import ChallengeManager from '../network/ChallengeManager';
 import { User } from '../entities/User';
 import { Rivalry } from '../entities/Rivalry';
 import { Error } from "."
@@ -83,7 +84,9 @@ async function getRivals(
 ): Promise<NamedRivalry[] | Error> {
     if (!sender)
         return { message: "No session provided!" }
-    let rivals = await em.find(Rivalry, { $and: [{ active }, { $or: [{ sender: sender, active }, { receiver: sender}] }] })
+    let rivals = await em.find(Rivalry, active ? 
+        { $or: [{ sender: sender, active }, { receiver: sender, active}] } :
+        { $or: [{ sender: sender }, { receiver: sender}] })
     let ids = rivals.map(r => r.sender === sender ? r.receiver : r.sender)
     let users = await em.find(User, ids)
     let out = []
@@ -116,14 +119,18 @@ export async function availableRivals(
     id: number
 ): Promise<NamedRivalry[]> {
     let rivals = await active(em, id)
+    console.log(rivals);
+    
     if (!!cast<Error>(rivals).message)
         return []
     let out: NamedRivalry[] = []
     for (let rival of cast<NamedRivalry[]>(rivals)) {
         let socket = await ConnectionRepository.get().recall(rival.id)  
-        if (!!socket && socket.status === "available")
+        if (!!socket && !ChallengeManager.get().isBusy(rival.id))
             out.push(rival)
     } 
+    console.log(out);
+    
     return out
 }
 

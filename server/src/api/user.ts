@@ -5,6 +5,7 @@ import { User } from '../entities/User';
 import { EntityManager, QueryOrder } from '@mikro-orm/core';
 import { Error } from "../api/"
 import { pending } from './rival';
+import ChallengeManager from '../network/ChallengeManager';
 
 export type QueryRes = User[] | (number | User[])[]
 
@@ -44,23 +45,30 @@ export async function updateUser(em: EntityManager, up: User, userId: number): P
     return null
 }
 
-type UpdateType = {
-    type: "rivalry" | "result"
-}
+type GameResult = {}
+
+export type Update = 
+    { type: "rivalry" } & NamedRivalry | 
+    { type: "result" } & GameResult |
+    { type: "challenge" } & User
 
 export type NamedRivalry = Rivalry & { id: number; username: string }
 
 const cast = <T>(value: unknown) => value as T
 
-export async function getUpdates(em: EntityManager, id: number): Promise<(NamedRivalry & UpdateType)[] | Error> {
+export async function getUpdates(em: EntityManager, id: number): Promise<Update[] | Error> {
     const rivals = await pending(em, id)
     if (!!cast<Error>(rivals)?.message)
         return rivals as Error
     // Get past rivals
     const rivalTypes = cast<NamedRivalry[]>(rivals)
-        .map(r => { return {...r, type: "rivalry" } as NamedRivalry & UpdateType })
+        .map(r => { return {...r, type: "rivalry" } as NamedRivalry & Update })
+    const challenges = ChallengeManager.get().getChallengers(id)
+    const users = cast<Update[]>((await em.find(User, challenges
+        ?.map(([id]) => id) ?? []))
+        .map(({ password: _, ...user }) => { return { type: "challenge", ...user } })
+    )
     // TODO: Get past game results
     // TODO: Merge all and sort by date
-    return rivalTypes
-        .sort(r => -r.createdAt.getTime())
+    return [...users, ...rivalTypes.sort(r => -r.createdAt.getTime())]
 }

@@ -54,7 +54,8 @@ type GameResult = {}
 
 export type Update = 
     { type: "rivalry" } & NamedRivalry | 
-    { type: "result" } & GameResult
+    { type: "result" } & GameResult |
+    { type: "challenge" } & User
 
 export async function getUpdates(token?: string): Promise<Update[]> {
     return client.secureGet<Update[]>("/updates", token ?? "")

@@ -1,12 +1,30 @@
 .item {
     position: relative;
-    padding: 1.5em;
+    padding: 1em;
     height: max-content;
-    background: var(--back); 
-    color: white;
     transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #EEE;
 }
 
 .item:hover {
-    background: var(--back-hover);
+    background: #EEE;
+}
+
+.item button {
+  border: none;
+  outline: none;
+  padding: 1em;
+  width: 10em;
+  transition: all 0.2s;
+  background: var(--primary);
+  color: white;
+  border-radius: 1em;
+  cursor: pointer;
+}
+
+.item button:hover {
+    background: var(--primary-hover);
 }

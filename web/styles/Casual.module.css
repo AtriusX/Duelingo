@@ -13,6 +13,7 @@
     width: 50%;
     overflow: hidden;
     border: 1px solid dimgray;
+    box-shadow: 0 0 2em #DDD;
     border-radius: 1em;
 }
 

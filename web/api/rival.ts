@@ -12,8 +12,8 @@ export async function get(receiver: number, token: string) {
     return client.secureGet(`/rival/${receiver}`, token)
 }
 
-export async function all(receiver?: string | string[]) {
-    return client.get(`/rivals/all/${receiver}`)
+export async function all(token: string, receiver?: string | string[]) {
+    return client.secureGet(`/rivals/all/${receiver}`, token)
 }
 
 export async function active(receiver?: string | string[]) {

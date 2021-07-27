@@ -16,6 +16,7 @@ import chalk from "chalk"
 import setupRivals from './components/rival';
 import { createServer } from "http"
 import { setupSockets } from './network/socket';
+import setupGame from './components/game';
 
 async function main() {
   const db = await MikroORM.init(DatabaseConfig);
@@ -45,6 +46,7 @@ async function main() {
   setupAuth(app, db)
   setupUser(app, db)
   setupRivals(app, db)
+  setupGame(app, db)
   http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")));
 }
 

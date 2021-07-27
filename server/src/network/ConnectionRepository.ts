@@ -2,11 +2,10 @@ import { Option } from './../types';
 import { Socket, Server } from "socket.io"
 import RedisMemory from "./RedisMemory"
 
-type Availability = "available" | "busy"
+// type Availability = "available" | "busy"
 
 type Status<T = string> = {
     socket: T
-    status: Availability,
     lastPinged: number
 } 
 export default class ConnectionRepository {
@@ -41,14 +40,15 @@ export default class ConnectionRepository {
         return this.inst
     }
 
-    public insert(id: number, socket: Socket, status: Availability) {
+    public insert(id: number, socket: Socket) {
         if (!id) return
         this.active.add(id)
-        this.repo.store(id, { socket: socket.id, status, lastPinged: Date.now() })
+        this.repo.store(id, { socket: socket.id, lastPinged: Date.now() })
     }
 
     public async has(id: number): Promise<boolean> {
-        return await this.repo.recall(id) !== undefined
+        let val = await this.repo.recall(id)
+        return  !!val
     }
 
     public async recall(id: number): Promise<Status<Option<Socket>> | undefined> {
@@ -56,7 +56,6 @@ export default class ConnectionRepository {
         if (!data) return undefined
         return {
             socket: this.io.sockets.sockets.get(data.socket),
-            status: data.status,
             lastPinged: data.lastPinged
         }
     }
