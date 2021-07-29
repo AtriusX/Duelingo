@@ -7,7 +7,7 @@ import FindRival from "../../components/FindRival"
 import styles from "../../styles/Casual.module.css"
 import router from "next/router";
 import { Socket } from "socket.io-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cancelChallenge } from "../../api/game";
 import { defaultSocket } from "../../utils";
 import Countdown from "../../components/Countdown";
@@ -23,6 +23,9 @@ export default function Casual({ user, currentChallenge }: CasualProps) {
         socket.on("join-game", v => router.push(`/game/${v}`))
         socket.on("challenge-rejected", () => setChallenge(null))
     }, "game", user.token)
+    useEffect(() => {
+        router.events.on("routeChangeComplete", () => cancelChallenge(challenge?.id ?? 0))
+    })
     return (
         <div>
             <button className={styles.back}

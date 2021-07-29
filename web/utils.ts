@@ -1,17 +1,21 @@
-import { createSocket } from './components/SocketProvider';
+import router from 'next/router';
+import { useEffect } from 'react';
+import { createSocket } from "./components/SocketProvider"
 import { NextPageContext } from "next"
 import { io, Socket } from "socket.io-client"
+import { route } from 'next/dist/next-server/server/router';
 
 /**
  * This function streamlines the process of aggregating form data into a json object.
  * This can be used to handle post requests with ease.
  */
-export function getData<T>(form?: HTMLElement | EventTarget): T { // change this
+export function getData<T>(form?: HTMLElement | EventTarget): T {
+  // change this
   let values = Array.from(new FormData(form as HTMLFormElement))
   let out = {} as any
   values.forEach(([a, b]) => {
     out[a] = b
-  })  
+  })
   return out as T
 }
 
@@ -23,7 +27,7 @@ export type RequestType =
   | "GET"
   | "POST"
   | "PUT"
-  | "DELETE";
+  | "DELETE"
 
 export async function request(
   address: string,
@@ -39,14 +43,14 @@ export async function request(
     body: typeof body === "string" ? body : JSON.stringify(body),
   })
     .then((res) => res.json())
-    .catch((e) => console.log(e));
+    .catch((e) => console.log(e))
 }
 
 export function animate(selector: string, animationClass: string) {
-  let e = document.querySelector(selector) as HTMLElement;
+  let e = document.querySelector(selector) as HTMLElement
   if (e) {
-    e.classList.add(animationClass);
-    e.onanimationend = () => e?.classList.remove(animationClass);
+    e.classList.add(animationClass)
+    e.onanimationend = () => e?.classList.remove(animationClass)
   }
 }
 
@@ -66,8 +70,8 @@ export function callSocket(
   exec(
     io("http://localhost:3000", {
       extraHeaders: {
-        "Cookie": req?.headers.cookie ?? ""
-      }
+        Cookie: req?.headers.cookie ?? "",
+      },
     })
   )
 }
@@ -75,15 +79,21 @@ export function callSocket(
 type Position = "open" | "pool" | "game"
 
 export function defaultSocket(
-  load: (socket: Socket, token?: string) => void, 
-  position: Position = "open", 
+  load: (socket: Socket, token?: string) => void,
+  position: Position = "open",
   token?: string
 ) {
   let socket = createSocket()
+  let timestamp = Date.now()
   socket.on("connect", () => {
-    socket.emit("handshake", token, position) 
+    socket.emit("handshake", token, position, timestamp)
   })
-  socket.on("ping", () => socket.emit("handshake", token, position))
+  socket.on("ping", () => socket.emit("handshake", token, position, timestamp))
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => router.events.on("routeChangeComplete", () => {
+      console.log("Closed")
+      socket.close()
+  }))
   load(socket, token)
   return socket
 }

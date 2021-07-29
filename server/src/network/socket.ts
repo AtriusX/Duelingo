@@ -30,8 +30,8 @@ export function setupSockets({ em }: MikroORM ,http: HttpServer, sess: RequestHa
         const session = (token: string, func: (err: any, sess: SessionData) => void) =>
             cast<Handshake>(socket.handshake).sessionStore.get(token, func)
         // Handshake
-        socket.on("handshake", (token, position) => session(token, async (_, session) => {
-          repo.insert(session?.userId, socket, position)
+        socket.on("handshake", (token, position, timestamp) => session(token, async (_, session) => {
+          repo.insert(session?.userId, socket, position, timestamp)
           let user = await em.findOne(User, session?.userId)
           if (position === "pool" && user)
             matchmaker.add(user)

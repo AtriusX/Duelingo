@@ -1,19 +1,20 @@
 import { NextPageContext } from "next";
 import { emailRegex, homeRedirect } from "../api/auth";
-import { ConfirmationInfo, deleteAccount, self, update, UpdateInfo } from "../api/user"
+import { ConfirmationInfo, deleteAccount, self, Token, update, UpdateInfo } from "../api/user"
 import Navbar from '../components/Navbar'
 import { tryLogout } from '../api/auth'
 import Link from "next/link"
 import styles from "../styles/Settings.module.css"
-import { animate, getData } from "../utils";
+import { animate, defaultSocket, getData } from "../utils";
 import { FormEvent, useState } from "react";
 import router from "next/router";
 import Avatar from "../components/Avatar";
 import ReactModal from "react-modal";
 import { Error, User } from "../api"
-import Head from "next/head";
+import Title from "../components/Title";
+import ChallengeRequests from "../components/ChallengeRequests";
 interface SettingsProps {
-    user: User
+    user: User & Token
 }
 
 type SubmitEvent = FormEvent<HTMLFormElement>
@@ -28,12 +29,12 @@ export default function Settings({ user }: SettingsProps) {
         animate("#error", styles.shake)
     }
     return <>
-        <Head>
-            <title>Settings</title>
-        </Head>
+        <ChallengeRequests user={user} socket={defaultSocket(() => {}, "open", user.token)} />
+        <Title title="Settings" />
         <Navbar redirect="/search" user={user}>
             <Link href={`/profile/${user?.id}`}>My Profile</Link>
             <Link href={"/settings"}>Settings</Link>
+            {/* @ts-ignore */}
             <a onClick={tryLogout}>Logout</a>
         </Navbar>
         <div className={styles.body}>

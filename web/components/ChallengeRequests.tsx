@@ -23,7 +23,10 @@ export default function ChallengeRequests({ user, socket }: ChallengeRequestsPro
         getChallengers(user?.id ?? 0).then(setChallenges)
     }, [user?.id])
     const load = (socket: Socket) => {
-        socket.on("get-challenges", setChallenges)
+        socket.on("get-challenges", (v) => {
+            setChallenges(v)
+            console.log("CHALLENGE RECEIVED")
+        })
     }
     return (
         <SocketProvider socket={socket} load={load}>

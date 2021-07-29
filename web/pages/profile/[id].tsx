@@ -1,12 +1,12 @@
 import { NextPageContext } from "next";
-import { getUser, self } from "../../api/user";
+import { getUser, self, Token } from "../../api/user";
 import Avatar from "../../components/Avatar";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
 import { tryLogout } from "../../api/auth";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
-import { cast, getRank } from "../../utils";
+import { cast, defaultSocket, getRank } from "../../utils";
 import NoResult from "../../components/NoResult";
 import router from "next/router";
 import RivalButton from "../../components/RivalButton";
@@ -14,11 +14,12 @@ import { active, all, get } from "../../api/rival";
 import { NamedRivalry, Rivalry, User } from "../../api/"
 import RivalItem from "../../components/RivalItem"
 import Pane from "../../components/Pane";
-import Head from "next/head";
+import Title from "../../components/Title";
+import ChallengeRequests from "../../components/ChallengeRequests";
 
 interface ProfileData {
     user?: User | Error
-    me?: User
+    me?: User & Token
     rival: Rivalry,
     rivals?: NamedRivalry[]
 }
@@ -32,41 +33,42 @@ export default function Profile({ user, me, rival, rivals }: ProfileData) {
         )
     const { username, joined, rank, description } = user as User
     return (
-        <div className={styles.body}>
-            <Head>
-                <title>{username}{"'"}s Profile</title>
-            </Head>
-            <Navbar redirect="/search" user={me}>
-                <Link href={`/profile/${me?.id}`}>My Profile</Link>
-                <Link href={"/settings"}>Settings</Link>
-                <a onClick={() => tryLogout()}>Logout</a>
-            </Navbar>
-            <div className={styles.container}>
-                <div className={styles.profile}>
-                    <h3>
-                        <div><b>({getRank(rank)})</b> {username}</div>
-                        <RivalButton self={me} user={cast<User>(user)} state={rival} />
-                    </h3>
-                    <hr />
-                    <div className={styles.avatarcontainer}>
-                        <Avatar user={user as User} className={styles.avatar} />
-                    </div>
-                    <div>
-                        <h2>{getUnicodeFlagIcon("US")}</h2>
-                        <h3>Joined on {new Date(joined).toLocaleDateString()}</h3>
+        <>
+            {me ? <ChallengeRequests user={me} socket={defaultSocket(() => { }, "open", me.token)} /> : null}
+            <div className={styles.body}>
+                <Title title={`${username}'s Profile`} />
+                <Navbar redirect="/search" user={me}>
+                    <Link href={`/profile/${me?.id}`}>My Profile</Link>
+                    <Link href={"/settings"}>Settings</Link>
+                    <a onClick={() => tryLogout()}>Logout</a>
+                </Navbar>
+                <div className={styles.container}>
+                    <div className={styles.profile}>
+                        <h3>
+                            <div><b>({getRank(rank)})</b> {username}</div>
+                            <RivalButton self={me} user={cast<User>(user)} state={rival} />
+                        </h3>
                         <hr />
-                        <p>{description ? description : "No description provided."}</p>
+                        <div className={styles.avatarcontainer}>
+                            <Avatar user={user as User} className={styles.avatar} />
+                        </div>
+                        <div>
+                            <h2>{getUnicodeFlagIcon("US")}</h2>
+                            <h3>Joined on {new Date(joined).toLocaleDateString()}</h3>
+                            <hr />
+                            <p>{description ? description : "No description provided."}</p>
+                        </div>
                     </div>
+                    <Pane className={styles.games} emptyIcon="🎮" emptyText="No past games!">
+                        <h3>Games</h3>
+                    </Pane>
+                    <Pane className={styles.rivals} emptyIcon="🌞" emptyText="No Rivals!" items={rivals}>
+                        <h3>Rivals</h3>
+                        {rivals?.map((r, i) => <RivalItem key={i} me={me} self={cast<User>(user)} rivalry={r} />)}
+                    </Pane>
                 </div>
-                <Pane className={styles.games} emptyIcon="🎮" emptyText="No past games!">
-                    <h3>Games</h3>
-                </Pane>
-                <Pane className={styles.rivals} emptyIcon="🌞" emptyText="No Rivals!" items={rivals}>
-                    <h3>Rivals</h3>
-                    {rivals?.map((r, i) => <RivalItem key={i} me={me} self={cast<User>(user)} rivalry={r} />)}
-                </Pane>
             </div>
-        </div>
+        </>
     )
 }
 

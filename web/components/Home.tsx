@@ -28,9 +28,7 @@ export default function Home({ user, updates }: HomeProps) {
     return (
         <>
             <ChallengeRequests user={user} socket={socket} />
-
             <SocketProvider socket={socket} token={user?.token}>
-
                 <div className={styles.body}>
                     <Navbar redirect="/search" user={user}>
                         <Link href={`/profile/${user?.id}`}>My Profile</Link>

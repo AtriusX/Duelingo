@@ -1,7 +1,7 @@
 import router from "next/router"
 import { Dispatch, FormEvent, SetStateAction, useState } from "react"
-import { QueryRes, search, SearchQuery } from '../api/user'
-import { getData } from "../utils"
+import { QueryRes, search, SearchQuery, Token } from '../api/user'
+import { defaultSocket, getData } from "../utils"
 import styles from '../styles/Search.module.css'
 import { NextPageContext } from "next"
 import SearchItem from "../components/SearchItem"
@@ -14,38 +14,41 @@ import Paginator from "../components/Paginator"
 import Pane from "../components/Pane"
 import { User } from "../api"
 import Head from "next/head"
+import ChallengeRequests from "../components/ChallengeRequests"
 
 interface SearchData {
-    user: User
+    user?: User & Token
     query: any
     queryRes: QueryRes | null
 }
 
 export default function Search({ user, query, queryRes }: SearchData) {
     const [users, setUsers] = useState<QueryRes | null>(query.query ? queryRes : null)
-
     return (
-        <div className={styles.body}>
-            <Head>
-                <title>Search</title>
-            </Head>
-            <Navbar name="query" value={query.query} user={user} className={styles.navbar}
-                onSubmit={async e => await performSearch(e, setUsers)}>
-                <Link href={`/profile/${user?.id}`}>My Profile</Link>
-                <Link href={"/settings"}>Settings</Link>
-                <a onClick={() => tryLogout()}>Logout</a>
-            </Navbar>
-            <div className={styles.grid}>
-                <aside className={styles.options}>
-                    <Filters query={query} />
-                </aside>
-                <main>
-                    <div>
-                        {users ? getResults(users, query.page ?? 1) : null}
-                    </div>
-                </main>
+        <>
+            {user ? <ChallengeRequests user={user} socket={defaultSocket(() => { }, "open", user.token)} /> : null}
+            <div className={styles.body}>
+                <Head>
+                    <title>Search</title>
+                </Head>
+                <Navbar name="query" value={query.query} user={user} className={styles.navbar}
+                    onSubmit={async e => await performSearch(e, setUsers)}>
+                    <Link href={`/profile/${user?.id}`}>My Profile</Link>
+                    <Link href={"/settings"}>Settings</Link>
+                    <a onClick={() => tryLogout()}>Logout</a>
+                </Navbar>
+                <div className={styles.grid}>
+                    <aside className={styles.options}>
+                        <Filters query={query} />
+                    </aside>
+                    <main>
+                        <div>
+                            {users ? getResults(users, query.page ?? 1) : null}
+                        </div>
+                    </main>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
@@ -83,7 +86,8 @@ function getResults(
     const [res, count] = users as [User[], number]
     const pageCount = Math.ceil(count / 50) || 1
     return (
-        <Pane className={styles.results} emptyIcon="😢" emptyText="Sorry... we found no results!" items={count}>
+        <Pane className={styles.results} emptyIcon="😢"
+            emptyText="Sorry... we found no results!" items={count}>
             <div className={styles.pageinfo}>
                 <p>{count} result(s) found.</p>
                 <Paginator page={page} pageCount={pageCount} buttonCount={7} click={toPage} />

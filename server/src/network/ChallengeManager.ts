@@ -68,6 +68,7 @@ export default class ChallengeManager {
                 onReject(id, rival)
             return keep
         })
+        this.challenges.set(id, challenges)
         return true
     }
 
