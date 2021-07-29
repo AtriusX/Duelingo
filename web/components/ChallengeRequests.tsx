@@ -28,26 +28,28 @@ export default function ChallengeRequests({ user, socket }: ChallengeRequestsPro
     return (
         <SocketProvider socket={socket} load={load}>
             <div className={styles.container}>
-                {challenges?.map((r, i) => <RequestItem key={i} {...r} state={challenges} setState={setChallenges} />)}
+                {challenges?.map((r, i) =>
+                    <RequestItem key={i} {...r} state={challenges} setState={setChallenges} />
+                )}
             </div>
         </SocketProvider>
     )
 }
 
-function RequestItem({ id, username, time, state, setState }: Challenge & { state: Challenge[], setState: (c: Challenge[]) => void }) {
+function RequestItem({ id, username, state, setState }: Challenge & { state: Challenge[], setState: (c: Challenge[]) => void }) {
     return <div className={styles.item}>
         <p>{username} requested a game.</p>
         <div>
             <button
                 onClick={async () => {
-                    let gameId = (await acceptGame(id)).id
-                    if (!gameId) return
-                    router.push(`/game/${gameId}`)
+                    let gameId = (await acceptGame(id))
+                    if (!gameId.id) return alert(gameId.message)
+                    router.push(`/game/${gameId.id}`)
                 }}>
                 Accept
             </button>
             <button
-                onClick={e => {
+                onClick={() => {
                     rejectGame(id)
                     setState(state.filter(c => c.id !== id))
                 }}>

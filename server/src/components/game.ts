@@ -2,7 +2,6 @@ import ChallengeManager from '../network/ChallengeManager';
 import { MikroORM } from "@mikro-orm/core"
 import { Express, Request, Response } from "express"
 import ConnectionRepository from '../network/ConnectionRepository';
-import { v4 } from "uuid"
 import { getChallenges } from '../api/user';
 
 export default function setupGame(app: Express, { em }: MikroORM) {
@@ -13,10 +12,8 @@ export default function setupGame(app: Express, { em }: MikroORM) {
     app.post("/game/accept", async (req: Request, res: Response) => {
         let data = challenges.accept(req.session.userId ?? 0, req.body.id)
         console.log(data);
-        let id = v4()
-        if (data === true) {
-            (await repo.recall(req.body.id))?.socket?.emit("challenge-accepted", id)
-            res.status(200).json({ id })
+        if (typeof data === "string") {
+            res.status(200).json({ id: data })
         }
         else
             res.status(200).json(data)

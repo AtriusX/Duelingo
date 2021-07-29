@@ -1,4 +1,4 @@
-import ChallengeManager from '../network/ChallengeManager';
+import GameTracker from '../network/GameTracker';
 import { User } from '../entities/User';
 import { Rivalry } from '../entities/Rivalry';
 import { Error } from "."
@@ -124,7 +124,7 @@ export async function availableRivals(
     let out: NamedRivalry[] = []
     for (let rival of cast<NamedRivalry[]>(rivals)) {
         let socket = await ConnectionRepository.get().recall(rival.id)  
-        if (!!socket && !ChallengeManager.get().isBusy(rival.id))
+        if (!!socket && !GameTracker.get().has(rival.id))
             out.push(rival)
     } 
     return out

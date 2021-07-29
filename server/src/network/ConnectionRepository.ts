@@ -1,9 +1,11 @@
+import GameTracker from '../network/GameTracker';
 import { Option } from './../types';
 import { Socket, Server } from "socket.io"
 import RedisMemory from "./RedisMemory"
 import ChallengeManager from './ChallengeManager';
+import MatchMaker from './Matchmaker';
 
-type Position = "open" | "game"
+type Position = "open" | "pool" | "game"
 
 type Status<T = string> = {
     socket: T
@@ -24,7 +26,9 @@ export default class ConnectionRepository {
         this.interval = setInterval(() => {
             this.active.forEach(async id => this.recall(id).then(async v => {
                 if (!!v && v.lastPinged + sec * 2 < Date.now()) {
+                    MatchMaker.get().remove(id)
                     ChallengeManager.get().clear(id)
+                    GameTracker.get().drop(id)
                     return this.drop(id)
                 }
                 else

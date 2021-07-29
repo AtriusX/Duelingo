@@ -6,11 +6,11 @@ import styles from '../styles/Home.module.css'
 import Avatar from './Avatar';
 import Pane from './Pane';
 import SocketProvider from "../components/SocketProvider"
-import { io, Socket } from 'socket.io-client';
 import { Token, Update } from '../api/user';
 import UpdateItem from './UpdateItem';
 import { defaultSocket } from '../utils';
 import ChallengeRequests from "../components/ChallengeRequests"
+import router from 'next/router';
 
 interface HomeProps {
     user: User & Token
@@ -19,8 +19,12 @@ interface HomeProps {
 
 export default function Home({ user, updates }: HomeProps) {
     // This might need to change later on
-    // const socket = io("http://localhost:3000")
-    const socket = defaultSocket(() => { }, "open", user?.token)
+    const socket = defaultSocket(socket => {
+        socket.emit("join-game", (id: string) => {
+            socket.close()
+            router.push(`/game/${id}`)
+        })
+    }, "open", user?.token)
     return (
         <>
             <ChallengeRequests user={user} socket={socket} />

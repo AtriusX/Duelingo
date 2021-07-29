@@ -1,3 +1,4 @@
+import GameTracker from '../network/GameTracker';
 // import { User } from './../entities/User';
 import { MikroORM } from '@mikro-orm/core';
 import { SessionData } from 'express-session';
@@ -12,11 +13,14 @@ import { availableRivals } from '../api/rival';
 import chalk from 'chalk';
 import ChallengeManager from './ChallengeManager';
 import { getChallenges } from '../api/user';
+import MatchMaker from './Matchmaker';
+import { User } from '../entities/User';
 
 export function setupSockets({ em }: MikroORM ,http: HttpServer, sess: RequestHandler) {
     const io = new Server(http, SocketConfig)
     let repo = ConnectionRepository.init(io, 3)
     let challenges = ChallengeManager.get()
+    let matchmaker = MatchMaker.get()
   
     io.use(sharedsession(sess, {
       autoSave: true
@@ -26,8 +30,13 @@ export function setupSockets({ em }: MikroORM ,http: HttpServer, sess: RequestHa
         const session = (token: string, func: (err: any, sess: SessionData) => void) =>
             cast<Handshake>(socket.handshake).sessionStore.get(token, func)
         // Handshake
-        socket.on("handshake", (token, position) => session(token, (_, session) => {
+        socket.on("handshake", (token, position) => session(token, async (_, session) => {
           repo.insert(session?.userId, socket, position)
+          let user = await em.findOne(User, session?.userId)
+          if (position === "pool" && user)
+            matchmaker.add(user)
+          if (position !== "game" && user)
+            GameTracker.get().drop(user.id)
         }))
 
         socket.on("query-rivals", (token, value) => session(token, async (_, session) => {
@@ -46,8 +55,6 @@ export function setupSockets({ em }: MikroORM ,http: HttpServer, sess: RequestHa
         }))
 
         socket.on("query-challenges", (token) => session(token, async (_, session) => {
-          console.log("TEST", await getChallenges(em, session?.userId));
-          
           socket.emit("get-challenges", await getChallenges(em, session?.userId))
         }))
     })

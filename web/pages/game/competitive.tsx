@@ -1,20 +1,34 @@
 import { NextPageContext } from "next";
 import { User } from "../../api";
-import { self } from "../../api/user";
+import { self, Token } from "../../api/user";
 import { homeRedirect } from "../../api/auth";
 import Head from "next/head";
+import SocketProvider from "../../components/SocketProvider";
+import { defaultSocket } from "../../utils";
+import router from "next/router";
+import { useEffect } from "react";
 
 interface CompetitiveProps {
-    self: User
+    user: User & Token
 }
 
-export default function Competitive({ }: CompetitiveProps) {
+export default function Competitive({ user }: CompetitiveProps) {
+    useEffect(() => {
+        defaultSocket(socket => {
+            socket.on("join-game", id => {
+                socket.close()
+                router.push(`/game/${id}`)
+            })
+        }, "pool", user.token)
+    })
     return (
         <div>
             <Head>
                 <title>Competitive Matchmaking</title>
             </Head>
-            Competitive Page! Come back later!
+            <SocketProvider>
+                <h1>Attempting to find an opponent</h1>
+            </SocketProvider>
         </div>
     )
 }

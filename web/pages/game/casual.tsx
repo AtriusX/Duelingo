@@ -20,7 +20,7 @@ interface CasualProps {
 export default function Casual({ user, currentChallenge }: CasualProps) {
     const [challenge, setChallenge] = useState<Option<NamedRivalry>>(currentChallenge ? currentChallenge[0] : null)
     let socket = defaultSocket((socket) => {
-        socket.on("challenge-accepted", v => router.push(`/game/${v}`))
+        socket.on("join-game", v => router.push(`/game/${v}`))
         socket.on("challenge-rejected", () => setChallenge(null))
     }, "game", user.token)
     return (
@@ -62,7 +62,7 @@ interface WaitProps {
 function Wait({ challenge, time, setChallenge }: WaitProps) {
     return (
         <div className={styles.box}>
-            <Countdown className={styles.counter} duration={10} end={() => {
+            <Countdown className={styles.counter} duration={120} end={() => {
                 setChallenge(null)
                 cancelChallenge(challenge.id)
             }} />
