@@ -18,16 +18,18 @@ interface CasualProps {
 }
 
 export default function Casual({ user, currentChallenge }: CasualProps) {
-    const [challenge, setChallenge] = useState<Option<NamedRivalry>>(currentChallenge ? currentChallenge[0] : null)
+    const [challenge, setChallenge] =
+        useState<Option<NamedRivalry>>(currentChallenge ? currentChallenge[0] : null)
     let socket = defaultSocket((socket) => {
         socket.on("join-game", v => router.push(`/game/${v}`))
         socket.on("challenge-rejected", () => setChallenge(null))
-    }, "game", user.token)
+    }, "queue", user.token)
     useEffect(() => {
         router.events.on("routeChangeComplete", () => cancelChallenge(challenge?.id ?? 0))
     })
     return (
         <div>
+            <Title title="Casual Queue" />
             <button className={styles.back}
                 onClick={() => router.push("/")}>Back</button>
             {!challenge
@@ -49,7 +51,6 @@ interface SelectorProps {
 function Selector({ socket, load, user, select }: SelectorProps) {
     return (
         <div className={styles.box}>
-            <Title title={"Casual Matchmaking"} />
             <FindRival socket={socket} load={load}
                 className={styles.selector} user={user} select={select} />
         </div>
@@ -62,18 +63,21 @@ interface WaitProps {
     setChallenge: (user: Option<NamedRivalry>) => void
 }
 
-function Wait({ challenge, time, setChallenge }: WaitProps) {
+function Wait({ challenge, setChallenge }: WaitProps) {
     return (
         <div className={styles.box}>
             <Countdown className={styles.counter} duration={120} end={() => {
                 setChallenge(null)
                 cancelChallenge(challenge.id)
             }} />
-            <h1>Issued challenge to {challenge.username}</h1>
-            <button onClick={() => {
-                setChallenge(null)
-                cancelChallenge(challenge.id)
-            }}>Cancel Challenge</button>
+            <div className={styles.waitcontainer}>
+                <h1>Issued a challenge to {challenge.username}</h1>
+                <p>A request has been sent to {challenge.username}! Please be patient while we wait for a response.</p>
+                <button className={styles.cancel} onClick={() => {
+                    setChallenge(null)
+                    cancelChallenge(challenge.id)
+                }}>Cancel Challenge</button>
+            </div>
         </div>
     )
 }

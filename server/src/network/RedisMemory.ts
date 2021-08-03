@@ -9,11 +9,13 @@ export default class RedisMemory<V = string> {
   }>
   private readonly toString: (inp: V | string) => string
   private readonly parse: (inp: string) => V
+  private autoDrop?: number
 
   private constructor(
     name: string, 
     toString: (inp: V | string) => string, 
-    parse: (inp: string) => V
+    parse: (inp: string) => V,
+    autoDrop?: number
   ) {
     this._name = name
     this.redis = redis.createClient({
@@ -21,16 +23,17 @@ export default class RedisMemory<V = string> {
     })
     promisifyAll(RedisClient.prototype)
     this.toString = toString
-
     this.parse = parse
+    this.autoDrop = autoDrop
   }
 
   public static create<V = string>(
     name: string, 
     toString: (inp: V | string) => string, 
-    func: (inp: string) => V
+    func: (inp: string) => V,
+    autoDrop?: number
   ): RedisMemory<V> {
-    return new RedisMemory<V>(name, toString, func)
+    return new RedisMemory<V>(name, toString, func, autoDrop)
   }
 
   get name(): string {
@@ -39,6 +42,8 @@ export default class RedisMemory<V = string> {
 
   public store(key: string | number, value: V) {
     this.redis.set(key.toString(), this.toString(value))
+    if (this.autoDrop)
+      this.redis.expire(key.toString(), this.autoDrop)
   }
 
   public async recall(key: string | number): Promise<Option<V>> {      

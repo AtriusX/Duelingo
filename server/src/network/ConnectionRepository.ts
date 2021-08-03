@@ -5,7 +5,7 @@ import RedisMemory from "./RedisMemory"
 import ChallengeManager from './ChallengeManager';
 import MatchMaker from './Matchmaker';
 
-type Position = "open" | "pool" | "game"
+type Position = "open" | "queue" | "pool" | "game"
 
 type Status<T = string> = {
     socket: T
@@ -17,7 +17,7 @@ export default class ConnectionRepository {
     private io: Server
     private static inst?: ConnectionRepository
     private readonly repo: RedisMemory<Status> = 
-        RedisMemory.create("socket", JSON.stringify, JSON.parse)
+        RedisMemory.create("socket", JSON.stringify, JSON.parse, 360)
     private active: Set<number> = new Set()
     private interval: NodeJS.Timer
 

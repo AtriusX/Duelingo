@@ -123,8 +123,8 @@ export async function availableRivals(
         return []
     let out: NamedRivalry[] = []
     for (let rival of cast<NamedRivalry[]>(rivals)) {
-        let socket = await ConnectionRepository.get().recall(rival.id)  
-        if (!!socket && !GameTracker.get().has(rival.id))
+        let socket = await ConnectionRepository.get().recall(rival.id)
+        if (socket?.position === "open" && !GameTracker.get().has(rival.id))
             out.push(rival)
     } 
     return out

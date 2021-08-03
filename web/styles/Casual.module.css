@@ -26,6 +26,7 @@
     padding: 1em;
 }
 
+.cancel,
 .back {
   position: absolute;
   width: 10em;
@@ -43,6 +44,32 @@
 
 .back:hover {
     background: var(--primary-hover);
+}
+
+.cancel {
+    position: relative;
+    width: 100%;
+    background: var(--urgent);
+}
+
+.cancel:hover {
+    background: var(--urgent-hover);
+}
+
+.waitcontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em 2em;
+    border-radius: 1em;
+    color: white;
+    box-shadow: 0 0 1em #777;
+    background: var(--back);
+}
+
+.waitcontainer p {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
 }
 
 .counter {

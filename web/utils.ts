@@ -76,7 +76,7 @@ export function callSocket(
   )
 }
 
-type Position = "open" | "pool" | "game"
+type Position = "open" | "queue" | "pool" | "game"
 
 export function defaultSocket(
   load: (socket: Socket, token?: string) => void,

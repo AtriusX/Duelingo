@@ -63,11 +63,12 @@ export async function getUpdates(em: EntityManager, id: number): Promise<Update[
     // Get past rivals
     const rivalTypes = cast<NamedRivalry[]>(rivals)
         .map(r => { return {...r, type: "rivalry" } as NamedRivalry & Update })
-    const users = cast<Update[]>((await getChallenges(em, id))
-        .map(({ password: _, ...user }) => { return { type: "challenge", ...user } }))
+    // Removed this functionality for now since it seems socket relays are now functioning consistently
+    // const users = cast<Update[]>((await getChallenges(em, id))
+    //     .map(({ password: _, ...user }) => { return { type: "challenge", ...user } }))
     // TODO: Get past game results
     // TODO: Merge all and sort by date
-    return [...users, ...rivalTypes.sort(r => -r.createdAt.getTime())]
+    return [...rivalTypes.sort(r => -r.createdAt.getTime())]
 }
 
 export async function getChallenges(em: EntityManager, id: number) {

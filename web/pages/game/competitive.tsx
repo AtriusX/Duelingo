@@ -6,30 +6,52 @@ import Head from "next/head";
 import SocketProvider from "../../components/SocketProvider";
 import { defaultSocket } from "../../utils";
 import router from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import styles from "../../styles/Competitive.module.css"
+import Title from "../../components/Title";
 
 interface CompetitiveProps {
     user: User & Token
 }
 
 export default function Competitive({ user }: CompetitiveProps) {
-    useEffect(() => {
-        defaultSocket(socket => {
-            socket.on("join-game", id => {
-                socket.close()
-                router.push(`/game/${id}`)
-            })
-        }, "pool", user.token)
-    })
+    const socket = defaultSocket(socket => {
+        socket.on("join-game", id => {
+            socket.close()
+            router.push(`/game/${id}`)
+        })
+    }, "pool", user.token)
     return (
         <div>
-            <Head>
-                <title>Competitive Matchmaking</title>
-            </Head>
-            <SocketProvider>
-                <h1>Attempting to find an opponent</h1>
-            </SocketProvider>
+            <Title title="Competitive Pool" />
+            <button className={styles.back}
+                onClick={() => router.push("/")}>Back</button>
+            <div className={styles.container}>
+                <SocketProvider socket={socket}>
+                    <h1>
+                        <Ticker text="Attempting to find an opponent" period={750} />
+                    </h1>
+                    <h1 className={styles.emblem}>🔎</h1>
+                </SocketProvider>
+            </div>
         </div>
+    )
+}
+
+interface TickerProps {
+    text: string
+    max?: number
+    period?: number
+}
+
+function Ticker({ text, max, period }: TickerProps) {
+    const [count, setCount] = useState(0)
+    useEffect(() => {
+        const interval = setInterval(() => setCount(count + 1), period ?? 500)
+        return () => clearInterval(interval)
+    }, [count, period])
+    return (
+        <>{text}{".".repeat(count % (max ?? 3) + 1)}</>
     )
 }
 
