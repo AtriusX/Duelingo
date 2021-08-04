@@ -6,14 +6,14 @@ interface CountdownProps extends HTMLProps<HTMLDivElement> {
 }
 
 export default function Countdown({ duration, end, ...props }: CountdownProps) {
-    // let start = date instanceof Date ? date.getTime() : date
-    // let end = start + duration
     const [secondsRemaining, setSecondsRemaining] = useState(duration)
+    useEffect(() => setSecondsRemaining(duration), [duration, setSecondsRemaining])
+
     useEffect(() => {
         const id = setInterval(() => {
             setSecondsRemaining(secondsRemaining - 1)
         }, 1000)
-        if (secondsRemaining <= 0) {
+        if (secondsRemaining < 1) {
             clearInterval(id)
             if (end) end()
         }

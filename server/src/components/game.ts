@@ -3,6 +3,7 @@ import { MikroORM } from "@mikro-orm/core"
 import { Express, Request, Response } from "express"
 import ConnectionRepository from '../network/ConnectionRepository';
 import { getChallenges } from '../api/user';
+import GameTracker from '../network/GameTracker';
 
 export default function setupGame(app: Express, { em }: MikroORM) {
 
@@ -47,5 +48,27 @@ export default function setupGame(app: Express, { em }: MikroORM) {
         console.log(data);
         
         res.status(200).json(data)
+    })
+
+    app.post("/game/opponent", async (req: Request, res: Response) => {
+        let self = req.body.self
+        let gameId: string = req.body.gameId
+        
+        if (!gameId || !self) {
+            res.status(404)
+            return
+        }
+        let opponent = await GameTracker.get().getOpponent(gameId, self)        
+        res.status(200).json(opponent)
+    })
+
+    app.post("/game/state", async (req: Request, res: Response) => {
+        let gameId: string = req.body.gameId
+        let game = GameTracker.get().getGame(gameId)
+        if (!game) {
+            res.status(404)
+            return
+        }
+        res.status(200).json(game.getState())
     })
 }

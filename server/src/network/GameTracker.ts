@@ -1,11 +1,11 @@
+import { User } from "../entities/User";
 import { v4 } from 'uuid';
 import ConnectionRepository from './ConnectionRepository';
-
-type Game = Map<string, [number, number]>
+import Game from "../game/Game"
 
 export default class GameTracker {
   private static inst: GameTracker
-  private games: Game = new Map()
+  private games = new Map<string, Game>()
 
   public static get() {
     if (this.inst === undefined) this.inst = new GameTracker()
@@ -20,15 +20,15 @@ export default class GameTracker {
     let gameId = v4()
     this.join(a, gameId)
     this.join(b, gameId)
-    this.games.set(gameId, [a, b])
+    this.games.set(gameId, new Game(a, b))
     console.log(this.games);
     
     return gameId
   }
 
   public key(id: number) {
-    for (let [key, v] of this.games) {
-      if (v.includes(id))
+    for (let [key, game] of this.games) {
+      if (game.has(id))
         return key
     }
     return undefined
@@ -43,8 +43,21 @@ export default class GameTracker {
     let key = this.key(id)
     if (key) {
       console.log("Dropped game", key, "from pool");
+      let game = this.games.get(key)
+      if (!game?.isOver())
+        game?.socket("game-dropped")
+      game?.end()
       this.games.delete(key)
     }
+  }
+
+  public getGame(gameId: string): Game | undefined {
+    return this.games.get(gameId)
+  }
+
+  public async getOpponent(uuid: string, self: number): Promise<User | null> {
+    let game = this.games.get(uuid) ?? null
+    return !game ? null : game.getOpponent(self)
   }
 
   private join(id: number, gameId: string) {

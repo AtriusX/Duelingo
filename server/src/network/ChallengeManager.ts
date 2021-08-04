@@ -49,7 +49,7 @@ export default class ChallengeManager {
         let challenges = this.challenges.get(id) ?? []
         if (!challenges.some(([r, time]) => r === rival && time > Date.now()))
             return { message: "That rival has not challenged you!" }
-        let conn = GameTracker.get().connect(id, rival)
+        let conn = GameTracker.get().connect(id, rival)        
         if (typeof conn === "string") {
             this.setBusy(id, rival)
             this.setBusy(rival, id)

@@ -1,0 +1,135 @@
+.container {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 7em auto;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.avatar {
+    width: 5em;
+    height: 5em;
+    margin: 0 1em;
+}
+
+.info {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    background: var(--back);
+    color: white;
+}
+
+.userdata {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around !important;
+    margin: 1em 0;
+}
+
+.userdata * {
+    margin: 0.5rem;
+}
+
+.player {
+    border-bottom-right-radius: 1em;
+}
+
+.opponent {
+    flex-direction: row-reverse;
+    text-align: right;
+    border-bottom-left-radius: 1em;
+}
+
+.game {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer h1 {
+    margin-bottom: 1rem;
+}
+
+.timer * {
+    margin: 0;
+}
+
+.question {
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    align-items: center;
+}
+
+.question h1 {
+    font-size: 30pt;
+    margin-bottom: 2em;
+}
+
+.questioncontainer {
+    display: flex;
+}
+
+.choice {
+    background: #ddd;
+    height: 15rem;
+    width: 15rem;
+    display: flex;
+    margin: 0 0.5em;
+    border-radius: 1em;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    cursor: pointer;
+    font-size: x-large;
+    border: 0.25rem solid;
+}
+
+.choice:hover {
+    background: #BBB;
+}
+
+.results {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    justify-content: center;
+    background: var(--back);
+    min-width: 25%;
+    width: fit-content;
+    left: 50%;
+    top: 50%;
+    padding: 1em;
+    border-radius: 1em;
+    transform: translate(-50%, -50%);
+}
+
+.results button {
+    padding: 1em 0;
+    background: var(--primary);
+    border: none !important;
+    font-weight: bold;
+    border-radius: 0.5em;
+    font-size: 11pt;
+    color: white;
+    transition: all 0.25s;
+    outline: none;
+    cursor: pointer;
+}
+
+.results button:hover {
+    background: var(--primary-hover);
+}

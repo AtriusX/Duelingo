@@ -3,8 +3,12 @@ import { MikroORM } from "@mikro-orm/core"
 import path from "path"
 import { DBTYPE, DBUSER, DBPASS, DEV, DBNAME } from "../global"
 import { Rivalry } from '../entities/Rivalry';
+import Participant from '../entities/Participant';
+import Game from '../entities/Game';
+import GameResult from '../entities/GameResult';
+import LeaderboardSnapshot from '../entities/LeaderboardSnapshot';
 
-const entities = [User, Rivalry]
+const entities = [User, Rivalry, Participant, Game, GameResult, LeaderboardSnapshot]
 
 type Config = Parameters<typeof MikroORM.init>[0]
 
