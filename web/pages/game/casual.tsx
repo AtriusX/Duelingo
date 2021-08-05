@@ -9,7 +9,7 @@ import router from "next/router";
 import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { cancelChallenge } from "../../api/game";
-import { defaultSocket } from "../../utils";
+import { useSocket } from "../../components/SocketProvider";
 import Countdown from "../../components/Countdown";
 
 interface CasualProps {
@@ -20,10 +20,13 @@ interface CasualProps {
 export default function Casual({ user, currentChallenge }: CasualProps) {
     const [challenge, setChallenge] =
         useState<Option<NamedRivalry>>(currentChallenge ? currentChallenge[0] : null)
-    let socket = defaultSocket((socket) => {
+    let socket = useSocket((socket) => {
         socket.on("join-game", v => router.push(`/game/${v}`))
         socket.on("challenge-rejected", () => setChallenge(null))
-    }, "queue", user.token)
+    }, {
+        position: "queue",
+        token: user
+    })
     useEffect(() => {
         router.events.on("routeChangeComplete", () => cancelChallenge(challenge?.id ?? 0))
     })

@@ -8,7 +8,7 @@ import Pane from './Pane';
 import SocketProvider from "../components/SocketProvider"
 import { Token, Update } from '../api/user';
 import UpdateItem from './UpdateItem';
-import { defaultSocket } from '../utils';
+import { useSocket } from '../components/SocketProvider';
 import ChallengeRequests from "../components/ChallengeRequests"
 import router from 'next/router';
 
@@ -19,12 +19,12 @@ interface HomeProps {
 
 export default function Home({ user, updates }: HomeProps) {
     // This might need to change later on
-    const socket = defaultSocket(socket => {
+    const socket = useSocket(socket => {
         socket.emit("join-game", (id: string) => {
             socket.close()
             router.push(`/game/${id}`)
         })
-    }, "open", user?.token)
+    }, { token: user })
     return (
         <>
             <ChallengeRequests user={user} socket={socket} />

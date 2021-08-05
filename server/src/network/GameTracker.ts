@@ -1,6 +1,6 @@
-import { User } from "../entities/User";
-import { v4 } from 'uuid';
-import ConnectionRepository from './ConnectionRepository';
+import { User } from "../entities/User"
+import { v4 } from "uuid"
+import ConnectionRepository from "./ConnectionRepository"
 import Game from "../game/Game"
 
 export default class GameTracker {
@@ -12,24 +12,27 @@ export default class GameTracker {
     return this.inst
   }
 
-  public connect(a: number, b: number): boolean | string {
+  public connect(
+    a: number,
+    b: number,
+    competitive: boolean = false
+  ): boolean | string {
     if (this.has(a) || this.has(b)) {
-      console.log("Could not connect users to game");
+      console.log("Could not connect users to game")
       return false
     }
     let gameId = v4()
     this.join(a, gameId)
     this.join(b, gameId)
-    this.games.set(gameId, new Game(a, b))
-    console.log(this.games);
-    
+    this.games.set(gameId, new Game(a, b, competitive))
+    console.log(this.games)
+
     return gameId
   }
 
   public key(id: number) {
     for (let [key, game] of this.games) {
-      if (game.has(id))
-        return key
+      if (game.has(id)) return key
     }
     return undefined
   }
@@ -39,13 +42,11 @@ export default class GameTracker {
   }
 
   public drop(id: number) {
-    
     let key = this.key(id)
     if (key) {
-      console.log("Dropped game", key, "from pool");
+      console.log("Dropped game", key, "from pool")
       let game = this.games.get(key)
-      if (!game?.isOver())
-        game?.socket("game-dropped")
+      if (!game?.isOver()) game?.socket("game-dropped")
       game?.end()
       this.games.delete(key)
     }
@@ -61,6 +62,8 @@ export default class GameTracker {
   }
 
   private join(id: number, gameId: string) {
-    ConnectionRepository.get().recall(id).then(c => c?.socket?.emit("join-game", gameId))
+    ConnectionRepository.get()
+      .recall(id)
+      .then((c) => c?.socket?.emit("join-game", gameId))
   }
 }

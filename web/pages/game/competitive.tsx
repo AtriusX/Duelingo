@@ -4,7 +4,7 @@ import { self, Token } from "../../api/user";
 import { homeRedirect } from "../../api/auth";
 import Head from "next/head";
 import SocketProvider from "../../components/SocketProvider";
-import { defaultSocket } from "../../utils";
+import { useSocket } from "../../components/SocketProvider";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import styles from "../../styles/Competitive.module.css"
@@ -15,12 +15,15 @@ interface CompetitiveProps {
 }
 
 export default function Competitive({ user }: CompetitiveProps) {
-    const socket = defaultSocket(socket => {
+    const socket = useSocket(socket => {
         socket.on("join-game", id => {
             socket.close()
             router.push(`/game/${id}`)
         })
-    }, "pool", user.token)
+    }, {
+        position: "pool",
+        token: user
+    })
     return (
         <div>
             <Title title="Competitive Pool" />

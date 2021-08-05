@@ -1,5 +1,9 @@
+import router from "next/router";
 import { HTMLProps, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { address } from "../../env";
+import { Token } from "../api/user";
+import { cast } from "../utils";
 
 /**
  * The token in this interface allows us to specify an existing user session to 
@@ -12,7 +16,38 @@ interface SocketProps extends HTMLProps<HTMLDivElement> {
     load?: (socket: Socket, token?: string) => void
 }
 
-export const createSocket = () => io("http://localhost:3000")
+export const createSocket = () => io(`http://${address}:3000`)
+
+type SocketLoad = (socket: Socket, token?: string) => void
+
+type Position = "open" | "queue" | "pool" | "game"
+
+type SocketOptions = {
+    position?: Position;
+    token?: string | Token
+}
+
+export const useSocket = (
+    load: SocketLoad,
+    { position, token }: SocketOptions
+) => useState(() => {
+    let socket = createSocket()
+    let timestamp = Date.now()
+    let pos = position ?? "open"
+    console.log("Created socket")
+    let userToken = (cast<Token>(token).token ?? token) as string | undefined
+    socket.on("connect", () =>
+        socket.emit("handshake", userToken, pos, timestamp)
+    )
+    socket.on("ping", () => socket.emit("handshake", userToken, pos, timestamp))
+    socket.on("end", () => {
+        console.log("Closed")
+        socket.close()
+    })
+    load(socket, userToken)
+    return socket
+})[0]
+
 
 export default function SocketProvider({ socket, token, load, ...props }: SocketProps) {
     let client = !!socket ? socket : createSocket()

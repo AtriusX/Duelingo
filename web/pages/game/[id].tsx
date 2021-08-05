@@ -4,34 +4,42 @@ import { User } from "../../api";
 import { homeRedirect } from "../../api/auth";
 import { self, Token } from "../../api/user";
 import Title from "../../components/Title";
-import { defaultSocket } from "../../utils";
+import { useSocket } from "../../components/SocketProvider";
 import Avatar from "../../components/Avatar"
 import SocketProvider from "../../components/SocketProvider"
 import Countdown from "../../components/Countdown"
-import { getOpponent, getGameState } from "../../api/game";
+import { getOpponent, getGameState, Player } from "../../api/game";
 import styles from "../../styles/Game.module.css"
 import { HTMLProps } from "react";
 import router from "next/router";
 import { Socket } from "socket.io-client";
 import ReactModal from "react-modal";
 
+type Question = {
+    question: string,
+    choices: string[]
+}
+
 interface GameProps {
     gameId: string
     user: User & Token
     opponent: User,
-    state: [number, number, boolean, number]
+    state: [Player, Player, boolean, number, Question | undefined]
 }
 
 export default function Game({
     gameId, user, opponent,
-    state: [a, b, started, time]
+    state: [a, b, started, time, question]
 }: GameProps) {
-    const [score, setScore] = useState(a)
-    const [opponentScore, setOpponentScore] = useState(b)
+    const [score, setScore] = useState(a.id === user.id ? a.score : b.score)
+    const [opponentScore, setOpponentScore] = useState(a.id === user.id ? b.score : a.score)
     const [timer, setTimer] = useState(time)
     const [start, setStart] = useState(started)
+    const [correct, setCorrect] = useState<[number, boolean]>()
     const [showResults, setShowResults] = useState(false)
-    const socket = defaultSocket(socket => {
+    const [q, setQuestion] =
+        useState<Question | undefined>(question ?? undefined)
+    const socket = useSocket(socket => {
         socket.on("game-dropped", () => {
             alert("It looks like your opponent left the game... Press OK to return to the menu.")
             router.push("/")
@@ -41,15 +49,25 @@ export default function Game({
             setStart(true)
         })
         socket.on("update-score", (value, id) => {
-            if (id !== user.id)
-                setOpponentScore(value)
-            else
+            if (id === user.id) {
                 setScore(value)
+            }
+            if (id === opponent.id) {
+                setOpponentScore(value)
+            }
         })
-    }, "game", user.token)
+        socket.on("question-result", (choice, correct) => setCorrect([choice, correct]))
+        socket.on("question", v => {
+            setQuestion(v)
+            setCorrect(undefined)
+        })
+    }, {
+        position: "game",
+        token: user
+    })
     return (
         <SocketProvider className={styles.container} socket={socket}>
-            <Title title={`${user.username} vs. ${opponent.username}`} />
+            <Title title={`vs. ${opponent.username}`} />
             <div className={styles.header}>
                 <PlayerInfo user={user} score={score}
                     className={[styles.player, styles.info].join(" ")} />
@@ -65,9 +83,9 @@ export default function Game({
                         <h1>Starting in</h1>
                         <Countdown duration={timer} />
                     </div>
-                    : <GamePanel gameId={gameId} socket={socket} token={user} />}
+                    : <GamePanel gameId={gameId} socket={socket} token={user} question={q} correct={correct} />}
             </div>
-            <Result show={showResults} score={score} />
+            <Result show={showResults} scores={[score, opponentScore]} />
         </SocketProvider>
     )
 }
@@ -91,10 +109,10 @@ function PlayerInfo({ user, score, ...props }: PlayerInfoProps) {
 
 interface ResultProps {
     show: boolean
-    score: number
+    scores: [number, number]
 }
 
-function Result({ show, score }: ResultProps) {
+function Result({ show, scores }: ResultProps) {
     return (
         <ReactModal
             isOpen={show}
@@ -106,7 +124,8 @@ function Result({ show, score }: ResultProps) {
                 }
             }}
         >
-            <h1>Your score: {score}</h1>
+            <h1>You {scores[0] > scores[1] ? "won" : "lost"}!</h1>
+            <h2>Your score: {scores[0]}</h2>
             <button onClick={() => {
                 router.push("/", undefined, {
                     shallow: true
@@ -122,40 +141,36 @@ interface GamePanelProps {
     gameId: string
     socket: Socket
     token: Token
+    question?: Question
+    correct?: [number, boolean]
 }
 
-function GamePanel({ gameId, socket, token }: GamePanelProps) {
-    const [question, setQuestion] =
-        useState<Omit<QuestionProps, "socket" | "token" | "gameId"> | null>()
-    useEffect(() => setQuestion({
-        question: "Example",
-        choices: ["A", "B", "C", "D"]
-    }), [setQuestion])
-    function load(socket: Socket, token?: string) {
-
-    }
+function GamePanel({ gameId, socket, token, question, correct }: GamePanelProps) {
     return (
-        <SocketProvider socket={socket} load={load} token={token.token}>
+        <SocketProvider socket={socket}>
             {question && <Question {...question} gameId={gameId}
-                socket={socket} token={token.token} />}
+                socket={socket} token={token.token} correct={correct} />}
         </SocketProvider>
     )
 }
 
 interface QuestionProps {
-    question: string
-    choices: string[]
+    question?: string
+    choices?: string[]
     gameId: string
     socket: Socket
     token: string
+    correct?: [number, boolean]
 }
 
-function Question({ question, choices, ...others }: QuestionProps) {
+function Question({ question, choices, correct, ...others }: QuestionProps) {
     return (
         <div className={styles.question}>
             <h1>{question}</h1>
             <div className={styles.questioncontainer}>
-                {choices.map((c, i) => <Choice key={i} pos={i} choice={c} {...others} />)}
+                {choices?.map((c, i) => <Choice
+                    correct={correct && correct[0] === i ? correct[1] : undefined}
+                    key={i} pos={i} choice={c} {...others} active={correct === undefined} />)}
             </div>
         </div>
     )
@@ -168,15 +183,20 @@ interface ChoiceProps {
     socket: Socket
     token: string
     correct?: boolean
+    active: boolean
 }
 
-function Choice({ gameId, choice, pos, socket, token, correct }: ChoiceProps) {
+function Choice({ gameId, choice, pos, socket, token, correct, active }: ChoiceProps) {
     return (
         <div
             className={styles.choice}
             onClick={() => socket.emit("answer-question", token, pos, gameId)}
             style={{
-                borderColor: !!correct ? "var(--primary)" : "var(--error)"
+                borderColor: correct === true
+                    ? "var(--primary)"
+                    : correct === false
+                        ? "var(--error)"
+                        : undefined
             }}>
             {choice}
         </div>
@@ -191,6 +211,6 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
     const opponent = await getOpponent(user.id, gameId)
     if (!opponent)
         return homeRedirect
-    const state = await getGameState(gameId) ?? [-1, -1, false, -1]
+    const state = await getGameState(gameId) ?? [undefined, undefined, false, 0, undefined]
     return { props: { gameId, user, opponent, state } }
 }

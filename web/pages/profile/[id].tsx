@@ -6,7 +6,8 @@ import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
 import { tryLogout } from "../../api/auth";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
-import { cast, defaultSocket, getRank } from "../../utils";
+import { cast, getRank } from "../../utils";
+import { useSocket } from "../../components/SocketProvider";
 import NoResult from "../../components/NoResult";
 import router from "next/router";
 import RivalButton from "../../components/RivalButton";
@@ -25,6 +26,7 @@ interface ProfileData {
 }
 
 export default function Profile({ user, me, rival, rivals }: ProfileData) {
+    const socket = useSocket(() => { }, { token: me })
     if (!user)
         return (
             <NoResult message="It seems a bit empty in here..." emoji="🌌" className={styles.emptycenter}>
@@ -34,7 +36,7 @@ export default function Profile({ user, me, rival, rivals }: ProfileData) {
     const { username, joined, rank, description } = user as User
     return (
         <>
-            {me ? <ChallengeRequests user={me} socket={defaultSocket(() => { }, "open", me.token)} /> : null}
+            {me && <ChallengeRequests user={me} socket={socket} />}
             <div className={styles.body}>
                 <Title title={`${username}'s Profile`} />
                 <Navbar redirect="/search" user={me}>

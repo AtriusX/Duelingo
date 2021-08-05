@@ -1,7 +1,8 @@
 import router from "next/router"
 import { Dispatch, FormEvent, SetStateAction, useState } from "react"
 import { QueryRes, search, SearchQuery, Token } from '../api/user'
-import { defaultSocket, getData } from "../utils"
+import { getData } from "../utils"
+import { useSocket } from "../components/SocketProvider";
 import styles from '../styles/Search.module.css'
 import { NextPageContext } from "next"
 import SearchItem from "../components/SearchItem"
@@ -24,9 +25,10 @@ interface SearchData {
 
 export default function Search({ user, query, queryRes }: SearchData) {
     const [users, setUsers] = useState<QueryRes | null>(query.query ? queryRes : null)
+    const socket = useSocket(() => { }, { token: user })
     return (
         <>
-            {user ? <ChallengeRequests user={user} socket={defaultSocket(() => { }, "open", user.token)} /> : null}
+            {user && <ChallengeRequests user={user} socket={socket} />}
             <div className={styles.body}>
                 <Head>
                     <title>Search</title>

@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 import { tryLogout } from '../api/auth'
 import Link from "next/link"
 import styles from "../styles/Settings.module.css"
-import { animate, defaultSocket, getData } from "../utils";
+import { animate, useSocket, getData } from "../utils";
 import { FormEvent, useState } from "react";
 import router from "next/router";
 import Avatar from "../components/Avatar";
@@ -29,7 +29,9 @@ export default function Settings({ user }: SettingsProps) {
         animate("#error", styles.shake)
     }
     return <>
-        <ChallengeRequests user={user} socket={defaultSocket(() => {}, "open", user.token)} />
+        <ChallengeRequests user={user} socket={useSocket(() => {}, {
+            token: user
+        })} />
         <Title title="Settings" />
         <Navbar redirect="/search" user={user}>
             <Link href={`/profile/${user?.id}`}>My Profile</Link>

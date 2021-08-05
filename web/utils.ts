@@ -1,10 +1,3 @@
-import router from 'next/router';
-import { useEffect } from 'react';
-import { createSocket } from "./components/SocketProvider"
-import { NextPageContext } from "next"
-import { io, Socket } from "socket.io-client"
-import { route } from 'next/dist/next-server/server/router';
-
 /**
  * This function streamlines the process of aggregating form data into a json object.
  * This can be used to handle post requests with ease.
@@ -61,39 +54,3 @@ export function getRank(value: number): string {
 
 // Helper function for force casting an object without needing to use "as unknown as Type"
 export const cast = <T = any>(value: unknown) => value as T
-
-// Server-side function to allow us to call a socket without explicitly specifiying its token in calls
-export function callSocket(
-  req: NextPageContext["req"],
-  exec: (socket: Socket) => void
-) {
-  exec(
-    io("http://localhost:3000", {
-      extraHeaders: {
-        Cookie: req?.headers.cookie ?? "",
-      },
-    })
-  )
-}
-
-type Position = "open" | "queue" | "pool" | "game"
-
-export function defaultSocket(
-  load: (socket: Socket, token?: string) => void,
-  position: Position = "open",
-  token?: string
-) {
-  let socket = createSocket()
-  let timestamp = Date.now()
-  socket.on("connect", () => {
-    socket.emit("handshake", token, position, timestamp)
-  })
-  socket.on("ping", () => socket.emit("handshake", token, position, timestamp))
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => router.events.on("routeChangeComplete", () => {
-      console.log("Closed")
-      socket.close()
-  }))
-  load(socket, token)
-  return socket
-}

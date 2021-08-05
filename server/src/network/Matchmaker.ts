@@ -35,7 +35,7 @@ export default class MatchMaker {
 
   private async connect(a: User, b: User) {
     // Connect via game system manager
-    if (GameTracker.get().connect(a.id, b.id)) {
+    if (GameTracker.get().connect(a.id, b.id, true)) {
         this.remove(a)
         this.remove(b)
     }

@@ -9,7 +9,8 @@
 .emblem {
     text-align: center;
     font-size: 100pt;
-    animation: in 2s normal cubic-bezier(0.165, 0.84, 0.44, 1), float 10s infinite 2s cubic-bezier(0.77, 0, 0.175, 1);
+    animation: in 2s normal cubic-bezier(0.165, 0.84, 0.44, 1), 
+        search 10s infinite 2s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .back {
@@ -50,7 +51,7 @@
         transform: none;
     }    
     25% {
-        transform: translate(2rem, -1rem) rotate(-10deg);
+        transform: translate(5rem, -3rem) rotate(-10deg);
     }
     50% {
         transform: translate(-5rem, 2rem) rotate(10deg);
