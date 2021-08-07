@@ -4,8 +4,9 @@ import { verify } from "argon2"
 import { Express, Request, Response } from "express"
 import { MikroORM } from "@mikro-orm/core"
 import { User } from "../entities/User"
-import { getUpdates, search, updateUser } from "../api/user"
+import { getGames, getStates, getUpdates, search, updateUser } from "../api/user"
 import { deleteUser } from "../api/auth"
+import ConnectionRepository from "../network/ConnectionRepository"
 
 export default function setupUser(app: Express, db: MikroORM) {
   app.get("/user/me", async (req, res) => {
@@ -20,6 +21,11 @@ export default function setupUser(app: Express, db: MikroORM) {
     const result = await deleteUser(db.em, sess.userId, password)
     if (result == true) req.session.destroy(() => {})
     res.status(200).json(result)
+  })
+
+  app.get("/user/stats", async (req: Request, res: Response) => {
+    const id = req.session.userId
+    res.status(200).json(await getStates(id))
   })
 
   app.get("/user/:id", async (req: Request, res: Response) => {
@@ -56,11 +62,15 @@ export default function setupUser(app: Express, db: MikroORM) {
     res.status(200).json(await getUpdates(db.em, userId))
   })
 
-  app.post("/forget", async (req: Request, _: Response) => {
+  app.post("/forget", async (req: Request, res: Response) => {
     const id = req.session?.userId
     console.log("FORGET", id)
-    // if (!!id)
-    //     ConnectionRepository.get().drop(id)
-    // return res.status(200)
+    if (!!id) ConnectionRepository.get().drop(id)
+    return res.status(200)
+  })
+
+  app.get("/user/:id/games", async (req: Request, res: Response) => {
+    const id = parseInt(req.params["id"]) || 0
+    res.status(200).json(await getGames(id))
   })
 }

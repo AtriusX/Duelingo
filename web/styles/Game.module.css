@@ -115,6 +115,7 @@
     padding: 1em;
     border-radius: 1em;
     transform: translate(-50%, -50%);
+    outline: none;
 }
 
 .results button {

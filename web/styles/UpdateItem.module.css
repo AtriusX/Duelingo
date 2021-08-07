@@ -1,13 +1,17 @@
 .container {
     display: flex;
     justify-content: space-between;
-    margin-top: 1em;
-    margin-bottom: 0;
+    margin-bottom: 1em;
     background: var(--back);
     color: white;
     padding: 1em;
     border-radius: 1em;
     align-items: center;
+    transition: all 0.1s;
+}
+
+.container:hover {
+    background: var(--back-hover);
 }
 
 .avatar {
@@ -24,4 +28,10 @@
 
 .container div * {
     display: inline-block;
+}
+
+.timeago {
+    font-style: italic;
+    text-decoration: underline 2px #555;
+    text-underline-offset: 0.4rem;
 }

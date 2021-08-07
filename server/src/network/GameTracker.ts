@@ -24,7 +24,7 @@ export default class GameTracker {
     let gameId = v4()
     this.join(a, gameId)
     this.join(b, gameId)
-    this.games.set(gameId, new Game(a, b, competitive))
+    this.games.set(gameId, new Game(a, b, gameId, competitive))
     console.log(this.games)
 
     return gameId

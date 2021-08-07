@@ -14,18 +14,25 @@ export default function Navbar({ user, children, ...others }: NavbarProps) {
     return (
         <div className={styles.container}>
             <div className={styles.navbar}>
-                <Link href="/">
-                    <a>Home</a>
-                </Link>
+                <div>
+                    <Link href="/">
+                        <a>Home</a>
+                    </Link>
+                    <Link href="/leaderboards">
+                        <a>Leaderboards</a>
+                    </Link>
+                </div>
                 <div className={styles.box}>
                     <Searchbar {...others} className={styles.search} />
                 </div>
-                {user
-                    ? <div className={styles.open} onClick={openOptions}>
-                        <Avatar user={user} className={styles.avatar} />
-                        <p>{user?.username}</p>
-                    </div>
-                    : <Link href="/signin">Login</Link>}
+                <div className={styles.dropdown}>
+                    {user
+                        ? <div className={styles.open} onClick={openOptions}>
+                            <Avatar user={user} className={styles.avatar} />
+                            <p>{user?.username}</p>
+                        </div>
+                        : <Link href="/signin">Login</Link>}
+                </div>
             </div>
             {user ?
                 <ul id={styles.options}>

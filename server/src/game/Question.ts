@@ -11,8 +11,14 @@ export default class Question implements PublicQuestion {
   private answered: boolean = false
   private maxUsers: number
   private created: number = Date.now()
+  private _expire: number
 
-  constructor(question: string, choices: string[], correct: number, maxUsers: number = 2) {
+  constructor(
+    question: string,
+    choices: string[],
+    correct: number,
+    maxUsers: number = 2
+  ) {
     this.question = question
     this.choices = choices
     if (correct < 0 || correct >= choices.length)
@@ -26,17 +32,20 @@ export default class Question implements PublicQuestion {
   }
 
   public answer(id: number, choice: number): boolean {
-    if (this.answerCount.has(id) || this.answered)
-        return false
+    if (this.answerCount.has(id) || this.answered) return false
     this.answerCount.add(id)
     let correct = choice === this.correct
-    if (correct)
-        this.answered = true
+    if (correct) this.answered = true
     return correct
+  }
+
+  public expire() {
+    this._expire = Date.now()
   }
 
   // Question expires if the time of creation is 10 seconds ago or the question has been answered by all users
   public expired(): boolean {
-      return this.answerCount.size === this.maxUsers || this.created + 10000 < Date.now()
+    if (this.answerCount.size === this.maxUsers && !this._expire) this.expire()
+    return this._expire + 1000 < Date.now() || this.created + 10000 < Date.now()
   }
 }

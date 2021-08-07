@@ -1,0 +1,19 @@
+.stat {
+    border-left: 3px solid;   
+    border-right: 3px solid;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat h3 {
+    margin: 0;
+    padding: 0.5rem 1rem;
+}
+
+.bar {
+    background: var(--primary);
+    height: 0.4em;
+    transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+

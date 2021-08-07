@@ -1,0 +1,54 @@
+.outer {
+    margin-bottom: 1em;
+}
+
+.container {
+    background: var(--back);
+    color: white;
+    padding: 1em;
+    border-radius: 1em;
+    border: 0.5rem solid;
+    display: grid;
+    grid-template-columns: max-content auto;
+    flex-direction: row;
+    align-items: center;
+    transition: all 0.1s;
+}
+
+.container:hover { 
+    background: var(--back-hover);
+}
+
+.avatar {
+    width: 5em;
+    height: 5em;
+    margin-right: 1em;
+}
+
+.info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.info div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.info div:first-child {
+    margin-bottom: 1rem;
+}
+
+.info * {
+    margin: 0;
+}
+
+.time {
+    font-style: italic;
+    text-decoration: underline 2px #555;
+    text-underline-offset: 0.4rem;
+}

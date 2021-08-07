@@ -2,12 +2,12 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    background: #555;
+    background: var(--back);
     padding: 1em;
     border-radius: 1em;
     transition: all 0.1s;
     cursor: pointer;
-    margin: 0.5em 0;
+    margin-bottom: 1em;
     justify-content: space-between;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .box:hover {
-    background: #777;
+    background: var(--back-hover);
 }
 
 .link {

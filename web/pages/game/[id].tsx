@@ -39,6 +39,10 @@ export default function Game({
     const [showResults, setShowResults] = useState(false)
     const [q, setQuestion] =
         useState<Question | undefined>(question ?? undefined)
+    useEffect(() => {
+        if (timer <= 0)
+            setShowResults(true)
+    }, [timer])
     const socket = useSocket(socket => {
         socket.on("game-dropped", () => {
             alert("It looks like your opponent left the game... Press OK to return to the menu.")
@@ -72,7 +76,7 @@ export default function Game({
                 <PlayerInfo user={user} score={score}
                     className={[styles.player, styles.info].join(" ")} />
                 <div className={styles.timer}>
-                    {start && <Countdown duration={timer} end={() => setShowResults(true)} />}
+                    {start && <h1>{timer}</h1>}
                 </div>
                 <PlayerInfo user={opponent} score={opponentScore}
                     className={[styles.opponent, styles.info].join(" ")} />
@@ -190,7 +194,7 @@ function Choice({ gameId, choice, pos, socket, token, correct, active }: ChoiceP
     return (
         <div
             className={styles.choice}
-            onClick={() => socket.emit("answer-question", token, pos, gameId)}
+            onClick={() => active && socket.emit("answer-question", token, pos, gameId)}
             style={{
                 borderColor: correct === true
                     ? "var(--primary)"

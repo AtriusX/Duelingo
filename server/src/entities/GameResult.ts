@@ -2,8 +2,16 @@ import { Entity, PrimaryKey, Property } from "@mikro-orm/core"
 
 @Entity()
 export default class GameResult {
-  constructor(participantId: number, won: boolean, score: number) {
+  constructor(
+    participantId: number,
+    opponentId: number,
+    gameId: string,
+    won: boolean,
+    score: number
+  ) {
     this.participantId = participantId
+    this.opponentId = opponentId
+    this.gameId = gameId
     this.won = won
     this.score = score
   }
@@ -15,8 +23,17 @@ export default class GameResult {
   participantId!: number
 
   @Property()
+  opponentId!: number
+
+  @Property()
+  gameId!: string
+
+  @Property()
   won!: boolean
 
   @Property()
   score!: number
+
+  @Property({ type: "date" })
+  createdAt: Date = new Date()
 }

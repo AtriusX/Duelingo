@@ -6,19 +6,23 @@ import styles from '../styles/Home.module.css'
 import Avatar from './Avatar';
 import Pane from './Pane';
 import SocketProvider from "../components/SocketProvider"
-import { Token, Update } from '../api/user';
+import { Stats, Token, Update } from '../api/user';
 import UpdateItem from './UpdateItem';
 import { useSocket } from '../components/SocketProvider';
 import ChallengeRequests from "../components/ChallengeRequests"
 import router from 'next/router';
+import StatBar from './StatBar';
+import { getRank } from '../utils';
 
 interface HomeProps {
     user: User & Token
     updates?: Update[]
+    stats?: Stats
 }
 
-export default function Home({ user, updates }: HomeProps) {
+export default function Home({ user, updates, stats }: HomeProps) {
     // This might need to change later on
+    const { winRatio, points, nextRank, rankedPlays } = stats ?? {}
     const socket = useSocket(socket => {
         socket.emit("join-game", (id: string) => {
             socket.close()
@@ -37,10 +41,16 @@ export default function Home({ user, updates }: HomeProps) {
                     </Navbar>
                     <div className={styles.content}>
                         <div className={styles.user}>
+                            <h3>{user.username}</h3>
+                            <hr />
                             <Avatar user={user} className={styles.avatar} />
                             <hr />
-                            <div>
-                                <p>Stats go here later</p>
+                            <div className={styles.stats}>
+                                <StatBar value={getRank(user.rank)} text="Rank" display="raw" />
+                                <StatBar value={winRatio} text="Win Ratio" />
+                                <StatBar value={points} text="Points" display="raw" color="none" />
+                                <StatBar value={nextRank} text="Next Rank" display="ratio" color="#3bb0df" />
+                                <StatBar value={rankedPlays} text="Ranked Plays" display="raw" color="none" />
                             </div>
                         </div>
                         <Pane className={styles.updates}

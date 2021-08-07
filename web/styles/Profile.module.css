@@ -107,7 +107,7 @@
   text-align: center;
 }
 
-.rivals h3,
-.games h3 {
-  margin: 0;
+.rivals > h3,
+.games > h3 {
+  margin: 0.5em  0 1em 0;
 }

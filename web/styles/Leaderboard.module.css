@@ -1,0 +1,31 @@
+.container {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--primary);
+    color: white;
+    border-radius: 1em;
+    overflow: hidden;
+}
+
+.container ol {
+    padding: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.container li {
+    list-style-position: inside;
+    padding: 1em;
+    text-align: left;
+}
+
+.container li:nth-child(odd) {
+    background: dimgray;
+}
+
+
+.container li:nth-child(even) {
+    background-color: gray;
+}

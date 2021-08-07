@@ -1,30 +1,40 @@
+import { Language } from "./../types"
 import { em } from "./../"
 import { User } from "../entities/User"
 import ConnectionRepository from "../network/ConnectionRepository"
 import Question, { PublicQuestion } from "./Question"
+import GameEntity from "../entities/Game"
+import GameResult from "../entities/GameResult"
 
 interface Player {
   id: number
   score: number
 }
+
 export default class Game {
   readonly a: Player
   readonly b: Player
   readonly competitive: boolean
+  private uuid: string
   private started: boolean = false
   private over: boolean = false
+  private lang: Language
   private time: number
   private current: Question
 
   constructor(
     a: number,
     b: number,
+    uuid: string,
     competitive: boolean = false,
+    lang: Language = "es",
     time: number = 5 * 60 // 5 minutes
   ) {
     this.a = { id: a, score: 0 }
     this.b = { id: b, score: 0 }
+    this.uuid = uuid
     this.competitive = competitive
+    this.lang = lang
     this.time = time
     this.timeSync()
   }
@@ -61,6 +71,22 @@ export default class Game {
 
   public end() {
     this.over = true
+    if (this.competitive) {
+      em.persist(new GameEntity(this.uuid, this.lang))
+      em.persist(this.getResult(this.a, this.b))
+      em.persist(this.getResult(this.b, this.a))
+      em.flush()
+    }
+  }
+
+  private getResult(player: Player, opponent: Player) {
+    return new GameResult(
+      player.id,
+      opponent.id,
+      this.uuid,
+      player.score > opponent.score,
+      player.score
+    )
   }
 
   private timeSync() {
@@ -68,28 +94,24 @@ export default class Game {
       this.started = true
       this.setQuestion(new Question("Example", ["A", "B", "C", "D"], 1))
       const interval = setInterval(() => {
-        if (this.time % 15 === 0) this.socket("update-timer", this.time)
+        // Perhaps this can be simplified now that the system is fixed
+        this.socket("update-timer", this.time)
         if (this.current.expired())
           this.setQuestion(
             new Question(`Example ${this.time}`, ["A", "B", "C", "D"], 2)
           )
-        if (this.over || this.time-- <= 0) {
-          this.end()
+        if (this.isOver() || this.time-- <= 0) {
           clearInterval(interval)
+          this.end()
         }
       }, 1000)
     }, 5000)
   }
 
   public answer(id: number, choice: number): boolean {
-    console.log(id, choice)
     let correct = this.current.answer(id, choice)
-    console.log(id, "correct?", correct)
-    if (correct) {
-      this.addScore(id, 10)
-      this.setQuestion(new Question("Correct!", ["1", "5", "7", "9"], 2))
-    }
-    // We need to update the current question and reserve if correct
+    this.addScore(id, correct ? 10 : -10)
+    if (correct) this.current.expire()
     return correct
   }
 
@@ -98,14 +120,13 @@ export default class Game {
   }
 
   private addScore(id: number, amt: number) {
-    if (this.a.id === id) {
-      this.a.score += amt
-      this.socket("update-score", this.a.score, this.a.id)
-    }
-    if (this.b.id === id) {
-      this.b.score += amt
-      this.socket("update-score", this.b.score, this.b.id)
-    }
+    let ids = [this.a, this.b]
+    ids.forEach((p) => {
+      if (p.id === id) {
+        p.score += amt
+        this.socket("update-score", p.score, p.id)
+      }
+    })
   }
 
   public socket(event: string, ...data: any) {

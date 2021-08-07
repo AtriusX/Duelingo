@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 import { tryLogout } from '../api/auth'
 import Link from "next/link"
 import styles from "../styles/Settings.module.css"
-import { animate, useSocket, getData } from "../utils";
+import { animate, getData } from "../utils";
 import { FormEvent, useState } from "react";
 import router from "next/router";
 import Avatar from "../components/Avatar";
@@ -13,6 +13,7 @@ import ReactModal from "react-modal";
 import { Error, User } from "../api"
 import Title from "../components/Title";
 import ChallengeRequests from "../components/ChallengeRequests";
+import { useSocket } from "../components/SocketProvider";
 interface SettingsProps {
     user: User & Token
 }
@@ -29,7 +30,7 @@ export default function Settings({ user }: SettingsProps) {
         animate("#error", styles.shake)
     }
     return <>
-        <ChallengeRequests user={user} socket={useSocket(() => {}, {
+        <ChallengeRequests user={user} socket={useSocket(() => { }, {
             token: user
         })} />
         <Title title="Settings" />

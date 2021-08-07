@@ -57,7 +57,7 @@
         transform: translate(-5rem, 2rem) rotate(10deg);
     }
     75% {
-        transform: translate(2rem, 6rem) rotate(-10deg);
+        transform: translate(2rem, 6rem) rotate(-70deg);
     }
     30%, 95% {
         text-shadow: none;

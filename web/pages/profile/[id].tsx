@@ -1,5 +1,5 @@
 import { NextPageContext } from "next";
-import { getUser, self, Token } from "../../api/user";
+import { GameRes, getGames, getUser, self, Token } from "../../api/user";
 import Avatar from "../../components/Avatar";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/Profile.module.css"
@@ -17,15 +17,17 @@ import RivalItem from "../../components/RivalItem"
 import Pane from "../../components/Pane";
 import Title from "../../components/Title";
 import ChallengeRequests from "../../components/ChallengeRequests";
+import GameResult from "../../components/GameResult";
 
 interface ProfileData {
     user?: User | Error
     me?: User & Token
     rival: Rivalry,
-    rivals?: NamedRivalry[]
+    rivals?: NamedRivalry[],
+    games?: GameRes[]
 }
 
-export default function Profile({ user, me, rival, rivals }: ProfileData) {
+export default function Profile({ user, me, rival, rivals, games }: ProfileData) {
     const socket = useSocket(() => { }, { token: me })
     if (!user)
         return (
@@ -61,8 +63,9 @@ export default function Profile({ user, me, rival, rivals }: ProfileData) {
                             <p>{description ? description : "No description provided."}</p>
                         </div>
                     </div>
-                    <Pane className={styles.games} emptyIcon="🎮" emptyText="No past games!">
+                    <Pane className={styles.games} emptyIcon="🎮" emptyText="No past games!" items={games}>
                         <h3>Games</h3>
+                        {games?.map((g, i) => <GameResult key={i} result={g} />)}
                     </Pane>
                     <Pane className={styles.rivals} emptyIcon="🌞" emptyText="No Rivals!" items={rivals}>
                         <h3>Rivals</h3>
@@ -80,15 +83,16 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
     const me = await self(token)
     const same = cast<User>(user)?.id === me?.id
     const rivals = same ? await all(req?.headers.cookie ?? "", query?.id) : await active(query?.id) ?? null
-
     const rivalry = same ? null : await get(cast<User>(user).id, token!)
+    const games = await getGames(cast<User>(user).id.toString())
 
     return {
         props: {
             user: !!(user as any)?.error ? null : user,
             me,
             rival: rivalry,
-            rivals
+            rivals,
+            games
         }
     }
 }

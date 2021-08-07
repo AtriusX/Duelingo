@@ -1,12 +1,12 @@
 import { User } from "../api";
-import { Update } from "../api/user";
+import { GameRes, Update } from "../api/user";
 import { cast } from "../utils";
 import RivalButton from "./RivalButton";
 import styles from "../styles/UpdateItem.module.css"
 import Avatar from "./Avatar";
 import ReactTimeago from "react-timeago";
-import { acceptGame, rejectGame } from "../api/game";
-import router from "next/router";
+import GameResult from "./GameResult";
+import Link from "next/link"
 
 interface UpdateProps {
     user?: User
@@ -17,40 +17,25 @@ export default function UpdateItem({ user, update }: UpdateProps) {
     switch (update?.type) {
         case "rivalry":
             return (
-                <div className={styles.container}>
-                    <div>
-                        <Avatar className={styles.avatar} user={cast<User>(update)} />
-                        <p>{!!update && update?.receiver === user?.id
-                            ? `${update.username} requested a rivalry from you `
-                            : `Requested a rivalry from ${update.username} `}
-                            <ReactTimeago date={update.createdAt} />
-                        </p>
-                    </div>
-                    <RivalButton self={user} user={cast<User>(update)} state={update} />
-                </div>
+                <Link href={`/profile/${user?.id}`}>
+                    <a>
+                        <div className={styles.container}>
+                            <div>
+                                <Avatar className={styles.avatar} user={cast<User>(update)} />
+                                <p>{!!update && update?.receiver === user?.id
+                                    ? `${update.username} requested a rivalry from you `
+                                    : `Rivalry requested from ${update.username} `}
+                                    <ReactTimeago className={styles.timeago} date={update.createdAt} />
+                                </p>
+                            </div>
+                            <RivalButton self={user} user={cast<User>(update)} state={update} />
+                        </div>
+                    </a>
+                </Link>
             )
-        case "challenge":
+        case "result":
             return (
-                <div className={styles.container}>
-                    <div>
-                        <Avatar className={styles.avatar} user={cast<User>(update)} />
-                        <p>{`${update.username} challenged you to a casual match`}</p>
-                    </div>
-                    <div>
-                        <button
-                            onClick={async () => {
-                                let id = (await acceptGame(update.id)).id
-                                if (!id) return
-                                router.push(`/game/${id}`)
-                            }}>
-                            Accept
-                        </button>
-                        <button
-                            onClick={() => rejectGame(update.id)}>
-                            Reject
-                        </button>
-                    </div>
-                </div>
+                <GameResult result={cast<GameRes>(update)} />
             )
     }
 

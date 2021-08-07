@@ -3,7 +3,8 @@
 }
 
 .navbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   background: var(--back);
   width: 100%;
   align-items: center;
@@ -18,6 +19,7 @@
   height: 100%;
   transition: all 0.2s;
   margin-left: auto;
+  margin-right: 1em;
 }
 
 .navbar a:hover {
@@ -47,7 +49,6 @@
   padding: 0.1em 2.5em;
   border-radius: 2em;
   cursor: pointer;
-  margin-right: auto;
 }
 
 .open:hover,
@@ -65,7 +66,7 @@
   display: inline-block;
   padding: 0.5em 1em;
   align-items: center;
-  width: 50%;
+  width: 40vw;
 }
 
 #options {
@@ -93,6 +94,11 @@
   padding: 0.75em 0;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.dropdown {
+  display: flex;
+  justify-content: flex-end;
 }
 
 @keyframes open {
