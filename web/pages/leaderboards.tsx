@@ -23,7 +23,6 @@ const colors = [
 ]
 
 export default function Leaderboards({ user, leaderboards }: LeaderboardProps) {
-    console.log(leaderboards)
     return (
         <div>
             <Title title="Leaderboards" />
