@@ -83,16 +83,13 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
     const me = await self(token)
     const same = cast<User>(user)?.id === me?.id
     const rivals = same ? await all(req?.headers.cookie ?? "", query?.id) : await active(query?.id) ?? null
-    const rivalry = same ? null : await get(cast<User>(user).id, token!)
-    const games = await getGames(cast<User>(user).id.toString())
+    const rival = same ? null : await get(cast<User>(user).id, token!)
+    const games = await getGames(cast<User>(user).id?.toString())
 
     return {
         props: {
             user: !!(user as any)?.error ? null : user,
-            me,
-            rival: rivalry,
-            rivals,
-            games
+            me, rival, rivals, games
         }
     }
 }

@@ -17,6 +17,7 @@ import setupRivals from './components/rival';
 import { createServer } from "http"
 import { setupSockets } from './network/socket';
 import setupGame from './components/game';
+import { setupLeaderboards } from './components/leaderboards';
 
 export let em: EntityManager
 
@@ -50,6 +51,8 @@ async function main() {
   setupUser(app, db)
   setupRivals(app, db)
   setupGame(app, db)
+  setupLeaderboards(app, db);
+
   http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")));
 }
 

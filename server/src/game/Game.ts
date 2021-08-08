@@ -1,3 +1,4 @@
+import { getPoints, getRankPoints, rankUp } from '../api/user';
 import { Language } from "./../types"
 import { em } from "./../"
 import { User } from "../entities/User"
@@ -70,13 +71,21 @@ export default class Game {
   }
 
   public end() {
-    this.over = true
-    if (this.competitive) {
+    if (this.competitive && !this.over) {
       em.persist(new GameEntity(this.uuid, this.lang))
       em.persist(this.getResult(this.a, this.b))
       em.persist(this.getResult(this.b, this.a))
       em.flush()
+      this.tryRankUp(this.a.id)
+      this.tryRankUp(this.b.id)
     }
+    this.over = true
+  }
+
+  private async tryRankUp(id: number) {
+    let points = await getPoints(id)
+    let [,, rank] = getRankPoints(points)
+    rankUp(id, rank)
   }
 
   private getResult(player: Player, opponent: Player) {

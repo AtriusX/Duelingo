@@ -117,7 +117,7 @@ type Stats = {
   rankedPlays: number
 }
 
-function getRankPoints(points: number): [number, number, number] {
+export function getRankPoints(points: number): [points: number, cap: number, rank: number] {
   if (points < 2500)
     return [points, 2500, 1]
     if (points < 10000)
@@ -127,6 +127,20 @@ function getRankPoints(points: number): [number, number, number] {
     if (points < 50000)
       return [points - 25000, 25000, 4]
   return [0, 0, 5]
+}
+
+export async function getPoints(id: number): Promise<number> {
+  return (await em.find(GameResult, { participantId: id }))
+    .map(r => r.score)
+    .reduce((a, b) => a + b)
+}
+
+export async function rankUp(id: number, rank: number) {
+  let user = await em.findOne(User, id)
+  if (user && user.rank !== rank) {
+    user.rank = rank
+    await em.flush()
+  }
 }
 
 export async function getStates(id?: number): Promise<Stats | null> {

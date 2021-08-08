@@ -1,5 +1,5 @@
 .container {
-    width: 20%;
+    width: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,6 +7,7 @@
     color: white;
     border-radius: 1em;
     overflow: hidden;
+    box-shadow: 0 0 10px lightgray;
 }
 
 .container ol {
@@ -15,10 +16,30 @@
     margin: 0;
 }
 
-.container li {
+.head {
+    display: flex;
+    align-items: center;
+    line-height: 0rem;
+    width: 100%;
+    padding: 2em;
+    user-select: none;
+    justify-content: space-between;
+    transition: all 0.1s;
+    color: #eee;
+}
+
+.head:hover {
+    color: white;
+}
+
+.item {
+    display: flex;
     list-style-position: inside;
     padding: 1em;
     text-align: left;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .container li:nth-child(odd) {
@@ -28,4 +49,9 @@
 
 .container li:nth-child(even) {
     background-color: gray;
+}
+
+.avatar {
+    width: 2em;
+    height: 2em;
 }
