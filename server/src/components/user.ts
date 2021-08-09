@@ -57,9 +57,10 @@ export default function setupUser(app: Express, db: MikroORM) {
     return res.status(200).json(update)
   })
 
-  app.get("/updates", async (req: Request, res: Response) => {
+  app.post("/updates", async (req: Request, res: Response) => {
     const userId = sessionId(req.session)
-    res.status(200).json(await getUpdates(db.em, userId))
+    const page = req.body.page
+    res.status(200).json(await getUpdates(db.em, userId, page))
   })
 
   app.post("/forget", async (req: Request, res: Response) => {
@@ -69,8 +70,9 @@ export default function setupUser(app: Express, db: MikroORM) {
     return res.status(200)
   })
 
-  app.get("/user/:id/games", async (req: Request, res: Response) => {
+  app.get("/user/:id/games/:page", async (req: Request, res: Response) => {
     const id = parseInt(req.params["id"]) || 0
-    res.status(200).json(await getGames(id))
+    const page = parseInt(req.params["page"]) || 0
+    res.status(200).json(await getGames(id, page))
   })
 }

@@ -128,7 +128,8 @@ function Result({ show, scores }: ResultProps) {
                 }
             }}
         >
-            <h1>You {scores[0] > scores[1] ? "won" : "lost"}!</h1>
+            <h1>You {scores[0] === scores[1] ? "Draw"
+                : scores[0] > scores[1] ? "won" : "lost"}!</h1>
             <h2>Your score: {scores[0]}</h2>
             <button onClick={() => {
                 router.push("/", undefined, {

@@ -63,13 +63,15 @@ const cast = <T>(value: unknown) => value as T
 
 type Result = {
   opponent?: User
-  won: boolean
+  won?: boolean
   score: number
   time: number
 }
 
-export async function getGames(id: number): Promise<Result[] | null> {
-  let res = await em.find(GameResult, { participantId: id })
+export async function getGames(id: number, page?: number): Promise<Result[] | null> {
+  let res = (await em.find(GameResult, { participantId: id }))
+  if (!!page) 
+    res = res.slice(page * 50, (page + 1) * 50)
   if (!res.length) return null
   let users = await em.find(User, [...new Set(res.map((r) => r.opponentId))])
   return res.map(({ opponentId, won, score, createdAt }) => {
@@ -84,7 +86,8 @@ export async function getGames(id: number): Promise<Result[] | null> {
 
 export async function getUpdates(
   em: EntityManager,
-  id: number
+  id: number,
+  page: number
 ): Promise<Update[] | Error> {
   const rivals = await pending(em, id)
   if (!!cast<Error>(rivals)?.message) return rivals as Error
@@ -98,7 +101,7 @@ export async function getUpdates(
   return [...rivalTypes, ...games].sort((a, b) => {
     const time = (r: Update) => r.type === "rivalry" ? r.createdAt.getTime() : r.time
     return time(b) - time(a)
-  }) 
+  }).slice(page * 50, (page + 1) * 50)
 }
 
 export async function getChallenges(em: EntityManager, id: number) {

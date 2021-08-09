@@ -42,10 +42,21 @@
     align-items: center;
 }
 
+.container li {
+    transition: all 0.1s;
+}
+
 .container li:nth-child(odd) {
     background: dimgray;
 }
 
+.container li:nth-child(odd):hover {
+    background: #747474;
+}
+
+.container li:nth-child(even):hover {
+    background-color: #888888;
+}
 
 .container li:nth-child(even) {
     background-color: gray;

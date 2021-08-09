@@ -1,3 +1,4 @@
+import { useState } from 'react';
 /**
  * This function streamlines the process of aggregating form data into a json object.
  * This can be used to handle post requests with ease.
@@ -54,3 +55,13 @@ export function getRank(value: number): string {
 
 // Helper function for force casting an object without needing to use "as unknown as Type"
 export const cast = <T = any>(value: unknown) => value as T
+
+type Counter = (amt?: number) => void
+
+export function useCounter(initial: number = 0): [number, Counter, Counter, () => void] {
+  const [count, setCount] = useState(initial)
+  const inc = (amt: number = 1) => setCount(count + amt)
+  const dec = (amt: number = 1) => setCount(count - amt)
+  const reset = () => setCount(0)
+  return [count, inc, dec, reset]
+}

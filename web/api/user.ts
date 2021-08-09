@@ -27,12 +27,12 @@ export async function getUser(id?: string | string[]): Promise<User | Error> {
 export type GameRes = {
   opponent?: User
   score: number
-  won: boolean
+  won?: boolean
   time: number
 }
 
-export async function getGames(id?: string): Promise<GameRes | null> {
-  return cast<GameRes>(client.get(`/user/${id}/games`))
+export async function getGames(id: number, page: number): Promise<GameRes[] | null> {
+  return client.get<GameRes[] | null>(`/user/${id}/games/${page}`)
 }
 
 export async function search(data: any) {
@@ -72,8 +72,8 @@ export type Update =
   | ({ type: "result" } & GameResult)
   | ({ type: "challenge" } & User)
 
-export async function getUpdates(token?: string): Promise<Update[]> {
-  return client.secureGet<Update[]>("/updates", token ?? "")
+export async function getUpdates(page: number): Promise<Update[]> {
+  return client.post<Update[]>(`/updates`, { page })
 }
 
 export type Stats = {

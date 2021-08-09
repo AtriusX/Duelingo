@@ -6,14 +6,14 @@ export default class GameResult {
     participantId: number,
     opponentId: number,
     gameId: string,
-    won: boolean,
-    score: number
+    score: number,
+    won?: boolean
   ) {
     this.participantId = participantId
     this.opponentId = opponentId
     this.gameId = gameId
-    this.won = won
     this.score = score
+    this.won = won
   }
 
   @PrimaryKey()
@@ -28,8 +28,8 @@ export default class GameResult {
   @Property()
   gameId!: string
 
-  @Property()
-  won!: boolean
+  @Property({ nullable: true })
+  won?: boolean
 
   @Property()
   score!: number

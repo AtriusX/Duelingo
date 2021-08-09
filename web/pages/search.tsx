@@ -1,5 +1,5 @@
 import router from "next/router"
-import { Dispatch, FormEvent, SetStateAction, useState } from "react"
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react"
 import { QueryRes, search, SearchQuery, Token } from '../api/user'
 import { getData } from "../utils"
 import { useSocket } from "../components/SocketProvider";
@@ -19,12 +19,13 @@ import ChallengeRequests from "../components/ChallengeRequests"
 
 interface SearchData {
     user?: User & Token
-    query: any
+    query: { query: string, page: number, length: number }
     queryRes: QueryRes | null
 }
 
 export default function Search({ user, query, queryRes }: SearchData) {
-    const [users, setUsers] = useState<QueryRes | null>(query.query ? queryRes : null)
+    const [users, setUsers] = useState<QueryRes | null>(queryRes)
+    useEffect(() => setUsers(queryRes), [queryRes])
     const socket = useSocket(() => { }, { token: user })
     return (
         <>
@@ -33,7 +34,7 @@ export default function Search({ user, query, queryRes }: SearchData) {
                 <Head>
                     <title>Search</title>
                 </Head>
-                <Navbar name="query" value={query.query} user={user} className={styles.navbar}
+                <Navbar id="search" name="query" value={query.query} user={user} className={styles.navbar}
                     onSubmit={async e => await performSearch(e, setUsers)}>
                     <Link href={`/profile/${user?.id}`}>My Profile</Link>
                     <Link href={"/settings"}>Settings</Link>
@@ -106,12 +107,13 @@ function getResults(
 }
 
 async function performSearch(
-    e: FormEvent<HTMLFormElement>,
+    e: FormEvent<HTMLFormElement> | HTMLFormElement,
     setUsers: Dispatch<SetStateAction<any[] | null>>
 ) {
-    e.preventDefault()
+    if (e.preventDefault)
+        e.preventDefault()
     let data = router.query as any
-    let query = getData<SearchData>(e.target)
+    let query = getData<SearchData>(e instanceof HTMLFormElement ? e : e.target)
     if (query.query.length) {
         data.query = query.query
         delete data.page // Reset the page
@@ -134,7 +136,11 @@ async function toPage(page: number) {
 export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await self(req?.headers.cookie)
     const data = query as SearchQuery
+    console.log(data);
+
     const users = await search(data)
+    console.log(users);
+
 
     return {
         props: {

@@ -20,7 +20,12 @@ export default function Leaderboard({ snapshots, rank, color }: LeaderboardProps
             background: color
         }}>
             <div className={styles.head}
-                onClick={() => users.length && setOpen(!open)}
+                onClick={e => {
+                    if (users.length) {
+                        setOpen(!open)
+                        e.currentTarget.scrollIntoView()
+                    }
+                }}
                 style={{
                     cursor: users.length ? "pointer" : undefined
                 }}>
@@ -57,6 +62,6 @@ function Item({ user, score }: ItemProps) {
 
 function Empty() {
     return (
-        <h3>No users on this leaderboard yet!</h3>
+        <h3>No users on this leaderboard!</h3>
     )
 }

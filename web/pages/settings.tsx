@@ -29,74 +29,78 @@ export default function Settings({ user }: SettingsProps) {
         setError(err.message)
         animate("#error", styles.shake)
     }
-    return <>
-        <ChallengeRequests user={user} socket={useSocket(() => { }, {
-            token: user
-        })} />
-        <Title title="Settings" />
-        <Navbar redirect="/search" user={user}>
-            <Link href={`/profile/${user?.id}`}>My Profile</Link>
-            <Link href={"/settings"}>Settings</Link>
-            {/* @ts-ignore */}
-            <a onClick={tryLogout}>Logout</a>
-        </Navbar>
-        <div className={styles.body}>
-            <div className={styles.header}>
-                <h1>Account Settings</h1>
-                <button onClick={() => setModal(true)}>Delete Account</button>
-            </div>
-            <div className={styles.container}>
-                <div className={styles.panels}>
-                    <div>
-                        <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
-                            <div className={styles.avatarcontainer}>
-                                <Avatar user={user} className={styles.avatar} />
-                                <div className={styles.details}>
-                                    <h2>{user.username}</h2>
-                                    <input type="text" name="status" id="status" placeholder="Status" />
-                                </div>
+    return (
+        <div>
+            <ChallengeRequests user={user} socket={useSocket(() => { }, {
+                token: user
+            })} />
+            <Title title="Settings" />
+            <div className={styles.outer}>
+                <Navbar redirect="/search" user={user}>
+                    <Link href={`/profile/${user?.id}`}>My Profile</Link>
+                    <Link href={"/settings"}>Settings</Link>
+                    {/* @ts-ignore */}
+                    <a onClick={tryLogout}>Logout</a>
+                </Navbar>
+                <div className={styles.body}>
+                    <div className={styles.header}>
+                        <h1>Account Settings</h1>
+                        <button onClick={() => setModal(true)}>Delete Account</button>
+                    </div>
+                    <div className={styles.container}>
+                        <div className={styles.panels}>
+                            <div>
+                                <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
+                                    <div className={styles.avatarcontainer}>
+                                        <Avatar user={user} className={styles.avatar} />
+                                        <div className={styles.details}>
+                                            <h2>{user.username}</h2>
+                                            <input type="text" name="status" id="status" placeholder="Status" />
+                                        </div>
+                                    </div>
+                                    <label htmlFor="description">Description:</label>
+                                    <textarea name="description" id="description" cols={30} rows={6} placeholder="Description..." />
+                                    <button type="submit">Update Profile</button>
+                                </form>
                             </div>
-                            <label htmlFor="description">Description:</label>
-                            <textarea name="description" id="description" cols={30} rows={6} placeholder="Description..." />
-                            <button type="submit">Update Profile</button>
-                        </form>
+                            <div>
+                                <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
+                                    <label htmlFor="username">Username</label>
+                                    <input type="text" id="username" name="username"
+                                        minLength={3} maxLength={20} placeholder={user.username} />
+                                    <br />
+                                    <label htmlFor="email">Email</label>
+                                    <input type="email" id="email" name="email"
+                                        placeholder={user.email} pattern={emailRegex.source} />
+                                    <br />
+                                    <label htmlFor="password">New Password</label>
+                                    <input type="password" id="password" name="password"
+                                        minLength={8} maxLength={20} placeholder="New Password" />
+                                    <br />
+                                    <label htmlFor="password">Existing Password</label>
+                                    <input type="password" id="existing" name="existing"
+                                        minLength={8} maxLength={20} placeholder="Existing Password" />
+                                    <br />
+                                    <button type="submit">Update Account</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <form autoComplete="off" method="POST" onSubmit={e => updateAccount(e, notify)}>
-                            <label htmlFor="username">Username</label>
-                            <input type="text" id="username" name="username"
-                                minLength={3} maxLength={20} placeholder={user.username} />
-                            <br />
-                            <label htmlFor="email">Email</label>
-                            <input type="email" id="email" name="email"
-                                placeholder={user.email} pattern={emailRegex.source} />
-                            <br />
-                            <label htmlFor="password">New Password</label>
-                            <input type="password" id="password" name="password"
-                                minLength={8} maxLength={20} placeholder="New Password" />
-                            <br />
-                            <label htmlFor="password">Existing Password</label>
-                            <input type="password" id="existing" name="existing"
-                                minLength={8} maxLength={20} placeholder="Existing Password" />
-                            <br />
-                            <button type="submit">Update Account</button>
-                        </form>
+                    <div
+                        id="error"
+                        className={styles.error}
+                        hidden={!error}
+                        onClick={() => setError(null)}>
+                        {error}
                     </div>
+                    <Modal
+                        isOpen={modal}
+                        onRequestClose={() => setModal(false)}
+                    />
                 </div>
             </div>
-            <div
-                id="error"
-                className={styles.error}
-                hidden={!error}
-                onClick={() => setError(null)}>
-                {error}
-            </div>
-            <Modal
-                isOpen={modal}
-                onRequestClose={() => setModal(false)}
-            />
         </div>
-    </>
+    )
 }
 
 function Modal(props: ReactModal.Props) {

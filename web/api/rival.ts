@@ -1,3 +1,4 @@
+import { NamedRivalry } from './index';
 import client from "./config";
 
 export async function create(receiver: number) {
@@ -12,14 +13,14 @@ export async function get(receiver: number, token: string) {
     return client.secureGet(`/rival/${receiver}`, token)
 }
 
-export async function all(token: string, receiver?: string | string[]) {
-    return client.secureGet(`/rivals/all/${receiver}`, token)
+export async function all(receiver?: number, page?: number) {
+    return client.get<NamedRivalry[]>(`/rivals/all/${receiver}/${page}`)
 }
 
-export async function active(receiver?: string | string[]) {
-    return client.get(`/rivals/active/${receiver}`)
+export async function active(receiver?: number, page?: number) {
+    return client.get<NamedRivalry[]>(`/rivals/active/${receiver}/${page}`)
 }
 
 export async function available(id: number) {
-    return client.post(`/rivals/available/${id}`)
+    return client.post<NamedRivalry[]>(`/rivals/available/${id}`)
 }

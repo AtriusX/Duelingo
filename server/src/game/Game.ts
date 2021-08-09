@@ -93,8 +93,8 @@ export default class Game {
       player.id,
       opponent.id,
       this.uuid,
-      player.score > opponent.score,
-      player.score
+      player.score,
+      player.score === opponent.score ? undefined : player.score > opponent.score
     )
   }
 

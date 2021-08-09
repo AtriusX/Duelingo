@@ -60,26 +60,29 @@ export async function pending(
     em: EntityManager, 
     sender: number
 ): Promise<NamedRivalry[] | Error> {
-    return getRivals(em, sender, false)
+    return getRivals(em, sender, undefined, false)
 }
 
 export async function active(
     em: EntityManager, 
-    sender: number
+    sender: number,
+    page?: number
 ): Promise<NamedRivalry[] | Error> {
-    return getRivals(em, sender, true)
+    return getRivals(em, sender, page, true)
 }
 
 export async function allRivals(
     em: EntityManager, 
-    sender: number
+    sender: number,
+    page?: number
 ): Promise<NamedRivalry[] | Error> {
-    return getRivals(em, sender)
+    return getRivals(em, sender, page)
 }
 
 async function getRivals(
     em: EntityManager, 
-    sender: number, 
+    sender: number,
+    page?: number,
     active?: boolean
 ): Promise<NamedRivalry[] | Error> {
     if (!sender)
@@ -96,6 +99,8 @@ async function getRivals(
         let { id, username } = users.find(u => u.id === userId)!
         out.push({ ...rivals[i], id, username })
     }
+    if (!!page)
+        return out.slice(page * 50, (page + 1) * 50)
     return out
 }
 

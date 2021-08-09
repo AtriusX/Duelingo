@@ -32,9 +32,10 @@ export default function setupRivals(app: Express, { em }: MikroORM) {
     })
 
 
-    app.get("/rivals/active/:id", async (req: Request, res: Response) => {
+    app.get("/rivals/active/:id/:page", async (req: Request, res: Response) => {
         const sender = parseInt(req.params.id) || 0
-        const data = await active(em, sender)
+        const page = parseInt(req.params.page) || 0
+        const data = await active(em, sender, page)
         res.status(200).json(data)
     })
 
@@ -44,9 +45,10 @@ export default function setupRivals(app: Express, { em }: MikroORM) {
         res.status(200).json(data)
     })
 
-    app.get("/rivals/all/:id", async (req: Request, res: Response) => {
+    app.get("/rivals/all/:id/:page", async (req: Request, res: Response) => {
         const user = parseInt(req.params.id) || 0
-        const data = await allRivals(em, user)
+        const page = parseInt(req.params.page) || 0
+        const data = await allRivals(em, user, page)
         res.status(200).json(data)
     })
 

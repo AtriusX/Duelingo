@@ -1,0 +1,67 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container div {    
+    display: flex;
+    justify-content: center;
+}
+
+.block {
+    height: 1em;
+    width: 1em;
+    background: #c2c2c2;
+    margin: 0.1em;
+}
+
+.a {
+    animation: left 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.b {
+    animation: down 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.c {
+    animation: up 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.d {
+    animation: right 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+@keyframes blob {
+    50% {
+        border-radius: 0.4em;
+    }
+    100% {
+        border-radius: 0;
+    }
+}
+
+@keyframes left {
+    100% {
+        transform: translateX(1.2em);
+    }
+}
+
+@keyframes down {
+    100% {
+        transform: translateY(1.2em);
+    }
+}
+
+@keyframes up {
+    100% {
+        transform: translateY(-1.2em);
+    }
+}
+
+@keyframes right {
+    100% {
+        transform: translateX(-1.2em);
+    }
+}
