@@ -17,7 +17,7 @@ export default function UpdateItem({ user, update }: UpdateProps) {
     switch (update?.type) {
         case "rivalry":
             return (
-                <Link href={`/profile/${user?.id}`}>
+                <Link href={`/profile/${update?.id}`}>
                     <a>
                         <div className={styles.container}>
                             <div>

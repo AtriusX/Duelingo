@@ -1,14 +1,14 @@
 import router from "next/router"
-import { useEffect, useState } from "react"
+import { HTMLProps, useEffect, useState } from "react"
 import ReactVisibilitySensor from "react-visibility-sensor"
 import styles from "../styles/Loader.module.css"
 
-interface LoaderProps {
+interface LoaderProps extends HTMLProps<HTMLDivElement> {
     hide?: boolean
     action?: (visible: boolean, hide: () => void) => void
 }
 
-export default function Loader({ hide, action }: LoaderProps) {
+export default function Loader({ hide, action, className, ...others }: LoaderProps) {
     const [hidden, setHidden] = useState(hide)
     const run = (v: boolean) => action && action(v, () => setHidden(true))
     const [init, setInit] = useState(false)
@@ -21,7 +21,7 @@ export default function Loader({ hide, action }: LoaderProps) {
     }, [init])
     return (
         !hidden ? <ReactVisibilitySensor resizeCheck onChange={run}>
-            <div className={styles.container}>
+            <div className={[styles.container, className].join(" ")} {...others}>
                 <div>
                     <div className={[styles.block, styles.a].join(" ")} />
                     <div className={[styles.block, styles.b].join(" ")} />

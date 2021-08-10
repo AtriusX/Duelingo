@@ -2,8 +2,7 @@ import { HTMLProps } from "react";
 import { cast } from "../utils";
 import NoResult from "./NoResult";
 import styles from "../styles/Pane.module.css"
-
-interface PaneProps extends HTMLProps<HTMLDivElement> {
+export interface PaneProps extends HTMLProps<HTMLDivElement> {
     emptyIcon?: string
     emptyText: string
     items?: any[] | number

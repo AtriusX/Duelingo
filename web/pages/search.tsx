@@ -136,12 +136,7 @@ async function toPage(page: number) {
 export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await self(req?.headers.cookie)
     const data = query as SearchQuery
-    console.log(data);
-
     const users = await search(data)
-    console.log(users);
-
-
     return {
         props: {
             user: user,

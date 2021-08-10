@@ -13,24 +13,32 @@
 .block {
     height: 1em;
     width: 1em;
-    background: #c2c2c2;
+    background: var(--primary);
     margin: 0.1em;
 }
 
 .a {
-    animation: left 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    animation: left 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        color 1.6s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 .b {
-    animation: down 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    animation: down 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        color 1.6s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 .c {
-    animation: up 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    animation: up 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        color 1.6s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 .d {
-    animation: right 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    animation: right 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86), 
+        blob 0.4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86),
+        color 1.6s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 @keyframes blob {
@@ -39,6 +47,24 @@
     }
     100% {
         border-radius: 0;
+    }
+}
+
+@keyframes color {
+    0% {
+        background: var(--primary);
+    }
+
+    25% {
+        background: var(--urgent);
+    }
+
+    50% {
+        background: #df9b36;
+    }
+
+    75% {
+        background: #0066FF;
     }
 }
 

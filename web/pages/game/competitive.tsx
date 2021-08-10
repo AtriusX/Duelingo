@@ -2,14 +2,13 @@ import { NextPageContext } from "next";
 import { User } from "../../api";
 import { self, Token } from "../../api/user";
 import { homeRedirect } from "../../api/auth";
-import Head from "next/head";
 import SocketProvider from "../../components/SocketProvider";
 import { useSocket } from "../../components/SocketProvider";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import styles from "../../styles/Competitive.module.css"
 import Title from "../../components/Title";
-
+import Loader from "../../components/Loader"
 interface CompetitiveProps {
     user: User & Token
 }
@@ -35,6 +34,7 @@ export default function Competitive({ user }: CompetitiveProps) {
                         <Ticker text="Attempting to find an opponent" period={750} />
                     </h1>
                     <h1 className={styles.emblem}>🔎</h1>
+                    <Loader className={styles.spinner} />
                 </SocketProvider>
             </div>
         </div>

@@ -20,6 +20,7 @@ import ChallengeRequests from "../../components/ChallengeRequests";
 import GameResult from "../../components/GameResult";
 import { useCallback, useEffect, useState } from "react";
 import Loader from "../../components/Loader";
+import ScrollFeed from "../../components/ScrollFeed";
 
 interface ProfileData {
     user?: User | Error
@@ -27,54 +28,19 @@ interface ProfileData {
     rival: Rivalry,
 }
 
-type Hide = () => void
-
 export default function Profile({ user, me, rival }: ProfileData) {
     const socket = useSocket(() => { }, { token: me })
     const [id, setId] = useState(cast<User>(user).id)
-    const [games, setGames] = useState<GameRes[]>()
-    const [rivals, setRivals] = useState<NamedRivalry[]>()
-    const [gamePage, incGamePage, , resetGamePage] = useCounter()
-    const [rivalPage, incRivalPage, , resetRivalPage] = useCounter()
 
-    const getRivals = useCallback(async (v: boolean = true, hide?: Hide) => {
-        if (!v) return
-        const same = cast<User>(user)?.id === me?.id
-        const res = same ? await all(me?.id, rivalPage) : await active(cast<User>(user).id, rivalPage)
-        if (!res.length) {
-            if (!rivals) setRivals([])
-            return hide && hide()
-        }
-        setRivals([...rivals ?? [], ...res])
-        incRivalPage()
-        if (res.length < 50 && hide)
-            hide()
-    }, [incRivalPage, me?.id, rivalPage, rivals, user])
-
-    const getGameResults = useCallback(async (v: boolean = true, hide?: Hide) => {
-        if (!v) return
-        let res = await getGames(id, gamePage) ?? []
-        if (!res.length) {
-            if (!games) setGames([])
-            return hide && hide()
-        }
-        setGames([...games ?? [], ...res])
-        incGamePage()
-        if (res.length < 50 && hide)
-            hide()
-    }, [gamePage, games, id, incGamePage])
-
+    const check = () => {
+        let u = cast<User>(user)
+        return u.id === id
+    }
     useEffect(() => {
         let u = cast<User>(user)
         if (u.id === id) return
         setId(u.id)
-        resetGamePage()
-        setGames(undefined)
-        resetRivalPage()
-        setRivals(undefined)
-        getRivals()
-        getGameResults()
-    }, [resetGamePage, user, resetRivalPage, id, getRivals, getGameResults])
+    }, [user, id])
 
     if (!user)
         return (
@@ -110,16 +76,27 @@ export default function Profile({ user, me, rival }: ProfileData) {
                             <p>{description ? description : "No description provided."}</p>
                         </div>
                     </div>
-                    <Pane className={styles.games} emptyIcon="🎮" emptyText="No past games!" items={games ?? [undefined]}>
-                        <h3>Games</h3>
-                        {games?.map((g, i) => <GameResult key={i} result={g} />)}
-                        <Loader action={getGameResults} />
-                    </Pane>
-                    <Pane className={styles.rivals} emptyIcon="🌞" emptyText="No Rivals!" items={rivals ?? [undefined]}>
-                        <h3>Rivals</h3>
-                        {rivals?.map((r, i) => <RivalItem key={i} me={me} self={cast<User>(user)} rivalry={r} />)}
-                        <Loader action={getRivals} />
-                    </Pane>
+                    <ScrollFeed<GameRes>
+                        text="Games"
+                        emptyIcon="🎮"
+                        emptyText="No past games!"
+                        className={styles.games}
+                        action={async p => await getGames(id, p)}
+                        map={(g, i) => <GameResult key={i} result={g} />}
+                        check={check}
+                    />
+                    <ScrollFeed<NamedRivalry>
+                        text="Rivals"
+                        emptyIcon="🌞"
+                        emptyText="No Rivals!"
+                        className={styles.rivals}
+                        action={async p => {
+                            const same = cast<User>(user)?.id === me?.id
+                            return await (same ? all(me?.id, p) : active(cast<User>(user).id, p))
+                        }}
+                        map={(r, i) => <RivalItem key={i} self={cast<User>(user)} rivalry={r} />}
+                        check={check}
+                    />
                 </div>
             </div>
         </>

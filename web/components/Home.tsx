@@ -4,7 +4,6 @@ import Link from "next/link"
 import Navbar from './Navbar';
 import styles from '../styles/Home.module.css'
 import Avatar from './Avatar';
-import Pane from './Pane';
 import SocketProvider from "../components/SocketProvider"
 import { getUpdates, Stats, Token, Update } from '../api/user';
 import UpdateItem from './UpdateItem';
@@ -12,9 +11,9 @@ import { useSocket } from '../components/SocketProvider';
 import ChallengeRequests from "../components/ChallengeRequests"
 import router from 'next/router';
 import StatBar from './StatBar';
-import { getRank, useCounter } from '../utils';
+import { getRank } from '../utils';
 import Loader from './Loader';
-import { useState } from 'react';
+import ScrollFeed from "./ScrollFeed"
 
 interface HomeProps {
     user: User & Token
@@ -30,8 +29,6 @@ export default function Home({ user, stats }: HomeProps) {
             router.push(`/game/${id}`)
         })
     }, { token: user })
-    const [items, setItems] = useState<Update[]>()
-    const [page, inc] = useCounter()
     return (
         <>
             <ChallengeRequests user={user} socket={socket} />
@@ -56,20 +53,17 @@ export default function Home({ user, stats }: HomeProps) {
                                 <StatBar value={rankedPlays} text="Ranked Plays" display="raw" color="none" />
                             </div>
                         </div>
-                        <Pane className={styles.updates}
-                            emptyIcon="📃" emptyText="No recent updates!" items={!!items ? items : [undefined]}>
-                            <h2>Updates</h2>
-                            {items?.map((u, i) => <UpdateItem key={i} user={user} update={u} />)}
-                            <Loader action={async (v, hide) => {
-                                if (!v) return
-                                let updates = await getUpdates(page)
-                                if (!updates.length) return hide()
-                                setItems([...items ?? [], ...updates])
-                                inc()
-                                if (updates.length < 50)
-                                    hide()
-                            }} />
-                        </Pane>
+                        <ScrollFeed<Update>
+                            text="Updates"
+                            emptyText="No recent updates!"
+                            className={styles.updates}
+                            emptyIcon="📃"
+                            action={async p => {
+                                return await getUpdates(p)
+                            }}
+                            map={(u, i) =>
+                                <UpdateItem key={i} user={user} update={u} />
+                            } />
                         <div className={styles.game}>
                             <h1>Ready to play?</h1>
                             <div className={styles.play}>
