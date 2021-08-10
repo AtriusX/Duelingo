@@ -17,6 +17,7 @@ body {
 }
 
 * {
+  scrollbar-width: thin;
   font-family: Rubik, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
@@ -40,5 +41,5 @@ a {
 
 @font-face {
   font-family: Rubik;
-  src: url("../public/Rubik-Medium.ttf");
+  src: url("../public/Rubik-VariableFont_wght.ttf");
 }

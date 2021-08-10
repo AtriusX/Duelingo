@@ -94,7 +94,7 @@ export default function Profile({ user, me, rival }: ProfileData) {
                             const same = cast<User>(user)?.id === me?.id
                             return await (same ? all(me?.id, p) : active(cast<User>(user).id, p))
                         }}
-                        map={(r, i) => <RivalItem key={i} self={cast<User>(user)} rivalry={r} />}
+                        map={(r, i) => <RivalItem key={i} me={me} self={cast<User>(user)} rivalry={r} />}
                         check={check}
                     />
                 </div>
