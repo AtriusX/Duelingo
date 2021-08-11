@@ -14,12 +14,10 @@ import RivalButton from "../../components/RivalButton";
 import { active, all, get } from "../../api/rival";
 import { NamedRivalry, Rivalry, User } from "../../api/"
 import RivalItem from "../../components/RivalItem"
-import Pane from "../../components/Pane";
 import Title from "../../components/Title";
 import ChallengeRequests from "../../components/ChallengeRequests";
 import GameResult from "../../components/GameResult";
-import { useCallback, useEffect, useState } from "react";
-import Loader from "../../components/Loader";
+import { useEffect, useState } from "react";
 import ScrollFeed from "../../components/ScrollFeed";
 
 interface ProfileData {
