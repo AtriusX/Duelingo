@@ -1,6 +1,6 @@
 import styles from '../styles/SearchItem.module.css'
 import Link from 'next/link'
-import { User } from '../api/user'
+import { User } from '../api/'
 import Avatar from './Avatar'
 import { getRank } from '../utils'
 
