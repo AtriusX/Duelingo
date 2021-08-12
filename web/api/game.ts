@@ -27,6 +27,7 @@ export async function getOpponent(
 export interface Player {
   id: number
   score: number
+  streak: number
 }
 
 export async function getGameState(

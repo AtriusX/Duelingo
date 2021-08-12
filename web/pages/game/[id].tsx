@@ -33,6 +33,8 @@ export default function Game({
 }: GameProps) {
     const [score, setScore] = useState(a.id === user.id ? a.score : b.score)
     const [opponentScore, setOpponentScore] = useState(a.id === user.id ? b.score : a.score)
+    const [streak, setStreak] = useState(a.id === user.id ? a.streak : b.streak)
+    const [opponentStreak, setOpponentStreak] = useState(a.id === user.id ? b.streak : a.streak)
     const [timer, setTimer] = useState(time)
     const [start, setStart] = useState(started)
     const [correct, setCorrect] = useState<[number, boolean]>()
@@ -52,12 +54,14 @@ export default function Game({
             setTimer(v)
             setStart(true)
         })
-        socket.on("update-score", (value, id) => {
+        socket.on("update-score", (value, streak, id) => {
             if (id === user.id) {
                 setScore(value)
+                setStreak(streak)
             }
             if (id === opponent.id) {
                 setOpponentScore(value)
+                setOpponentStreak(streak)
             }
         })
         socket.on("question-result", (choice, correct) => setCorrect([choice, correct]))
@@ -73,12 +77,12 @@ export default function Game({
         <SocketProvider className={styles.container} socket={socket}>
             <Title title={`vs. ${opponent.username}`} />
             <div className={styles.header}>
-                <PlayerInfo user={user} score={score}
+                <PlayerInfo user={user} score={score} streak={streak}
                     className={[styles.player, styles.info].join(" ")} />
                 <div className={styles.timer}>
-                    {start && <h1>{timer}</h1>}
+                    {start && <h1>{`${Math.floor(timer / 60)}:${Math.floor(timer % 60).toString().padEnd(2, "0")}`}</h1>}
                 </div>
-                <PlayerInfo user={opponent} score={opponentScore}
+                <PlayerInfo user={opponent} score={opponentScore} streak={opponentStreak}
                     className={[styles.opponent, styles.info].join(" ")} />
             </div>
             <div className={styles.game}>
@@ -97,15 +101,19 @@ export default function Game({
 interface PlayerInfoProps extends HTMLProps<HTMLDivElement> {
     user: User,
     score: number
+    streak: number
 }
 
-function PlayerInfo({ user, score, ...props }: PlayerInfoProps) {
+function PlayerInfo({ user, score, streak, ...props }: PlayerInfoProps) {
     return (
         <div {...props}>
             <Avatar className={styles.avatar} user={user} />
             <div className={styles.userdata}>
                 <h2>{user.username}</h2>
-                <p>{score}</p>
+                <div className={styles.scoreinfo}>
+                    <p><b>Score: {score}</b></p>
+                    {!!streak && <b>Streak: {streak}</b>}
+                </div>
             </div>
         </div>
     )
@@ -152,7 +160,8 @@ interface GamePanelProps {
 
 function GamePanel({ gameId, socket, token, question, correct }: GamePanelProps) {
     return (
-        <SocketProvider socket={socket}>
+        <SocketProvider socket={socket} className={styles.panel}>
+            <h1>Translate the phrase</h1>
             {question && <Question {...question} gameId={gameId}
                 socket={socket} token={token.token} correct={correct} />}
         </SocketProvider>

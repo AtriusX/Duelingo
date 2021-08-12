@@ -1,4 +1,4 @@
-import { getPoints, getRankPoints, rankUp } from '../api/user';
+import { getPoints, getRankPoints, rankUp } from "../api/user"
 import { Language } from "./../types"
 import { em } from "./../"
 import { User } from "../entities/User"
@@ -6,10 +6,12 @@ import ConnectionRepository from "../network/ConnectionRepository"
 import Question, { PublicQuestion } from "./Question"
 import GameEntity from "../entities/Game"
 import GameResult from "../entities/GameResult"
+import QuestionManager from "./QuestionManager"
 
 interface Player {
   id: number
   score: number
+  streak: number
 }
 
 export default class Game {
@@ -31,8 +33,8 @@ export default class Game {
     lang: Language = "es",
     time: number = 5 * 60 // 5 minutes
   ) {
-    this.a = { id: a, score: 0 }
-    this.b = { id: b, score: 0 }
+    this.a = { id: a, score: 0, streak: 0 }
+    this.b = { id: b, score: 0, streak: 0 }
     this.uuid = uuid
     this.competitive = competitive
     this.lang = lang
@@ -70,12 +72,12 @@ export default class Game {
     return this.over
   }
 
-  public end() {
+  public async end() {
     if (this.competitive && !this.over) {
       em.persist(new GameEntity(this.uuid, this.lang))
       em.persist(this.getResult(this.a, this.b))
       em.persist(this.getResult(this.b, this.a))
-      em.flush()
+      await em.flush()
       this.tryRankUp(this.a.id)
       this.tryRankUp(this.b.id)
     }
@@ -84,7 +86,7 @@ export default class Game {
 
   private async tryRankUp(id: number) {
     let points = await getPoints(id)
-    let [,, rank] = getRankPoints(points)
+    let [, , rank] = getRankPoints(points)
     rankUp(id, rank)
   }
 
@@ -94,21 +96,27 @@ export default class Game {
       opponent.id,
       this.uuid,
       player.score,
-      player.score === opponent.score ? undefined : player.score > opponent.score
+      player.score === opponent.score
+        ? undefined
+        : player.score > opponent.score
     )
   }
 
   private timeSync() {
-    setTimeout(() => {
+    setTimeout(async () => {
       this.started = true
-      this.setQuestion(new Question("Example", ["A", "B", "C", "D"], 1))
-      const interval = setInterval(() => {
+      let q = await QuestionManager.random(em, this.lang)
+      if (q) this.setQuestion(q)
+      else this.over = true
+      const interval = setInterval(async () => {
         // Perhaps this can be simplified now that the system is fixed
         this.socket("update-timer", this.time)
-        if (this.current.expired())
-          this.setQuestion(
-            new Question(`Example ${this.time}`, ["A", "B", "C", "D"], 2)
-          )
+        if (this.current.expired()) {
+          let q = await QuestionManager.random(em, this.lang)
+          // If no question is found, then we can assume the game cannot continue
+          if (q) this.setQuestion(q)
+          else this.over = true
+        }
         if (this.isOver() || this.time-- <= 0) {
           clearInterval(interval)
           this.end()
@@ -119,7 +127,7 @@ export default class Game {
 
   public answer(id: number, choice: number): boolean {
     let correct = this.current.answer(id, choice)
-    this.addScore(id, correct ? 10 : -10)
+    this.addScore(id, correct)
     if (correct) this.current.expire()
     return correct
   }
@@ -128,12 +136,20 @@ export default class Game {
     this.socket("question", this.current?.getPublic())
   }
 
-  private addScore(id: number, amt: number) {
+  private addScore(id: number, correct: boolean) {
     let ids = [this.a, this.b]
     ids.forEach((p) => {
       if (p.id === id) {
-        p.score += amt
-        this.socket("update-score", p.score, p.id)
+        let score
+        if (correct) {
+          p.streak++
+          score = p.streak * 10
+        } else {
+          score = 0
+          p.streak = 0
+        }
+        p.score += score
+        this.socket("update-score", p.score, p.streak, p.id)
       }
     })
   }

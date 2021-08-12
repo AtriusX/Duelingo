@@ -1,3 +1,4 @@
+import QuestionEntity from "../entities/Question"
 export interface PublicQuestion {
   question: string
   choices: string[]
@@ -12,6 +13,10 @@ export default class Question implements PublicQuestion {
   private maxUsers: number
   private created: number = Date.now()
   private _expire: number
+
+  static from({ question, choices, answer }: QuestionEntity) {
+    return new Question(question, choices.map(q => q.toString()), answer)
+  }
 
   constructor(
     question: string,

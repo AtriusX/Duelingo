@@ -1,59 +1,43 @@
-import { DEV } from './global';
-import { EntityManager, MikroORM } from "@mikro-orm/core";
-import DatabaseConfig from "./config/db";
-import cors from "cors";
-import { json } from "body-parser";
-import session from "express-session";
-import express from "express";
-import setupAuth from "./components/auth";
-import setupUser from "./components/user";
-import { CorsConfig } from "./config/cors";
-import { SessionConfig } from "./config/session";
-import { User } from "./entities/User";
-import faker from "faker"
-import { hash } from 'argon2';
+import { EntityManager, MikroORM } from "@mikro-orm/core"
+import DatabaseConfig from "./config/db"
+import cors from "cors"
+import { json } from "body-parser"
+import session from "express-session"
+import express from "express"
+import setupAuth from "./components/auth"
+import setupUser from "./components/user"
+import { CorsConfig } from "./config/cors"
+import { SessionConfig } from "./config/session"
 import chalk from "chalk"
-import setupRivals from './components/rival';
+import setupRivals from "./components/rival"
 import { createServer } from "http"
-import { setupSockets } from './network/socket';
-import setupGame from './components/game';
-import { setupLeaderboards } from './components/leaderboards';
+import { setupSockets } from "./network/socket"
+import setupGame from "./components/game"
+import { setupLeaderboards } from "./components/leaderboards"
+import setupDefaults from "./components/defaults"
 
 export let em: EntityManager
 
 async function main() {
-  const db = await MikroORM.init(DatabaseConfig);
+  const db = await MikroORM.init(DatabaseConfig)
   em = db.em
-  await db.getMigrator().up();
-  // This will run a setup query to provide us with fake data in development
-  let count = await db.em.count(User, {})
-  if (DEV && count < 1000) {
-    console.log(chalk.magenta("Generate test data... Please wait..."))
-    for (let i = 0; i < 1000 - count; i++) {
-      const name = faker.name.findName()
-      const email = faker.internet.email().toLowerCase()
-      const password = await hash(faker.internet.password())
-      db.em.persist(new User(name, email, password))
-    }
-    db.em.flush()
-  }
+  await db.getMigrator().up()
 
-  const app = express();
+  const app = express()
   console.log(chalk.blue("Setting up features..."))
   const sess = session(SessionConfig)
-  app.use(
-    cors(CorsConfig), json(), sess
-  );
+  app.use(cors(CorsConfig), json(), sess)
   const http = createServer(app)
 
+  setupDefaults()
   setupSockets(http, sess)
   setupAuth(app, db)
   setupUser(app, db)
   setupRivals(app, db)
   setupGame(app, db)
-  setupLeaderboards(app, db);
+  setupLeaderboards(app, db)
 
-  http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")));
+  http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")))
 }
 
-main().catch(console.error);
+main().catch(console.error)

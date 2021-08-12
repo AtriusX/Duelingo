@@ -68,20 +68,24 @@ type Result = {
   time: number
 }
 
-export async function getGames(id: number, page?: number): Promise<Result[] | null> {
-  let res = (await em.find(GameResult, { participantId: id }))
-  if (!!page) 
-    res = res.slice(page * 50, (page + 1) * 50)
+export async function getGames(
+  id: number,
+  page?: number
+): Promise<Result[] | null> {
+  let res = await em.find(GameResult, { participantId: id })
+  if (!!page) res = res.slice(page * 50, (page + 1) * 50)
   if (!res.length) return null
   let users = await em.find(User, [...new Set(res.map((r) => r.opponentId))])
-  return res.map(({ opponentId, won, score, createdAt }) => {
-    return {
-      opponent: users.find(({ id }) => id === opponentId),
-      won,
-      score,
-      time: createdAt.getTime(),
-    }
-  }).reverse()
+  return res
+    .map(({ opponentId, won, score, createdAt }) => {
+      return {
+        opponent: users.find(({ id }) => id === opponentId),
+        won,
+        score,
+        time: createdAt.getTime(),
+      }
+    })
+    .reverse()
 }
 
 export async function getUpdates(
@@ -95,13 +99,17 @@ export async function getUpdates(
   const rivalTypes = cast<NamedRivalry[]>(rivals).map((r) => {
     return { ...r, type: "rivalry" } as NamedRivalry & { type: "rivalry" }
   })
-  const games = (await getGames(id))?.map(g => { 
-    return { ...g, type: "result" } as Result & { type: "result" } 
-  }) ?? []
-  return [...rivalTypes, ...games].sort((a, b) => {
-    const time = (r: Update) => r.type === "rivalry" ? r.createdAt.getTime() : r.time
-    return time(b) - time(a)
-  }).slice(page * 50, (page + 1) * 50)
+  const games =
+    (await getGames(id))?.map((g) => {
+      return { ...g, type: "result" } as Result & { type: "result" }
+    }) ?? []
+  return [...rivalTypes, ...games]
+    .sort((a, b) => {
+      const time = (r: Update) =>
+        r.type === "rivalry" ? r.createdAt.getTime() : r.time
+      return time(b) - time(a)
+    })
+    .slice(page * 50, (page + 1) * 50)
 }
 
 export async function getChallenges(em: EntityManager, id: number) {
@@ -120,21 +128,19 @@ type Stats = {
   rankedPlays: number
 }
 
-export function getRankPoints(points: number): [points: number, cap: number, rank: number] {
-  if (points < 2500)
-    return [points, 2500, 1]
-    if (points < 10000)
-    return [points - 2500, 7500, 2]
-    if (points < 25000)
-    return [points - 10000, 15000, 3]
-    if (points < 50000)
-      return [points - 25000, 25000, 4]
+export function getRankPoints(
+  points: number
+): [points: number, cap: number, rank: number] {
+  if (points < 2500) return [points, 2500, 1]
+  if (points < 10000) return [points - 2500, 7500, 2]
+  if (points < 25000) return [points - 10000, 15000, 3]
+  if (points < 50000) return [points - 25000, 25000, 4]
   return [0, 0, 5]
 }
 
 export async function getPoints(id: number): Promise<number> {
   return (await em.find(GameResult, { participantId: id }))
-    .map(r => r.score)
+    .map((r) => r.score)
     .reduce((a, b) => a + b)
 }
 
@@ -147,14 +153,13 @@ export async function rankUp(id: number, rank: number) {
 }
 
 export async function getStates(id?: number): Promise<Stats | null> {
-  if (!id)
-    return null
+  if (!id) return null
   let res = await em.find(GameResult, { participantId: id })
-  let points = res.map(r => r.score).reduce((a, b) => a + b)
+  let points = res.map((r) => r.score).reduce((a, b) => a + b)
   return {
-    winRatio: Math.round((res.filter(r => r.won).length / res.length) * 100),
+    winRatio: Math.round((res.filter((r) => r.won).length / res.length) * 100),
     points,
     nextRank: cast<[number, number]>(getRankPoints(points)),
-    rankedPlays: res.length
+    rankedPlays: res.length,
   }
 }
