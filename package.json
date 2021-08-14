@@ -1,7 +1,7 @@
 {
   "name": "capstone-project",
   "version": "1.0.0",
-  "private": true,  
+  "private": true,
   "scripts": {
     "setup": "yarn web && yarn server && yarn setupdb",
     "web": "cd web && yarn install",
@@ -9,6 +9,10 @@
     "setupdb": "cd server && yarn migratedb",
     "compose-server": "cd server && docker build -t duelingo-server .",
     "compose-web": "cd web && docker build -t duelingo-web .",
-    "compose": "yarn compose-server && yarn compose-web && docker-compose up"
+    "compose": "yarn compose-server && yarn compose-web && docker-compose up",
+    "clean": "rimraf -rf data/ && cd server &&  yarn clearmigrations"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
   }
 }

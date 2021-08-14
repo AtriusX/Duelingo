@@ -12,6 +12,7 @@ To get the project running, you will need to have a few things prepared before i
   - If you are on Windows you will need to install WSL 2 first. I recommend using [Ubuntu 20.04](https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71) for this system.
   - Mac is unfortunately unsupported in this installation guide, though you should be able to install this through [Homebrew](https://phoenixnap.com/kb/install-redis-on-mac).
 - [PostgreSQL](https://www.postgresql.org/)
+- [Docker Desktop (Production)](https://www.docker.com/products/docker-desktop) 
 
 ## Installation
 
@@ -44,3 +45,23 @@ From here you should now create two more command prompts (one for each system). 
 The front end is accessible from the address `http://localhost:4000/` and the back end runs off port `3000`. 
 
 On the first run of the system, the application will also generate a set of 1000 test users. This will only run if the user count dips below 1000 in development mode, and can be used in testing different functions on the system. Any mockups created for each phase will be stored in the corresponding folder under the `/mock` directory.
+
+# Production 
+
+Our production system is a bit different than how the development environment is meant to function. In order to ensure stability and ease of use across systems, we bundle and install the application as a docker container. This allows us the ability to simplify the setup process to a certain extent as well.
+
+## Installation
+
+The requirements for production builds are largely the same, however you will not need to install Redis yourself. Redis is automatically installed alongside the application as a container. You will still need to have a Postgres database available on your machine outside of docker however. So if you do not have this installed please follow the instructions [above](#postgres).
+
+Yarn is also still needed for running our scripts, please make sure you have that installed as well. If you do not, follow the instructions [above](#yarn).
+
+### Docker Desktop
+
+By this point, you will need to install Docker onto your system to allow for the application environment to be build, installed, and ran. Depending on your operating system you may need a support system such as WSL 2 (Windows) to use it. If you need to install a support system, please check the [requirements](#requirements) under Redis to find a guide for your specific system.
+
+Installing Docker Desktop after this is relatively straightforward. You simply just download the installer from the website, and after you run it the application should become available to you.
+
+## Setup and Running
+
+Once Docker is started and you have gone through the initial guide phase of the program, you can now come back here and build the application. From here, simply open a terminal in the root directory of the project and run `yarn compose`. This will kick off a series of docker builds that will eventually be bundled into a network of containers. After this, the application will be accessible from `http://localhost:8080/`.

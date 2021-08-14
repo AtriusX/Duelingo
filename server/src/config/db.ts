@@ -34,7 +34,7 @@ const DatabaseConfig = {
   migrations: {
     path: path.join(__dirname, "../migrations"),
     pattern: /^[\w-]+\d+\.[tj]s$/,
-  },
+  }
 } as Config
 
 export default DatabaseConfig
