@@ -18,15 +18,12 @@ export default class GameTracker {
     competitive: boolean = false
   ): boolean | string {
     if (this.has(a) || this.has(b)) {
-      console.log("Could not connect users to game")
       return false
     }
     let gameId = v4()
     this.join(a, gameId)
     this.join(b, gameId)
     this.games.set(gameId, new Game(a, b, gameId, competitive))
-    console.log(this.games)
-
     return gameId
   }
 
@@ -44,7 +41,6 @@ export default class GameTracker {
   public drop(id: number) {
     let key = this.key(id)
     if (key) {
-      console.log("Dropped game", key, "from pool")
       let game = this.games.get(key)
       if (!game?.isOver()) game?.socket("game-dropped")
       game?.end()

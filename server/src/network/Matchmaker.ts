@@ -17,7 +17,7 @@ export default class MatchMaker {
 
   public add(user: User) {
       if (GameTracker.get().has(user.id))
-        return console.log("User is already in a game!")
+        return
       if (!this.pool.includes(user))
         this.pool.push(user)
   }

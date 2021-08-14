@@ -34,16 +34,15 @@ export const useSocket = (
     let timestamp = Date.now()
     let pos = position ?? "open"
     let userToken = (cast<Token>(token).token ?? token) as string | undefined
-    socket.on("connect", () => {
+    socket.on("connect", () =>
         socket.emit("handshake", userToken, pos, timestamp)
-    })
+    )
     socket.on("ping", () =>
         socket.emit("handshake", userToken, pos, timestamp)
     )
-    socket.on("end", () => {
-        console.log("Closed")
+    socket.on("end", () =>
         socket.close()
-    })
+    )
     load(socket, userToken)
     return socket
 })[0]
@@ -55,7 +54,6 @@ export default function SocketProvider({ socket, token, load, ...props }: Socket
     const [ran, setRan] = useState(false)
     useEffect(() => {
         if (!ran && !!load) {
-            console.log("Init");
             load(client, token)
             setRan(true)
         }

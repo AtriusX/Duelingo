@@ -38,7 +38,9 @@ async function main() {
   setupGame(app, db)
   setupLeaderboards(app, db)
 
-  const server = http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")))
+  const server = http.listen(3000, () => 
+    console.log(chalk.green("Listening on port 3000!"))
+  )
 
   process.on("SIGTERM", () => {
     console.log(chalk.redBright("Shutting down server..."));

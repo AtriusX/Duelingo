@@ -20,7 +20,6 @@ export default function setupRivals(app: Express, { em }: MikroORM) {
 
     app.get("/rivals/pending", async (req: Request, res: Response) => {
         const sender = sessionId(req.session)
-        console.log(sender);
         const data = await pending(em, sender)
         res.status(200).json(data)
     })

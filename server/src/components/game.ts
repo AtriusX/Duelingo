@@ -11,7 +11,6 @@ export default function setupGame(app: Express, { em }: MikroORM) {
 
   app.post("/game/accept", async (req: Request, res: Response) => {
     let data = challenges.accept(req.session.userId ?? 0, req.body.id)
-    console.log(data)
     if (typeof data === "string") {
       res.status(200).json({ id: data })
     } else res.status(200).json(data)
@@ -19,8 +18,6 @@ export default function setupGame(app: Express, { em }: MikroORM) {
 
   app.post("/game/reject", async (req: Request, res: Response) => {
     let data = challenges.reject(req.session.userId ?? 0, req.body.id)
-    console.log(data)
-
     if (data === true) {
       ;(await repo.recall(req.body.id))?.socket?.emit(
         "challenge-rejected",
@@ -32,7 +29,6 @@ export default function setupGame(app: Express, { em }: MikroORM) {
 
   app.post("/challenge/cancel", async (req: Request, res: Response) => {
     let data = challenges.cancel(req.session.userId ?? 0, req.body.id)
-    console.log(data)
     if (data === true) {
       res.status(200)
     } else res.status(200).json(data)
@@ -40,8 +36,6 @@ export default function setupGame(app: Express, { em }: MikroORM) {
 
   app.post("/challengers", async (req: Request, res: Response) => {
     let data = await getChallenges(em, req.session.userId ?? 0)
-    console.log(data)
-
     res.status(200).json(data)
   })
 

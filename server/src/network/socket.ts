@@ -10,7 +10,6 @@ import sharedsession from "express-socket.io-session"
 import { RequestHandler } from "express"
 import ConnectionRepository from "./ConnectionRepository"
 import { availableRivals } from "../api/rival"
-import chalk from "chalk"
 import ChallengeManager from "./ChallengeManager"
 import { getChallenges } from "../api/user"
 import MatchMaker from "./Matchmaker"
@@ -60,7 +59,6 @@ function setupChallenge(
 
   socket.on("query-rivals", (token, value) =>
     session(token, async (_, session) => {
-      console.log(chalk.cyanBright("Getting rivals for", session?.userId))
       socket.emit(
         "get-rivals",
         (await availableRivals(em, session?.userId)).filter((r) =>
@@ -72,15 +70,11 @@ function setupChallenge(
 
   socket.on("challenge-rival", (token, id) =>
     session(token, async (_, session) => {
-      console.log(session?.userId, "sent a challenge to", id)
       let active = await repo.recall(id)
-      console.log(!!active ? "User is active" : "User is not active")
       if (!!active)
-        console.log(
-          await challenges.challenge(session?.userId, id, async () => {
-            active?.socket?.emit("get-challenges", await getChallenges(em, id))
-          })
-        )
+        await challenges.challenge(session?.userId, id, async () => {
+          active?.socket?.emit("get-challenges", await getChallenges(em, id))
+        })
     })
   )
 
