@@ -7,13 +7,13 @@ services:
     volumes: 
       - ./data:/data
   server:
-    image: capstone-server
+    image: duelingo-server
     ports: 
       - 3000:3000
     links:
       - redis
   web:
-    image: capstone-web
+    image: duelingo-web
     ports: 
       - 8080:8080
     links:

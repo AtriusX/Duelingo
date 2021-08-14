@@ -8,23 +8,18 @@ import { useSocket } from "../../components/SocketProvider";
 import Avatar from "../../components/Avatar"
 import SocketProvider from "../../components/SocketProvider"
 import Countdown from "../../components/Countdown"
-import { getOpponent, getGameState, Player } from "../../api/game";
+import { getOpponent, getGameState, Player, PublicQuestion } from "../../api/game";
 import styles from "../../styles/Game.module.css"
 import { HTMLProps } from "react";
 import router from "next/router";
 import { Socket } from "socket.io-client";
 import ReactModal from "react-modal";
 
-type Question = {
-    question: string,
-    choices: string[]
-}
-
 interface GameProps {
     gameId: string
     user: User & Token
     opponent: User,
-    state: [Player, Player, boolean, [number, number?], Question?]
+    state: [Player, Player, boolean, [number, number?], PublicQuestion?]
 }
 
 export default function Game({
@@ -40,8 +35,7 @@ export default function Game({
     const [start, setStart] = useState(started)
     const [correct, setCorrect] = useState<[number, boolean]>()
     const [showResults, setShowResults] = useState(false)
-    const [q, setQuestion] =
-        useState<Question | undefined>(question ?? undefined)
+    const [q, setQuestion] = useState<PublicQuestion | undefined>(question)
     useEffect(() => {
         if (timer <= 0)
             setShowResults(true)
@@ -142,7 +136,7 @@ function Result({ show, scores }: ResultProps) {
                 }
             }}
         >
-            <h1> {scores[0] === scores[1] ? "Draw"
+            <h1>{scores[0] === scores[1] ? "Draw"
                 : `You ${scores[0] > scores[1] ? "won" : "lost"}!`}</h1>
             <h2>Your score: {scores[0]}</h2>
             <button onClick={() => {
@@ -160,7 +154,7 @@ interface GamePanelProps {
     gameId: string
     socket: Socket
     token: Token
-    question?: Question
+    question?: PublicQuestion
     correct?: [number, boolean]
 }
 
