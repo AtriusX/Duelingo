@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "watch": "tsc -w",
-    "start": "tsc && nodemon dist/index.js",
+    "start": "yarn build && nodemon dist/index.js",
     "clearmigrations": "rimraf -rf dist/migrations/ src/migrations/",
-    "migratedb": "yarn clearmigrations && npx mikro-orm migration:create"
+    "migratedb": "yarn clearmigrations && npx mikro-orm migration:create",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.1",
@@ -17,6 +18,7 @@
     "@types/express-session": "^1.17.4",
     "@types/express-socket.io-session": "^1.3.6",
     "@types/faker": "^5.5.7",
+    "@types/ioredis": "^4.26.7",
     "@types/node": "^16.0.1",
     "@types/redis": "^2.8.31",
     "@types/uuid": "^8.3.1",
@@ -31,14 +33,16 @@
     "@mikro-orm/core": "^4.5.7",
     "@mikro-orm/migrations": "^4.5.7",
     "@mikro-orm/postgresql": "^4.5.7",
-    "argon2": "^0.28.2",
+    "argon2": "^0.26.2",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.1",
     "connect-redis": "^6.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "express-socket.io-session": "^1.3.5",
+    "ioredis": "^4.27.7",
     "pg": "^8.6.0",
     "redis": "^3.1.2",
     "socket.io": "^4.1.3",

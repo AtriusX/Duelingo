@@ -1,7 +1,6 @@
 import router from "next/router";
 import { HTMLProps, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { address } from "../../env";
 import { Token } from "../api/user";
 import { cast } from "../utils";
 
@@ -16,7 +15,7 @@ interface SocketProps extends HTMLProps<HTMLDivElement> {
     load?: (socket: Socket, token?: string) => void
 }
 
-export const createSocket = () => io(`http://${address}:3000`)
+export const createSocket = () => io(process.env.NEXT_PUBLIC_API!)
 
 type SocketLoad = (socket: Socket, token?: string) => void
 
@@ -34,12 +33,13 @@ export const useSocket = (
     let socket = createSocket()
     let timestamp = Date.now()
     let pos = position ?? "open"
-    console.log("Created socket")
     let userToken = (cast<Token>(token).token ?? token) as string | undefined
-    socket.on("connect", () =>
+    socket.on("connect", () => {
+        socket.emit("handshake", userToken, pos, timestamp)
+    })
+    socket.on("ping", () =>
         socket.emit("handshake", userToken, pos, timestamp)
     )
-    socket.on("ping", () => socket.emit("handshake", userToken, pos, timestamp))
     socket.on("end", () => {
         console.log("Closed")
         socket.close()

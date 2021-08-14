@@ -12,7 +12,6 @@ import ChallengeRequests from "../components/ChallengeRequests"
 import router from 'next/router';
 import StatBar from './StatBar';
 import { getRank } from '../utils';
-import Loader from './Loader';
 import ScrollFeed from "./ScrollFeed"
 
 interface HomeProps {
@@ -23,7 +22,7 @@ interface HomeProps {
 export default function Home({ user, stats }: HomeProps) {
     // This might need to change later on
     const { winRatio, points, nextRank, rankedPlays } = stats ?? {}
-    const socket = useSocket(socket => {
+    const socket = useSocket(socket => {        
         socket.emit("join-game", (id: string) => {
             socket.close()
             router.push(`/game/${id}`)
@@ -58,7 +57,7 @@ export default function Home({ user, stats }: HomeProps) {
                             emptyText="No recent updates!"
                             className={styles.updates}
                             emptyIcon="📃"
-                            action={async p => {
+                            run={async p => {
                                 return await getUpdates(p)
                             }}
                             map={(u, i) =>

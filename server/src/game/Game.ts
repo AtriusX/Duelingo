@@ -56,14 +56,14 @@ export default class Game {
     Player,
     Player,
     boolean,
-    number,
+    [number, number?],
     PublicQuestion | undefined
   ] {
     return [
       this.a,
       this.b,
       this.started,
-      this.started ? this.time : 5,
+      this.started ? [this.time, this.current.timeRemaining()] : [5],
       this.current?.getPublic(),
     ]
   }
@@ -110,7 +110,7 @@ export default class Game {
       else this.over = true
       const interval = setInterval(async () => {
         // Perhaps this can be simplified now that the system is fixed
-        this.socket("update-timer", this.time)
+        this.socket("update-timer", this.time, this.current.timeRemaining())
         if (this.current.expired()) {
           let q = await QuestionManager.random(em, this.lang)
           // If no question is found, then we can assume the game cannot continue
@@ -145,7 +145,7 @@ export default class Game {
           p.streak++
           score = p.streak * 10
         } else {
-          score = 0
+          score = -10
           p.streak = 0
         }
         p.score += score

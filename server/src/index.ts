@@ -1,3 +1,4 @@
+import "dotenv/config"
 import { EntityManager, MikroORM } from "@mikro-orm/core"
 import DatabaseConfig from "./config/db"
 import cors from "cors"
@@ -37,7 +38,13 @@ async function main() {
   setupGame(app, db)
   setupLeaderboards(app, db)
 
-  http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")))
+  const server = http.listen(3000, () => console.log(chalk.green("Listening on port 3000!")))
+
+  process.on("SIGTERM", () => {
+    console.log(chalk.redBright("Shutting down server..."));
+    server.close()
+    process.exit(0)
+  })
 }
 
 main().catch(console.error)

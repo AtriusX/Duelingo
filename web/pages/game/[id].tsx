@@ -24,18 +24,19 @@ interface GameProps {
     gameId: string
     user: User & Token
     opponent: User,
-    state: [Player, Player, boolean, number, Question | undefined]
+    state: [Player, Player, boolean, [number, number?], Question?]
 }
 
 export default function Game({
     gameId, user, opponent,
-    state: [a, b, started, time, question]
+    state: [a, b, started, [time, questionTime], question]
 }: GameProps) {
     const [score, setScore] = useState(a.id === user.id ? a.score : b.score)
     const [opponentScore, setOpponentScore] = useState(a.id === user.id ? b.score : a.score)
     const [streak, setStreak] = useState(a.id === user.id ? a.streak : b.streak)
     const [opponentStreak, setOpponentStreak] = useState(a.id === user.id ? b.streak : a.streak)
     const [timer, setTimer] = useState(time)
+    const [questionTimer, setQuestionTimer] = useState(questionTime)
     const [start, setStart] = useState(started)
     const [correct, setCorrect] = useState<[number, boolean]>()
     const [showResults, setShowResults] = useState(false)
@@ -50,8 +51,9 @@ export default function Game({
             alert("It looks like your opponent left the game... Press OK to return to the menu.")
             router.push("/")
         })
-        socket.on("update-timer", v => {
-            setTimer(v)
+        socket.on("update-timer", (t, q) => {
+            setTimer(t)
+            setQuestionTimer(q)
             setStart(true)
         })
         socket.on("update-score", (value, streak, id) => {
@@ -80,7 +82,11 @@ export default function Game({
                 <PlayerInfo user={user} score={score} streak={streak}
                     className={[styles.player, styles.info].join(" ")} />
                 <div className={styles.timer}>
-                    {start && <h1>{`${Math.floor(timer / 60)}:${Math.floor(timer % 60).toString().padEnd(2, "0")}`}</h1>}
+                    {start && <>
+                        <h2>{`${Math.floor(timer / 60)}:${Math.floor(timer % 60).toString().padStart(2, "0")}`}</h2>
+                        <h1>|</h1>
+                        <h2>{questionTimer}</h2>
+                    </>}
                 </div>
                 <PlayerInfo user={opponent} score={opponentScore} streak={opponentStreak}
                     className={[styles.opponent, styles.info].join(" ")} />
@@ -136,8 +142,8 @@ function Result({ show, scores }: ResultProps) {
                 }
             }}
         >
-            <h1>You {scores[0] === scores[1] ? "Draw"
-                : scores[0] > scores[1] ? "won" : "lost"}!</h1>
+            <h1> {scores[0] === scores[1] ? "Draw"
+                : `You ${scores[0] > scores[1] ? "won" : "lost"}!`}</h1>
             <h2>Your score: {scores[0]}</h2>
             <button onClick={() => {
                 router.push("/", undefined, {
@@ -225,6 +231,6 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
     const opponent = await getOpponent(user.id, gameId)
     if (!opponent)
         return homeRedirect
-    const state = await getGameState(gameId) ?? [undefined, undefined, false, 0, undefined]
+    const state = await getGameState(gameId) ?? [undefined, undefined, false, [0]]
     return { props: { gameId, user, opponent, state } }
 }

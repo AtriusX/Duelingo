@@ -1,14 +1,11 @@
 import { cast } from './../utils';
 import { request, RequestType } from "../utils"
-import { address } from '../../env'
 
 class Client {
-    
-    constructor(url: string, port: number) {
-        this.BASE_API_URL = `${url}:${port}`
-    }
 
-    BASE_API_URL!: string
+    BASE_API_URL: string = typeof window === "undefined" 
+        ? process.env.NEXT_PUBLIC_SERVER_URL! 
+        : process.env.NEXT_PUBLIC_API! 
 
     private async request(path: string, method: RequestType, data?: object) {        
         return request(`${this.BASE_API_URL}${path}`, method, data)
@@ -52,6 +49,6 @@ class Client {
     }
 }
 
-const client: Client = new Client(`http://${address}`, 3000)
+const client: Client = new Client()
 
 export default client

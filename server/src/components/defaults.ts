@@ -4,7 +4,7 @@ import QuestionEntity from "../entities/Question"
 import faker from "faker"
 import chalk from "chalk"
 import { DEV } from "../global"
-import { hash } from "argon2"
+import argon2 from "argon2"
 import { User } from "../entities/User"
 import QuestionManager from "../game/QuestionManager"
 
@@ -17,7 +17,7 @@ export default async function setupDefaults() {
     for (let i = 0; i < 1000 - count; i++) {
       const name = faker.name.findName()
       const email = faker.internet.email().toLowerCase()
-      const password = await hash(faker.internet.password())
+      const password = await argon2.hash(faker.internet.password())
       manager.persist(new User(name, email, password))
     }
     await manager.flush()
@@ -112,9 +112,12 @@ async function createDefaultQuestionPool(manager: EntityManager) {
     [
         "Jacob invited us over for dinner",
         [
+          "Nosotros vamos a ver a jacob",
+          "Jacob quiere que vayamos a desayunar",
+          "Jacob quiere invitarnos",
           "Jacob nos invitó a cenar"
         ],
-        0,
+        3,
         "es"
     ],
     [

@@ -1,6 +1,6 @@
 // import ConnectionRepository from '../network/ConnectionRepository';
 import { sessionId } from "./../api/index"
-import { verify } from "argon2"
+import argon2 from "argon2"
 import { Express, Request, Response } from "express"
 import { MikroORM } from "@mikro-orm/core"
 import { User } from "../entities/User"
@@ -48,7 +48,7 @@ export default function setupUser(app: Express, db: MikroORM) {
     if (
       !!body.password?.length &&
       user &&
-      !(await verify(user.password, body.existing))
+      !(await argon2.verify(user.password, body.existing))
     )
       return res
         .status(200)
@@ -65,7 +65,6 @@ export default function setupUser(app: Express, db: MikroORM) {
 
   app.post("/forget", async (req: Request, res: Response) => {
     const id = req.session?.userId
-    console.log("FORGET", id)
     if (!!id) ConnectionRepository.get().drop(id)
     return res.status(200)
   })

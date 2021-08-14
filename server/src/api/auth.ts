@@ -1,7 +1,7 @@
 import { testRequirements, emailFieldTest, basicFieldTest } from "."
 import { User } from "../entities/User"
 import { EntityManager } from "@mikro-orm/core"
-import { verify, hash } from "argon2"
+import argon2 from "argon2"
 import { Error } from "."
 
 export interface UserInfo {
@@ -20,7 +20,7 @@ export async function login(
     return {
       message: "Email is incorrect!",
     }
-  if (!(await verify(user.password, password)))
+  if (!(await argon2.verify(user.password, password)))
     return {
       message: "Password is incorrect!",
     }
@@ -48,7 +48,7 @@ export async function register(
     return {
       message: "Password is invalid!",
     }
-  const code = await hash(password)
+  const code = await argon2.hash(password)
   const user = new User(username, email.toLowerCase(), code)
   try {
     await em.persistAndFlush(user)
@@ -67,7 +67,7 @@ export async function deleteUser(
 ): Promise<Boolean | Error> {
 
   const user = await em.findOne(User, { id: id })
-  if (!user || !(await verify(user.password, password))) {
+  if (!user || !(await argon2.verify(user.password, password))) {
     return { message: "Failed to delete!" }
   }
   em.removeAndFlush(user)

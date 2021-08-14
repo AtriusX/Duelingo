@@ -1,12 +1,9 @@
 import { Option } from './../types';
-import redis, { RedisClient } from "redis"
-import { promisifyAll } from "bluebird"
+import Redis from "ioredis"
 
 export default class RedisMemory<V = string> {
   private readonly _name: string
-  private readonly redis: RedisClient & Partial<{
-    getAsync: (key: string | number) => Promise<string> 
-  }>
+  private readonly redis: Redis.Redis
   private readonly toString: (inp: V | string) => string
   private readonly parse: (inp: string) => V
   private autoDrop?: number
@@ -18,10 +15,10 @@ export default class RedisMemory<V = string> {
     autoDrop?: number
   ) {
     this._name = name
-    this.redis = redis.createClient({
-      prefix: name 
+    this.redis = new Redis({
+      keyPrefix: name,
+      host: process.env.REDIS_URL
     })
-    promisifyAll(RedisClient.prototype)
     this.toString = toString
     this.parse = parse
     this.autoDrop = autoDrop
@@ -48,7 +45,7 @@ export default class RedisMemory<V = string> {
 
   public async recall(key: string | number): Promise<Option<V>> {      
     try {
-      return this.parse(await this.redis.getAsync!(key))
+      return this.parse(await this.redis.get(key.toString()) ?? "")
     } catch (err) {
       return undefined
     }

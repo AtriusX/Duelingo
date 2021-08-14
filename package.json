@@ -6,6 +6,9 @@
     "setup": "yarn web && yarn server && yarn setupdb",
     "web": "cd web && yarn install",
     "server": "cd server && yarn install",
-    "setupdb": "cd server && yarn migratedb"
+    "setupdb": "cd server && yarn migratedb",
+    "compose-server": "cd server && docker build -t capstone-server .",
+    "compose-web": "cd web && docker build -t capstone-web .",
+    "compose": "yarn compose-server && yarn compose-web && docker-compose up"
   }
 }

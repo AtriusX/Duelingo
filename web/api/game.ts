@@ -30,8 +30,13 @@ export interface Player {
   streak: number
 }
 
+export interface PublicQuestion {
+  question: string
+  choices: string[]
+}
+
 export async function getGameState(
   gameId: string
-): Promise<[Player, Player, boolean, number] | null> {
+): Promise<[Player, Player, boolean, [number, number?], PublicQuestion?] | null> {
   return client.post("/game/state", { gameId })
 }

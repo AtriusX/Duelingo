@@ -31,6 +31,7 @@ export default class ConnectionRepository {
     this.interval = setInterval(() => {
       this.active.forEach(async (id) =>
         this.recall(id).then(async (v) => {
+          
           if (!!v && v.lastPinged + sec * 2 < Date.now()) return this.drop(id)
           else v?.socket?.emit("ping")
         })
@@ -56,7 +57,7 @@ export default class ConnectionRepository {
     socket: Socket,
     position: Position,
     timestamp: number
-  ) {
+  ) {    
     if (!id) return
     this.repo.recall(id).then((v) => {
       if (v?.timestamp! > timestamp) {

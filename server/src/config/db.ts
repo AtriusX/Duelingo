@@ -8,6 +8,7 @@ import Participant from "../entities/Participant"
 import Game from "../entities/Game"
 import GameResult from "../entities/GameResult"
 import LeaderboardSnapshot from "../entities/LeaderboardSnapshot"
+import { PostgreSqlDriver } from "@mikro-orm/postgresql"
 
 const entities = [
   User,
@@ -24,7 +25,9 @@ type Config = Parameters<typeof MikroORM.init>[0]
 const DatabaseConfig = {
   dbName: DBNAME,
   debug: DEV,
+  host: process.env.DATABASE_URL,  
   type: DBTYPE,
+  driver: PostgreSqlDriver,
   user: DBUSER,
   password: DBPASS,
   entities: entities,

@@ -44,6 +44,10 @@ export default class Question implements PublicQuestion {
     return correct
   }
 
+  public timeRemaining(): number {
+    return Math.round(Math.max(0, 10000 - (Date.now() - this.created)) / 1000)
+  }
+
   public expire() {
     this._expire = Date.now()
   }

@@ -79,7 +79,7 @@ export default function Profile({ user, me, rival }: ProfileData) {
                         emptyIcon="🎮"
                         emptyText="No past games!"
                         className={styles.games}
-                        action={async p => await getGames(id, p)}
+                        run={async p => await getGames(id, p)}
                         map={(g, i) => <GameResult key={i} result={g} />}
                         check={check}
                     />
@@ -88,7 +88,7 @@ export default function Profile({ user, me, rival }: ProfileData) {
                         emptyIcon="🌞"
                         emptyText="No Rivals!"
                         className={styles.rivals}
-                        action={async p => {
+                        run={async p => {
                             const same = cast<User>(user)?.id === me?.id
                             return await (same ? all(me?.id, p) : active(cast<User>(user).id, p))
                         }}

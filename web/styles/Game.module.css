@@ -59,17 +59,17 @@
 
 .timer {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.timer h1 {
-    margin-bottom: 1rem;
+.timer * {
+    margin: 0 1rem;
 }
 
-.timer * {
-    margin: 0;
+.timer h2 {
+    color: #444;
 }
 
 .question {

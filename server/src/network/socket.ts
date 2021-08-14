@@ -36,7 +36,7 @@ export function setupSockets(http: HttpServer, sess: RequestHandler) {
     const session: SessionFunction = (token, func) =>
       cast<Handshake>(socket.handshake).sessionStore.get(token, func)
     // Handshake
-    socket.on("handshake", (token, position, timestamp) =>
+    socket.on("handshake", (token, position, timestamp) =>      
       session(token, async (_, session) => {
         repo.insert(session?.userId, socket, position, timestamp)
         if (session && session.userId) {

@@ -2,7 +2,7 @@ import GameResult from "../entities/GameResult"
 import { em } from "./../index"
 import { Rivalry } from "./../entities/Rivalry"
 import { testRequirements, emailFieldTest, basicFieldTest } from "."
-import { hash } from "argon2"
+import argon2 from "argon2"
 import { User } from "../entities/User"
 import { EntityManager, QueryOrder } from "@mikro-orm/core"
 import { Error } from "../api/"
@@ -43,7 +43,7 @@ export async function updateUser(
     if (testRequirements(email, emailFieldTest))
       self.email = email.toLowerCase()
     if (testRequirements(password, basicFieldTest(8)))
-      self.password = await hash(password)
+      self.password = await argon2.hash(password)
     if (language) self.language = language
     if (description) self.description = description
     await em.flush()
