@@ -9,7 +9,7 @@ import SearchItem from "../components/SearchItem"
 import Navbar from "../components/Navbar"
 import { self } from '../api/user'
 import Link from "next/link"
-import { tryLogout } from "../api/auth"
+import { homeRedirect, tryLogout } from "../api/auth"
 import Dropdown from "../components/Dropdown"
 import Paginator from "../components/Paginator"
 import Pane from "../components/Pane"
@@ -135,6 +135,8 @@ async function toPage(page: number) {
 
 export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await self(req?.headers.cookie)
+    if (!user)
+        return homeRedirect
     const data = query as SearchQuery
     const users = await search(data)
     return {

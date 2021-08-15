@@ -6,11 +6,11 @@
     "setup": "yarn web && yarn server && yarn setupdb",
     "web": "cd web && yarn install",
     "server": "cd server && yarn install",
-    "setupdb": "cd server && yarn migratedb",
+    "setupdb": "yarn clean && cd server && yarn migratedb",
     "compose-server": "cd server && docker build -t duelingo-server .",
     "compose-web": "cd web && docker build -t duelingo-web .",
-    "compose": "yarn compose-server && yarn compose-web && docker-compose up",
-    "clean": "rimraf -rf data/ && cd server &&  yarn clearmigrations"
+    "compose": "yarn setupdb && yarn compose-server && yarn compose-web && docker-compose up",
+    "clean": "rimraf -rf data/ && cd server && yarn clearmigrations"
   },
   "devDependencies": {
     "rimraf": "^3.0.2"

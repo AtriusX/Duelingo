@@ -4,9 +4,9 @@ import Avatar from "../../components/Avatar";
 import Navbar from "../../components/Navbar";
 import styles from "../../styles/Profile.module.css"
 import Link from "next/link"
-import { tryLogout } from "../../api/auth";
+import { homeRedirect, tryLogout } from "../../api/auth";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
-import { cast, getRank, useCounter } from "../../utils";
+import { cast, getRank } from "../../utils";
 import { useSocket } from "../../components/SocketProvider";
 import NoResult from "../../components/NoResult";
 import router from "next/router";
@@ -105,6 +105,8 @@ export async function getServerSideProps({ req, query }: NextPageContext) {
     const user = await getUser(query.id)
     const token = req?.headers.cookie
     const me = await self(token)
+    if (!me)
+        return homeRedirect
     const same = cast<User>(user)?.id === me?.id
     const rival = same ? null : await get(cast<User>(user).id, token!)
     return {

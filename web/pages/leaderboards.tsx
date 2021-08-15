@@ -1,7 +1,7 @@
 import { NextPageContext } from "next";
 import Link from "next/link";
 import { User } from "../api";
-import { tryLogout } from "../api/auth";
+import { homeRedirect, tryLogout } from "../api/auth";
 import { getLeaderboards, Snapshot } from "../api/leaderboard";
 import { self, Token } from "../api/user";
 import Leaderboard from "../components/Leaderboard";
@@ -54,6 +54,8 @@ function range(start: number, end: number) {
 
 export async function getServerSideProps({ req }: NextPageContext) {
     const user = await self(req?.headers.cookie)
+    if (!user)
+        return homeRedirect
     const leaderboards = await getLeaderboards()
     return {
         props: { user, leaderboards }

@@ -1,8 +1,12 @@
+import { cast } from "../types";
+import { NamedRivalry } from './user';
 import { testRequirements, emailFieldTest, basicFieldTest } from "."
 import { User } from "../entities/User"
 import { EntityManager } from "@mikro-orm/core"
 import argon2 from "argon2"
 import { Error } from "."
+import GameResult from "../entities/GameResult"
+import { allRivals } from "./rival"
 
 export interface UserInfo {
   email: string
@@ -70,6 +74,12 @@ export async function deleteUser(
   if (!user || !(await argon2.verify(user.password, password))) {
     return { message: "Failed to delete!" }
   }
-  em.removeAndFlush(user)
+  let results = await em.find(GameResult, { participantId: id })
+  let rivals = await allRivals(em, id)
+  em.remove(user)
+  em.remove(results)
+  if (!(rivals instanceof Error))
+    em.remove(cast<NamedRivalry[]>(rivals))
+  await em.flush()
   return true
 }
