@@ -49,6 +49,9 @@ export default function Signup({ toRegister }: SignupProps) {
     const swap = (login: boolean) => {
         isLogin(login)
         setError(null)
+        router.push({
+            query: { register: !login }
+        }, undefined, { shallow: true })
     }
     // Used for displaying password strength
     const [pass, setPass] = useState("")
