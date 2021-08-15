@@ -31,7 +31,7 @@ export default class Game {
     uuid: string,
     competitive: boolean = false,
     lang: Language = "es",
-    time: number = 5  // 5 minutes
+    time: number = 5 * 60 // 5 minutes
   ) {
     this.a = { id: a, score: 0, streak: 0 }
     this.b = { id: b, score: 0, streak: 0 }

@@ -14,6 +14,7 @@ import { HTMLProps } from "react";
 import router from "next/router";
 import { Socket } from "socket.io-client";
 import ReactModal from "react-modal";
+import { usePartialState } from "../../utils";
 
 interface GameProps {
     gameId: string
@@ -26,22 +27,24 @@ type ResultState = { visible: boolean, error?: string }
 
 export default function Game({
     gameId, user, opponent,
-    state: [a, b, started, [time, questionTime], question]
+    state: [a, b, started, times, question]
 }: GameProps) {
-    const [score, setScore] = useState(a.id === user.id ? a.score : b.score)
-    const [opponentScore, setOpponentScore] = useState(a.id === user.id ? b.score : a.score)
-    const [streak, setStreak] = useState(a.id === user.id ? a.streak : b.streak)
-    const [opponentStreak, setOpponentStreak] = useState(a.id === user.id ? b.streak : a.streak)
-    const [timer, setTimer] = useState(time)
-    const [questionTimer, setQuestionTimer] = useState(questionTime)
+    const [{ score, streak }, setPlayer] = usePartialState(a.id === user.id ? a : b)
+    const [{
+        score: opponentScore,
+        streak: opponentStreak
+    },
+        setOpponent
+    ] = usePartialState(a.id === user.id ? b : a)
+    const [[time, questionTime], setTimes] = useState(times)
     const [start, setStart] = useState(started)
     const [correct, setCorrect] = useState<[number, boolean]>()
     const [showResults, setShowResults] = useState<ResultState>({ visible: false })
     const [q, setQuestion] = useState<PublicQuestion | undefined>(question)
     useEffect(() => {
-        if (timer <= 0)
+        if (time <= 0)
             setShowResults({ visible: true })
-    }, [timer])
+    }, [time])
     const socket = useSocket(socket => {
         socket.on("game-dropped", () => {
             // alert("It looks like your opponent left the game... Press OK to return to the menu.")
@@ -49,19 +52,14 @@ export default function Game({
             // router.push("/")
         })
         socket.on("update-timer", (t, q) => {
-            setTimer(t)
-            setQuestionTimer(q)
+            setTimes([t, q])
             setStart(true)
         })
-        socket.on("update-score", (value, streak, id) => {
-            if (id === user.id) {
-                setScore(value)
-                setStreak(streak)
-            }
-            if (id === opponent.id) {
-                setOpponentScore(value)
-                setOpponentStreak(streak)
-            }
+        socket.on("update-score", (score, streak, id) => {
+            if (id === user.id)
+                setPlayer({ score, streak })
+            if (id === opponent.id)
+                setOpponent({ score, streak })
         })
         socket.on("question-result", (choice, correct) => setCorrect([choice, correct]))
         socket.on("question", v => {
@@ -80,9 +78,9 @@ export default function Game({
                     className={[styles.player, styles.info].join(" ")} />
                 <div className={styles.timer}>
                     {start && <>
-                        <h2>{`${Math.floor(timer / 60)}:${Math.floor(timer % 60).toString().padStart(2, "0")}`}</h2>
+                        <h2>{`${Math.floor(time / 60)}:${Math.floor(time % 60).toString().padStart(2, "0")}`}</h2>
                         <h1>|</h1>
-                        <h2>{questionTimer}</h2>
+                        <h2>{questionTime}</h2>
                     </>}
                 </div>
                 <PlayerInfo user={opponent} score={opponentScore} streak={opponentStreak}
@@ -91,7 +89,7 @@ export default function Game({
             <div className={styles.game}>
                 {!start
                     ? <div className={styles.timer}>
-                        <Countdown pretext="Starting in" duration={timer} />
+                        <Countdown pretext="Starting in" duration={time} />
                     </div>
                     : <GamePanel gameId={gameId} socket={socket} token={user} question={q} correct={correct} />}
             </div>

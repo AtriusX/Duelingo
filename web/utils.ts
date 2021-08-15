@@ -65,3 +65,9 @@ export function useCounter(initial: number = 0): [number, Counter, Counter, () =
   const reset = () => setCount(0)
   return [count, inc, dec, reset]
 }
+
+export function usePartialState<T>(initial: T): [T, (state: Partial<T>) => void] {
+  const [value, setValue] = useState(initial)
+  const appender = (state: Partial<T>) => setValue({ ...value, ...state })
+  return [value, appender]
+}
