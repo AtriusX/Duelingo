@@ -9,7 +9,7 @@
     "setupdb": "yarn clean && cd server && yarn migratedb",
     "compose-server": "cd server && docker build -t duelingo-server .",
     "compose-web": "cd web && docker build -t duelingo-web .",
-    "compose": "yarn setupdb && yarn compose-server && yarn compose-web && docker-compose up",
+    "compose": "docker-compose up",
     "clean": "rimraf -rf data/ && cd server && yarn clearmigrations"
   },
   "devDependencies": {

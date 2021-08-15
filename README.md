@@ -32,7 +32,7 @@ You want to begin by opening a WSL terminal in the command prompt by running the
 
 Postgres is the database we rely on for our back end system. The installation for this may be a bit more involved, but it shouldn't be too crazy overall. You'll want to download the Postgres installer and run it, from there it will prompt you for various database settings. You will want to set the default password for `postgres` to `password` (this is what we currently use in the application; may change later on). You will also be prompted for the post number, but you should leave this on the default value of `5432`.
 
-Once you have completed the installation, you can now verify the installation by opening a command prompt window and running the command `psql -U postgres` and then entering `password` when you are prompted for it. If this worked, then you can exit the database cli and run `createdb -U postgres capstone` to create the database. From here, you should now be ready to move on to the actual project.
+Once you have completed the installation, you can now verify the installation by opening a command prompt window and running the command `psql -U postgres` and then entering `password` when you are prompted for it. If this worked, then you can exit the database cli and run `createdb -U postgres capstone` to create the database for development mode. If you are looking to run this application in production mode, please run `createdb -U postgres duelingo` instead. From here, you should now be ready to move on to the actual project.
 
 ## Setup
 

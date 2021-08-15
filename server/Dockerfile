@@ -10,6 +10,7 @@ RUN yarn
 COPY . .
 COPY .env.production .env
 
+RUN yarn migratedb
 RUN yarn build
 
 ENV NODE_ENV production

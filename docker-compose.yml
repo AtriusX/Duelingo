@@ -2,18 +2,27 @@ version: "3.7"
 services:
   redis:
     image: redis
+    container_name: redis
     ports: 
       - 6379
     volumes: 
       - ./data:/data
+    networks:
+      - duelingo
   server:
+    build: ./server
     image: duelingo-server
+    container_name: duelingo-server
     ports: 
       - 3000:3000
     links:
       - redis
+    networks: 
+      - duelingo
   web:
+    build: ./web
     image: duelingo-web
+    container_name: duelingo-web
     ports: 
       - 8080:8080
     links:
@@ -21,3 +30,8 @@ services:
     user: root
     stdin_open: true
     tty: true
+    networks: 
+      - duelingo
+networks:
+  duelingo:
+    name: duelingo
