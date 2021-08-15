@@ -17,6 +17,8 @@ services:
       - 3000:3000
     links:
       - redis
+    stdin_open: true
+    tty: true
     networks: 
       - duelingo
   web:
