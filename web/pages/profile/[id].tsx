@@ -28,7 +28,7 @@ interface ProfileData {
 
 export default function Profile({ user, me, rival }: ProfileData) {
     const socket = useSocket(() => { }, { token: me })
-    const [id, setId] = useState(cast<User>(user).id)
+    const [id, setId] = useState(cast<User>(user)?.id)
 
     const check = () => {
         let u = cast<User>(user)
@@ -36,7 +36,7 @@ export default function Profile({ user, me, rival }: ProfileData) {
     }
     useEffect(() => {
         let u = cast<User>(user)
-        if (u.id === id) return
+        if (u?.id === id) return
         setId(u.id)
     }, [user, id])
 

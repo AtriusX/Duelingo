@@ -75,10 +75,16 @@ export async function deleteUser(
     return { message: "Failed to delete!" }
   }
   let results = await em.find(GameResult, { participantId: id })
+  console.log(results);
+  
   let rivals = await allRivals(em, id)
+  console.log(rivals);
+  console.log(user);
+  
   em.remove(user)
-  em.remove(results)
-  if (!(rivals instanceof Error))
+  if (!!results.length)
+    em.remove(results)
+  if (!!cast<Error>(rivals).message)
     em.remove(cast<NamedRivalry[]>(rivals))
   await em.flush()
   return true

@@ -16,13 +16,15 @@ export default function GameResult({
         time
     }
 }: GameResultProps) {
+    console.log(won, opponent);
+
     return (
         <div className={styles.outer}>
-            <Link href={`/profile/${opponent?.id}`}>
+            <Link href={`/profile/${opponent?.id ?? "deleted"}`}>
                 <a>
                     <div
                         style={{
-                            borderColor: won === null ? "#9c2aff" : won ? "var(--primary)" : "var(--error)"
+                            borderColor: won == null ? "#9c2aff" : won ? "var(--primary)" : "var(--error)"
                         }}
                         className={styles.container}>
                         {opponent && <Avatar className={styles.avatar} user={opponent} />}
@@ -33,7 +35,7 @@ export default function GameResult({
                             </div>
                             <div>
                                 <h3>Score: {score}</h3>
-                                <h3><i>{won === null ? "Draw" : won ? "Won" : "Lost"}</i></h3>
+                                <h3><i>{won == null ? "Draw" : won ? "Won" : "Lost"}</i></h3>
                             </div>
                         </div>
                     </div>

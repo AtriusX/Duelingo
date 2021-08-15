@@ -8,8 +8,8 @@
     padding: 1em;
     border-radius: 1em;
     border: 0.5rem solid;
-    display: grid;
-    grid-template-columns: max-content auto;
+    display: flex;
+    justify-content: space-between;
     flex-direction: row;
     align-items: center;
     transition: all 0.1s;
@@ -20,7 +20,9 @@
 }
 
 .avatar {
+    min-width: 5em;
     width: 5em;
+    min-height: 5em;
     height: 5em;
     margin-right: 1em;
 }
@@ -28,8 +30,9 @@
 .info {
     text-align: left;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
+    width: 100%;
+    flex-direction: column;
 }
 
 .info div {

@@ -141,7 +141,7 @@ export function getRankPoints(
 export async function getPoints(id: number): Promise<number> {
   return (await em.find(GameResult, { participantId: id }))
     .map((r) => r.score)
-    .reduce((a, b) => a + b)
+    .reduce((a, b) => a + b, 0)
 }
 
 export async function rankUp(id: number, rank: number) {
@@ -155,7 +155,7 @@ export async function rankUp(id: number, rank: number) {
 export async function getStats(id?: number): Promise<Stats | null> {
   if (!id) return null
   let res = await em.find(GameResult, { participantId: id })
-  let points = !!res.length ? res.map((r) => r.score).reduce((a, b) => a + b) : 0
+  let points = res.map((r) => r.score).reduce((a, b) => a + b, 0)
   let winRatio = !!res.length ? Math.round((res.filter((r) => r.won).length / res.length) * 100) : 0
   return {
     winRatio,

@@ -91,6 +91,8 @@ export default class Game {
   }
 
   private getResult(player: Player, opponent: Player) {
+    console.log(player.score, opponent.score, player.score === opponent.score);
+    
     return new GameResult(
       player.id,
       opponent.id,

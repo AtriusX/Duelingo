@@ -80,7 +80,7 @@ export default function Signup({ toRegister }: SignupProps) {
                         <button type="submit">Login</button>
                     </form>
                     {/* Registration form */}
-                    <form hidden={login} method="post" onSubmit={e => tryRegister(e, notify)}>
+                    <form className={styles.register} hidden={login} method="post" onSubmit={e => tryRegister(e, notify)}>
                         <h1>Register</h1>
                         <input type="text" id="username" name="username"
                             minLength={3} maxLength={20} placeholder="Name" />

@@ -64,7 +64,7 @@ async function getValues(em: EntityManager): Promise<Snapshot[]> {
 	let vals: Snapshot[] = []
 	for (let { id, rank } of users) {
 		let score = res.filter(r => r.participantId === id && r.score !== 0)
-			.map(r => r.score).reduce((a, b) => a + b)
+			.map(r => r.score).reduce((a, b) => a + b, 0)
 		vals.push({ id, score, rank })
 	}
 	return vals

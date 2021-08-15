@@ -38,9 +38,9 @@
 }
 
 .container form input {
-  position: relative;
-  margin: 0.5em 0;
+  margin: 1em 0;
   padding: 1em;
+  display: block;
   font-size: 12pt;
 }
 

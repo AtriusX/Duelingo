@@ -49,13 +49,13 @@ interface ItemProps {
 function Item({ user, score }: ItemProps) {
     return (
         <li>
-            {user && <Link href={`/profile/${user.id}`}>
+            <Link href={`/profile/${user?.id ?? "deleted"}`}>
                 <a className={styles.item}>
-                    <Avatar className={styles.avatar} user={user} />
-                    <div>{user?.username ?? "Deleted"}</div>
-                    <div>{score}</div>
+                    {user && <Avatar className={styles.avatar} user={user} />}
+                    <div className={styles.itemname}>{user?.username ?? "Deleted"}</div>
+                    {user && <div>{score}</div>}
                 </a>
-            </Link>}
+            </Link>
         </li>
     )
 }

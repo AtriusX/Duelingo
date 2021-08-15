@@ -7,7 +7,7 @@ interface NoResultProps extends HTMLProps<HTMLDivElement> {
 }
 
 export default function NoResult({ message, emoji, children, className, ...props }: NoResultProps) {
-    const style = `${styles.empty} ${className ?? ""}`
+    const style = [className, styles.empty].join(" ")
     return (
         <div {...props} className={style}>
             <div className={styles.emptyemblem}>

@@ -96,8 +96,9 @@ async function getRivals(
     // We do this so that each rival is properly joined to each user
     for (let i = 0; i < rivals.length; i++) {
         let userId = sender === rivals[i].receiver ? rivals[i].sender : rivals[i].receiver
-        let { id, username } = users.find(u => u.id === userId)!
-        out.push({ ...rivals[i], id, username })
+        let rival = users.find(u => u.id === userId)
+        if (!!rival)
+            out.push({ ...rivals[i], id: rival.id, username: rival.username })
     }
     if (!!page)
         return out.slice(page * 50, (page + 1) * 50)

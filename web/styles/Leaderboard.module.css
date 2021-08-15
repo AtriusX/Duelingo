@@ -42,6 +42,10 @@
     align-items: center;
 }
 
+.itemname {
+    margin: auto;
+}
+
 .container li {
     transition: all 0.1s;
 }
