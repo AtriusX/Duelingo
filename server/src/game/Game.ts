@@ -31,7 +31,7 @@ export default class Game {
     uuid: string,
     competitive: boolean = false,
     lang: Language = "es",
-    time: number = 5 * 60 // 5 minutes
+    time: number = 5  // 5 minutes
   ) {
     this.a = { id: a, score: 0, streak: 0 }
     this.b = { id: b, score: 0, streak: 0 }
@@ -73,7 +73,7 @@ export default class Game {
   }
 
   public async end() {
-    if (this.competitive && !this.over) {
+    if (this.competitive && !this.over && this.time <= 0) {
       em.persist(new GameEntity(this.uuid, this.lang))
       em.persist(this.getResult(this.a, this.b))
       em.persist(this.getResult(this.b, this.a))
@@ -91,8 +91,6 @@ export default class Game {
   }
 
   private getResult(player: Player, opponent: Player) {
-    console.log(player.score, opponent.score, player.score === opponent.score);
-    
     return new GameResult(
       player.id,
       opponent.id,

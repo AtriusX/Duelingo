@@ -126,10 +126,10 @@ interface ResultProps {
     scores: [number, number]
 }
 
-function Result({ show, scores }: ResultProps) {
+function Result({ show: { visible, error }, scores }: ResultProps) {
     return (
         <ReactModal
-            isOpen={show.visible}
+            isOpen={visible}
             ariaHideApp={false}
             className={styles.results}
             style={{
@@ -138,10 +138,10 @@ function Result({ show, scores }: ResultProps) {
                 }
             }}
         >
-            <h1>{scores[0] === scores[1] ? "Draw"
-                : `You ${scores[0] > scores[1] ? "won" : "lost"}!`}</h1>
-            {show.error && <h3>{show.error}</h3>}
-            <h2>Your score: {scores[0]}</h2>
+            {!error && <h1>{scores[0] === scores[1] ? "Draw"
+                : `You ${scores[0] > scores[1] ? "won" : "lost"}!`}</h1>}
+            {error && <h3>{error}</h3>}
+            {!error && <h2>Your score: {scores[0]}</h2>}
             <button onClick={() =>
                 router.push("/", undefined, {
                     shallow: true
