@@ -7,7 +7,7 @@ import { NextPageContext } from 'next'
 import { self } from '../api/user'
 import Strength from '../components/Strength'
 import { Error } from "../api/"
-import Head from 'next/head'
+import Title from '../components/Title'
 
 type SubmitEvent = FormEvent<HTMLFormElement>
 type ErrorCallback = (err: Error) => void
@@ -57,9 +57,7 @@ export default function Signup({ toRegister }: SignupProps) {
     const [pass, setPass] = useState("")
     return (
         <div className={styles.backdrop}>
-            <Head>
-                <title>{login ? "Login" : "Register"}</title>
-            </Head>
+            <Title title={login ? "Login" : "Register"} />
             {/* Backdrop and back button */}
             <div className={styles.img} />
             <button className={styles.back}

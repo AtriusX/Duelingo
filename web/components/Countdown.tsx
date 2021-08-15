@@ -1,11 +1,12 @@
 import { HTMLProps, useEffect, useState } from "react";
 
 interface CountdownProps extends HTMLProps<HTMLDivElement> {
+    pretext?: string
     duration: number,
     end?: () => void
 }
 
-export default function Countdown({ duration, end, ...props }: CountdownProps) {
+export default function Countdown({ pretext, duration, end, ...props }: CountdownProps) {
     const [secondsRemaining, setSecondsRemaining] = useState(duration)
     useEffect(() => setSecondsRemaining(duration), [duration, setSecondsRemaining])
 
@@ -21,7 +22,7 @@ export default function Countdown({ duration, end, ...props }: CountdownProps) {
     }, [secondsRemaining, end])
     return (
         <div {...props}>
-            <h1>{secondsRemaining}</h1>
+            <h1>{pretext} {secondsRemaining}</h1>
         </div>
     )
 }

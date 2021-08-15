@@ -22,6 +22,8 @@ interface GameProps {
     state: [Player, Player, boolean, [number, number?], PublicQuestion?]
 }
 
+type ResultState = { visible: boolean, error?: string }
+
 export default function Game({
     gameId, user, opponent,
     state: [a, b, started, [time, questionTime], question]
@@ -34,16 +36,17 @@ export default function Game({
     const [questionTimer, setQuestionTimer] = useState(questionTime)
     const [start, setStart] = useState(started)
     const [correct, setCorrect] = useState<[number, boolean]>()
-    const [showResults, setShowResults] = useState(false)
+    const [showResults, setShowResults] = useState<ResultState>({ visible: false })
     const [q, setQuestion] = useState<PublicQuestion | undefined>(question)
     useEffect(() => {
         if (timer <= 0)
-            setShowResults(true)
+            setShowResults({ visible: true })
     }, [timer])
     const socket = useSocket(socket => {
         socket.on("game-dropped", () => {
-            alert("It looks like your opponent left the game... Press OK to return to the menu.")
-            router.push("/")
+            // alert("It looks like your opponent left the game... Press OK to return to the menu.")
+            setShowResults({ visible: true, error: "Your opponent left the game..." })
+            // router.push("/")
         })
         socket.on("update-timer", (t, q) => {
             setTimer(t)
@@ -88,8 +91,7 @@ export default function Game({
             <div className={styles.game}>
                 {!start
                     ? <div className={styles.timer}>
-                        <h1>Starting in</h1>
-                        <Countdown duration={timer} />
+                        <Countdown pretext="Starting in" duration={timer} />
                     </div>
                     : <GamePanel gameId={gameId} socket={socket} token={user} question={q} correct={correct} />}
             </div>
@@ -120,14 +122,14 @@ function PlayerInfo({ user, score, streak, ...props }: PlayerInfoProps) {
 }
 
 interface ResultProps {
-    show: boolean
+    show: ResultState
     scores: [number, number]
 }
 
 function Result({ show, scores }: ResultProps) {
     return (
         <ReactModal
-            isOpen={show}
+            isOpen={show.visible}
             ariaHideApp={false}
             className={styles.results}
             style={{
@@ -138,14 +140,13 @@ function Result({ show, scores }: ResultProps) {
         >
             <h1>{scores[0] === scores[1] ? "Draw"
                 : `You ${scores[0] > scores[1] ? "won" : "lost"}!`}</h1>
+            {show.error && <h3>{show.error}</h3>}
             <h2>Your score: {scores[0]}</h2>
-            <button onClick={() => {
+            <button onClick={() =>
                 router.push("/", undefined, {
                     shallow: true
                 })
-            }}>
-                Leave Game
-            </button>
+            }>Leave Game</button>
         </ReactModal>
     )
 }
