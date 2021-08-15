@@ -21,6 +21,14 @@ export let em: EntityManager
 
 async function main() {
   const db = await MikroORM.init(DatabaseConfig)
+  if (!(await db.isConnected())) {
+    console.error(
+      chalk.redBright(
+        "Database failed to connect, please check your credentials."
+      )
+    )
+    process.exit()
+  }
   em = db.em
   await db.getMigrator().up()
 
@@ -38,14 +46,14 @@ async function main() {
   setupGame(app, db)
   setupLeaderboards(app, db)
 
-  const server = http.listen(3000, () => 
+  const server = http.listen(3000, () =>
     console.log(chalk.green("Listening on port 3000!"))
   )
 
   process.on("SIGTERM", () => {
-    console.log(chalk.redBright("Shutting down server..."));
+    console.log(chalk.redBright("Shutting down server..."))
     server.close()
-    process.exit(0)
+    process.exit()
   })
 }
 

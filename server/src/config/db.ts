@@ -25,7 +25,7 @@ type Config = Parameters<typeof MikroORM.init>[0]
 const DatabaseConfig = {
   dbName: DBNAME,
   debug: DEV,
-  host: process.env.DATABASE_URL,  
+  host: process.env.DATABASE_URL,
   type: DBTYPE,
   driver: PostgreSqlDriver,
   user: DBUSER,
@@ -34,7 +34,7 @@ const DatabaseConfig = {
   migrations: {
     path: path.join(__dirname, "../migrations"),
     pattern: /^[\w-]+\d+\.[tj]s$/,
-  }
+  },
 } as Config
 
 export default DatabaseConfig
