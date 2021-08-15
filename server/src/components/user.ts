@@ -4,7 +4,7 @@ import argon2 from "argon2"
 import { Express, Request, Response } from "express"
 import { MikroORM } from "@mikro-orm/core"
 import { User } from "../entities/User"
-import { getGames, getStates, getUpdates, search, updateUser } from "../api/user"
+import { getGames, getStats, getUpdates, search, updateUser } from "../api/user"
 import { deleteUser } from "../api/auth"
 import ConnectionRepository from "../network/ConnectionRepository"
 
@@ -25,7 +25,7 @@ export default function setupUser(app: Express, db: MikroORM) {
 
   app.get("/user/stats", async (req: Request, res: Response) => {
     const id = req.session.userId
-    res.status(200).json(await getStates(id))
+    res.status(200).json(await getStats(id))
   })
 
   app.get("/user/:id", async (req: Request, res: Response) => {
