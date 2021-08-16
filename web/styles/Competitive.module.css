@@ -53,14 +53,13 @@
         transform: none;
     }    
     25% {
-        transform: translate(5rem, -3rem) rotate(-10deg);
-        scale: 1.0
+        transform: translate(5rem, -3rem) rotate(-10deg) scale(1);
     }
     50% {
         transform: translate(-5rem, 2rem) rotate(10deg);
     }
     50%, 75% { 
-        scale: 0.8;
+        transform: scale(0.8);
     }
     70% {
         transform: translate(7rem, 6rem) rotate(-60deg);
@@ -74,5 +73,5 @@
 }
 
 .spinner {
-    scale: 2;
+    transform: scale(2);
 }
