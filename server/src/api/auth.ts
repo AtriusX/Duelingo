@@ -1,5 +1,5 @@
-import { cast } from "../types";
-import { NamedRivalry } from './user';
+import { cast } from "../types"
+import { NamedRivalry } from "./user"
 import { testRequirements, emailFieldTest, basicFieldTest } from "."
 import { User } from "../entities/User"
 import { EntityManager } from "@mikro-orm/core"
@@ -69,23 +69,15 @@ export async function deleteUser(
   id: number,
   password: string
 ): Promise<Boolean | Error> {
-
   const user = await em.findOne(User, { id: id })
   if (!user || !(await argon2.verify(user.password, password))) {
     return { message: "Failed to delete!" }
   }
   let results = await em.find(GameResult, { participantId: id })
-  console.log(results);
-  
   let rivals = await allRivals(em, id)
-  console.log(rivals);
-  console.log(user);
-  
   em.remove(user)
-  if (!!results.length)
-    em.remove(results)
-  if (!!cast<Error>(rivals).message)
-    em.remove(cast<NamedRivalry[]>(rivals))
+  if (!!results.length) em.remove(results)
+  if (!!cast<Error>(rivals).message) em.remove(cast<NamedRivalry[]>(rivals))
   await em.flush()
   return true
 }
