@@ -1,4 +1,4 @@
-# Capstone Project (Competitive Duolingo)
+# Duelingo
 
 The purpose of this project is to experiement with the possibility of duolingo being a competitive platform.
 
